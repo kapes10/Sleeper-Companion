@@ -4,7 +4,7 @@
 
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
 - **FantasyCalc valuation import** (previously called Stage 2): complete and approved 2026-10-25; **live at https://kapes10.github.io/Sleeper-Companion/**.
-- **Stage 2 (revised): Team Analyzer**: built, committed locally (not yet pushed/deployed), **awaiting owner review**.
+- **Stage 2 (revised): Team Analyzer**: approved 2026-10-25 and deployed.
 
 ### Team Analyzer: verified 2026-10-25 (week 7)
 - `npm run test:live` ran the analyzer on all 23 real leagues: every team placed exactly once, no errors.
@@ -58,7 +58,7 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - CSV scoring compatibility fixed: imports now record teams, PPR and TE premium tier, and a CSV set is only used when all five format settings match the league. A set saved before this fix has no scoring recorded and is never used; the roster says so and asks for a re-import.
 
 ## Open questions for the owner
-1. **Team Analyzer review:** sanity-check each league's classification; approve to push and deploy.
+1. **Next stage:** owner to describe it.
 
 ## Next step
-Owner reviews the Team Analyzer. On approval: push to GitHub (deploys the site).
+Owner describes the next stage.

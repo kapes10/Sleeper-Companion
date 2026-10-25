@@ -3,7 +3,7 @@
 A personal, read-only companion app for your Sleeper fantasy football leagues. It runs in your browser (no login, no password) and can be installed on your phone's home screen. Player values come from [FantasyCalc](https://fantasycalc.com), refreshed by a scheduled job on GitHub.
 
 **Done so far:** league list and rosters (Stage 1), FantasyCalc player values with a match report and manual CSV import.
-**In progress:** Stage 2 (revised): Team Analyzer (built, awaiting review).
+**Also done:** Stage 2 (revised): Team Analyzer.
 
 ## Run it on your computer
 
