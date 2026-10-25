@@ -32,6 +32,14 @@ export default defineConfig({
         // service worker; the app manages its own data caching so timestamps stay honest.
         globPatterns: ['**/*.{js,css,html,svg,png}'],
         navigateFallback: 'index.html',
+        // Published value snapshots: try the network first, fall back to the last copy offline.
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/data/fantasycalc/'),
+            handler: 'NetworkFirst',
+            options: { cacheName: 'fantasycalc-values', expiration: { maxEntries: 20 } },
+          },
+        ],
       },
     }),
   ],

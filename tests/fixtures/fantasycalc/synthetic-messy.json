@@ -1,0 +1,14 @@
+[
+  { "player": { "id": 1, "name": "Kirk Cousins", "position": "QB", "maybeTeam": "LV", "sleeperId": "1166" }, "value": 1618, "overallRank": 1, "positionRank": 1 },
+  { "player": null, "value": 5 },
+  { "player": { "id": 2, "name": "No Sleeper Id", "position": "WR", "maybeTeam": "KC" }, "value": 100 },
+  { "player": { "id": 3, "name": "Null Value", "position": "RB", "sleeperId": "7588" }, "value": null },
+  { "player": { "id": 4, "name": "Text Value", "position": "RB", "sleeperId": "7611" }, "value": "abc" },
+  { "player": { "id": 5, "name": "Duplicate A", "position": "WR", "sleeperId": "6801" }, "value": 3000 },
+  { "player": { "id": 6, "name": "Duplicate B", "position": "WR", "sleeperId": "6801" }, "value": 2000 },
+  { "player": { "id": 7, "name": "Ghost Player", "position": "TE", "sleeperId": "99999999" }, "value": 50 },
+  { "player": { "id": 8, "name": "2027 1st", "position": "PICK", "sleeperId": "FP_2027_1" }, "value": 3000 },
+  {},
+  { "player": { "id": 9, "position": "QB", "sleeperId": "8183" }, "value": 6000 },
+  { "player": { "id": 10, "name": "Negative", "position": "QB", "sleeperId": "8183" }, "value": -5 }
+]

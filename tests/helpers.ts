@@ -60,3 +60,45 @@ export function fixtureFetch() {
   }) as typeof fetch;
   return { impl, calls };
 }
+
+// ---------- Published FantasyCalc values (built with the real job code from the trimmed real fixture) ----------
+import { readFileSync } from 'node:fs';
+import { emptyIndex, runRefresh, type ValuesIndex } from '../src/valuations/fantasycalc/refresh';
+import type { FcParams } from '../src/valuations/fantasycalc/params';
+
+export const FC_12: FcParams = { isDynasty: true, numQbs: 2, numTeams: 12, ppr: 1, tep: 'te+' };
+export const FC_TRIMMED_TEXT = readFileSync('tests/fixtures/fantasycalc/dynasty-2qb-12tm-ppr1-teplus.trimmed.json', 'utf8');
+
+export async function publishedValues(
+  opts: { fetchedAt?: string; params?: FcParams[]; extraRows?: unknown[]; failLaterAt?: string; failError?: string } = {},
+) {
+  const fetchedAt = opts.fetchedAt ?? '2026-10-25T02:00:00.000Z';
+  const text = opts.extraRows ? JSON.stringify([...JSON.parse(FC_TRIMMED_TEXT), ...opts.extraRows]) : FC_TRIMMED_TEXT;
+  const r = await runRefresh(emptyIndex(), opts.params ?? [FC_12], {
+    now: () => Date.parse(fetchedAt),
+    get: async () => ({ status: 200, text }),
+    sha256: async () => 'test',
+    parseOptions: { minPlayers: 10 },
+  });
+  let index: ValuesIndex = r.index;
+  if (opts.failLaterAt) {
+    const failed = await runRefresh(index, opts.params ?? [FC_12], {
+      now: () => Date.parse(opts.failLaterAt!),
+      get: async () => ({ status: 503, text: '' }),
+      sha256: async () => 'test',
+    });
+    index = failed.index;
+  }
+  const files: Record<string, string> = { 'index.json': JSON.stringify(index) };
+  for (const w of r.writes) files[w.path] = w.content;
+  return files;
+}
+
+/** Serves published value files at <origin>/data/fantasycalc/<path>; unknown paths 404. */
+export function valuesFetch(files: Record<string, string> | 'offline') {
+  return (async (input: RequestInfo | URL) => {
+    if (files === 'offline') throw new TypeError('Failed to fetch');
+    const path = new URL(String(input)).pathname.split('/data/fantasycalc/')[1] ?? '';
+    return path in files ? new Response(files[path], { status: 200 }) : new Response('not found', { status: 404 });
+  }) as typeof fetch;
+}

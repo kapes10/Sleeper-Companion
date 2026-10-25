@@ -8,6 +8,9 @@ import { useServices } from '../../services';
 import type { SavedAccount } from '../../storage/prefs';
 import type { SleeperLeague, SleeperLeagueUser, SleeperRoster } from '../../api/types';
 import type { PlayersResult } from '../../data/playerCache';
+import { formatScaled } from '../../valuations/scale';
+import type { PlayerValue } from '../../valuations/match';
+import { useLeagueValues, useValueSource, ValuesPanel } from './ValuesPanel';
 
 export function RosterScreen({ account, leagueId }: { account: SavedAccount; leagueId: string }) {
   const services = useServices();
@@ -27,13 +30,19 @@ export function RosterScreen({ account, leagueId }: { account: SavedAccount; lea
   const { state, reload } = useAsync(`roster:${leagueId}`, load);
   const data = state.data;
   const summary = data && summarizeLeague(data.league);
+  const values = useLeagueValues(data?.league, data?.players.players);
+  const [source, setSource] = useValueSource();
+  const refreshAll = () => {
+    reload();
+    values.reload();
+  };
 
   return (
     <Screen
       title={summary?.name ?? 'League'}
       subtitle={summary && `${summary.format} · ${summary.scoring}`}
       actions={
-        <Button onClick={reload} disabled={state.status === 'loading'} aria-label="Refresh roster">
+        <Button onClick={refreshAll} disabled={state.status === 'loading'} aria-label="Refresh roster">
           Refresh
         </Button>
       }
@@ -44,10 +53,30 @@ export function RosterScreen({ account, leagueId }: { account: SavedAccount; lea
       <div className="space-y-4">
         {state.status === 'loading' && <Loading label={data ? 'Refreshing…' : 'Loading roster and player names…'} />}
         {state.status === 'error' && <ErrorMessage error={state.error} title="Couldn't load this league" onRetry={reload} />}
-        {data && summary && <RosterBody account={account} data={data} isBestBall={summary.isBestBall} unsupported={summary.unsupported} />}
+        {data && summary && (
+          <RosterBody
+            account={account}
+            data={data}
+            isBestBall={summary.isBestBall}
+            unsupported={summary.unsupported}
+            valuesPanel={(rosterIds) => <ValuesPanel state={values.state} reload={values.reload} source={source} onSourceChange={setSource} rosterIds={rosterIds} />}
+            lookup={valueLookup(values.state, source)}
+          />
+        )}
       </div>
     </Screen>
   );
+}
+
+type ValuesState = ReturnType<typeof useLeagueValues>['state'];
+
+/** null = values not loaded yet or failed to load (rows show nothing); otherwise unmatched players show "no value". */
+function valueLookup(state: ValuesState, source: 'fantasycalc' | 'csv'): ((id: string) => PlayerValue | null) | null {
+  const d = state.data;
+  if (!d) return null;
+  const map = source === 'csv' && d.csv ? d.csvValues : d.fcValues;
+  // No set for this league's format: every player has "no value" (never zero or an estimate).
+  return (id) => map?.get(id) ?? null;
 }
 
 interface Loaded {
@@ -58,7 +87,21 @@ interface Loaded {
   fetchedAt: number;
 }
 
-function RosterBody({ account, data, isBestBall, unsupported }: { account: SavedAccount; data: Loaded; isBestBall: boolean; unsupported: string[] }) {
+function RosterBody({
+  account,
+  data,
+  isBestBall,
+  unsupported,
+  valuesPanel,
+  lookup,
+}: {
+  account: SavedAccount;
+  data: Loaded;
+  isBestBall: boolean;
+  unsupported: string[];
+  valuesPanel: (rosterIds: string[]) => ReactNode;
+  lookup: ((id: string) => PlayerValue | null) | null;
+}) {
   const match = findOwnerRoster(data.rosters, account.userId);
   const players = data.players;
 
@@ -111,6 +154,7 @@ function RosterBody({ account, data, isBestBall, unsupported }: { account: Saved
           Best ball league: Sleeper picks the highest-scoring lineup automatically each week. Starters below are the lineup Sleeper currently has stored for this roster.
         </Notice>
       )}
+      {valuesPanel(match.roster.players ?? [])}
       {view.unknownPlayerIds.length > 0 && (
         <Notice tone="warn">
           {view.unknownPlayerIds.length} player ID(s) on this roster aren't in Sleeper's player list ({view.unknownPlayerIds.join(', ')}).
@@ -119,23 +163,23 @@ function RosterBody({ account, data, isBestBall, unsupported }: { account: Saved
 
       <Section title="Starters" count={view.starters.length}>
         {view.starters.map((s, i) => (
-          <PlayerRow key={`${s.slot}-${i}`} slot={s.slot} entry={s.player} />
+          <PlayerRow key={`${s.slot}-${i}`} slot={s.slot} entry={s.player} lookup={lookup} />
         ))}
       </Section>
       <Section title="Bench" count={view.bench.length}>
-        {view.bench.length === 0 ? <EmptyRow text="No bench players" /> : view.bench.map((p) => <PlayerRow key={p.playerId} slot="BN" entry={p} />)}
+        {view.bench.length === 0 ? <EmptyRow text="No bench players" /> : view.bench.map((p) => <PlayerRow key={p.playerId} slot="BN" entry={p} lookup={lookup} />)}
       </Section>
       {view.reserve.length > 0 && (
         <Section title="Injured reserve" count={view.reserve.length}>
           {view.reserve.map((p) => (
-            <PlayerRow key={p.playerId} slot="IR" entry={p} />
+            <PlayerRow key={p.playerId} slot="IR" entry={p} lookup={lookup} />
           ))}
         </Section>
       )}
       {view.taxi.length > 0 && (
         <Section title="Taxi squad" count={view.taxi.length}>
           {view.taxi.map((p) => (
-            <PlayerRow key={p.playerId} slot="TX" entry={p} />
+            <PlayerRow key={p.playerId} slot="TX" entry={p} lookup={lookup} />
           ))}
         </Section>
       )}
@@ -158,7 +202,8 @@ function EmptyRow({ text }: { text: string }) {
   return <li className="px-3 py-3 text-sm text-slate-500">{text}</li>;
 }
 
-function PlayerRow({ slot, entry }: { slot: string; entry: RosterEntry | null }) {
+function PlayerRow({ slot, entry, lookup }: { slot: string; entry: RosterEntry | null; lookup: ((id: string) => PlayerValue | null) | null }) {
+  const value = entry && lookup ? lookup(entry.playerId) : null;
   return (
     <li className="flex min-h-12 items-center gap-3 px-3 py-2">
       <span className="w-12 shrink-0 rounded bg-slate-800 py-1 text-center text-xs font-semibold text-slate-300">{slot}</span>
@@ -172,6 +217,18 @@ function PlayerRow({ slot, entry }: { slot: string; entry: RosterEntry | null })
         </div>
       ) : (
         <p className="flex-1 text-sm italic text-slate-500">Empty</p>
+      )}
+      {entry && lookup && (
+        <div className="shrink-0 text-right" data-testid="player-value">
+          {value ? (
+            <>
+              <p className="font-semibold tabular-nums text-slate-50">{formatScaled(value.scaled)}</p>
+              <p className="text-xs tabular-nums text-slate-500">{value.raw.toLocaleString()}</p>
+            </>
+          ) : (
+            <p className="text-xs italic text-slate-500">no value</p>
+          )}
+        </div>
       )}
     </li>
   );

@@ -1,0 +1,64 @@
+# Builds and deploys the app to GitHub Pages, and refreshes FantasyCalc values.
+#
+# Runs every hour, but scripts/fetch-values.ts only calls FantasyCalc for a parameter set when
+# its last attempt is at least 3 hours old (FantasyCalc's terms). Only one run at a time.
+name: Refresh values and deploy
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: values-and-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.values.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Test and build BEFORE calling FantasyCalc, so a failing build can never cause a call
+      # whose attempt time goes unpublished (which would let the next run call too early).
+      - run: npm test
+      - run: npm run build
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Download currently published values
+        run: node scripts/pull-values.mjs "${{ steps.pages.outputs.base_url }}/"
+        env:
+          VALUES_DIR: dist/data/fantasycalc
+      - name: Refresh FantasyCalc values that are due
+        id: values
+        run: node scripts/fetch-values.ts --ci
+        env:
+          VALUES_DIR: dist/data/fantasycalc
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    # Scheduled runs only redeploy when the job attempted a refresh; pushes and manual runs always deploy.
+    if: github.event_name != 'schedule' || needs.build.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

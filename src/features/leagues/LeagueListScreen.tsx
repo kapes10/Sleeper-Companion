@@ -43,6 +43,10 @@ export function LeagueListScreen({ account, onChangeUser }: { account: SavedAcco
       <div className="space-y-3">
         {state.status === 'loading' && <Loading label={data ? 'Refreshing…' : 'Loading your leagues…'} />}
         {state.status === 'error' && <ErrorMessage error={state.error} title="Couldn't load your leagues" onRetry={reload} />}
+        <a href="#/values" className="flex min-h-11 items-center justify-between rounded-xl bg-slate-900 px-4 text-sm text-slate-200 hover:bg-slate-800">
+          <span>Player values &amp; match report</span>
+          <span aria-hidden className="text-emerald-400">→</span>
+        </a>
         {data && (
           <p className="text-xs text-slate-500">
             {data.leagues.length} league{data.leagues.length === 1 ? '' : 's'} · Updated {formatTime(data.fetchedAt)}

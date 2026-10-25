@@ -8,3 +8,5 @@ coverage
 # Raw, unredacted API captures must never be committed
 fixtures-raw/
 *.tsbuildinfo
+# Published FantasyCalc snapshots are downloaded/generated, never committed
+public/data/
