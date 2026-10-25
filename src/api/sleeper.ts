@@ -6,6 +6,8 @@ import type {
   SleeperNflState,
   SleeperPlayerMap,
   SleeperRoster,
+  SleeperTradedPick,
+  SleeperTransaction,
   SleeperUser,
 } from './types';
 
@@ -54,6 +56,16 @@ export function createSleeperApi(client: SleeperClient) {
     /** GET /league/<league_id>/users */
     async getLeagueUsers(leagueId: string): Promise<SleeperLeagueUser[]> {
       return (await client.getJson<SleeperLeagueUser[] | null>(`/league/${encodeURIComponent(leagueId)}/users`)) ?? [];
+    },
+
+    /** GET /league/<league_id>/traded_picks — every traded pick, including future seasons. */
+    async getTradedPicks(leagueId: string): Promise<SleeperTradedPick[]> {
+      return (await client.getJson<SleeperTradedPick[] | null>(`/league/${encodeURIComponent(leagueId)}/traded_picks`)) ?? [];
+    },
+
+    /** GET /league/<league_id>/transactions/<week> */
+    async getTransactions(leagueId: string, week: number): Promise<SleeperTransaction[]> {
+      return (await client.getJson<SleeperTransaction[] | null>(`/league/${encodeURIComponent(leagueId)}/transactions/${week}`)) ?? [];
     },
 
     /** GET /players/nfl — large (~5 MB compressed); Sleeper asks for at most one call per day. */

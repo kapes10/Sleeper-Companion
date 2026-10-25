@@ -1,0 +1,64 @@
+[
+ {
+  "user_id": "200000000000000019",
+  "display_name": "Manager 01",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000020",
+  "display_name": "Manager 02",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000021",
+  "display_name": "Manager 03",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000018",
+  "display_name": "Manager 04",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000016",
+  "display_name": "Manager 05",
+  "metadata": {}
+ },
+ {
+  "user_id": "100000000000000001",
+  "display_name": "Fixture Owner",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000013",
+  "display_name": "Manager 07",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000012",
+  "display_name": "Manager 08",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000015",
+  "display_name": "Manager 09",
+  "metadata": {
+   "team_name": "Team 09"
+  }
+ },
+ {
+  "user_id": "200000000000000022",
+  "display_name": "Manager 10",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000017",
+  "display_name": "Manager 11",
+  "metadata": {}
+ },
+ {
+  "user_id": "200000000000000014",
+  "display_name": "Manager 12",
+  "metadata": {}
+ }
+]

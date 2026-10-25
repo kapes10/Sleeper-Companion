@@ -3,9 +3,15 @@
 ## Status (2026-10-25)
 
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
-- **Stage 2** (FantasyCalc values): review fixes done 2026-10-25, owner moving on to Stage 3; **live at https://kapes10.github.io/Sleeper-Companion/**.
+- **FantasyCalc valuation import** (previously called Stage 2): complete and approved 2026-10-25; **live at https://kapes10.github.io/Sleeper-Companion/**.
+- **Stage 2 (revised): Team Analyzer**: built, committed locally (not yet pushed/deployed), **awaiting owner review**.
 
-### Stage 2: verified live on 2026-10-25
+### Team Analyzer: verified 2026-10-25 (week 7)
+- `npm run test:live` ran the analyzer on all 23 real leagues: every team placed exactly once, no errors.
+- Production build in headless Edge at 390 px with real data: tab and league list, results for The Dynasty Collective, Hype Train BB Dyno 28 and Game On Dynasty; no horizontal scroll. The roster view and match report still work.
+- Not seen live: an abandoned roster, a co-owned roster of yours, a redraft or keeper league, playoffs/offseason, a passed trade deadline. These are covered by tests built from modified copies of real data only.
+
+### FantasyCalc values: verified live on 2026-10-25
 Production build in headless Edge at phone width, with real Sleeper data and two real FantasyCalc snapshots:
 - The Dynasty Collective (12-team set): 24 of 25 players have values; Luke McCaffrey shows "no value".
 - Game On Dynasty (10-team set): 29 of 29 players have values.
@@ -36,6 +42,15 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - GitHub may run scheduled jobs late, and pauses schedules after 60 days without commits.
 - CSV sets are stored on one device only.
 
+### Team Analyzer limitations
+- **Undocumented settings:** playoff spots, playoff start week, median games and trade deadline are present in Sleeper's league data but not documented. If Sleeper drops them, the analyzer says what's missing instead of guessing.
+- **Tiebreakers:** Sleeper doesn't publish them; standings use win %, then points for.
+- **Pick holdings:** worked out from traded picks only, for the seasons that appear in trades (2027–2028 in most leagues). Picks further out aren't counted.
+- **Ages:** Sleeper's `age` field (whole years, calculation undocumented).
+- **Recent trades:** the last 3 weeks of completed trades, shown as context only.
+- **No intent data:** tiers are estimates, labeled as such.
+- **Old cache left behind:** the previous player-list cache (without ages) stays in browser storage until cleared; harmless, about 2 MB.
+
 ## Resolved in the Stage 2 review (2026-10-25)
 - CSV 0–100 scale approved.
 - Trade calculator dropped from Stage 3 for now.
@@ -43,7 +58,7 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - CSV scoring compatibility fixed: imports now record teams, PPR and TE premium tier, and a CSV set is only used when all five format settings match the league. A set saved before this fix has no scoring recorded and is never used; the roster says so and asks for a re-import.
 
 ## Open questions for the owner
-1. **Stage 3:** owner to describe the feature replacing the trade calculator.
+1. **Team Analyzer review:** sanity-check each league's classification; approve to push and deploy.
 
 ## Next step
-Plan Stage 3 once the owner describes it.
+Owner reviews the Team Analyzer. On approval: push to GitHub (deploys the site).

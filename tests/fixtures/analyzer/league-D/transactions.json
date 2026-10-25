@@ -1,0 +1,284 @@
+[
+ {
+  "transaction_id": "tx-D-1",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 7,
+  "created": 1792952001529
+ },
+ {
+  "transaction_id": "tx-D-2",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 7,
+  "created": 1792874784589
+ },
+ {
+  "transaction_id": "tx-D-3",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 7,
+  "created": 1792874771668
+ },
+ {
+  "transaction_id": "tx-D-4",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 7,
+  "created": 1792874758439
+ },
+ {
+  "transaction_id": "tx-D-5",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 7,
+  "created": 1792865689272
+ },
+ {
+  "transaction_id": "tx-D-6",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   5
+  ],
+  "leg": 7,
+  "created": 1792816682631
+ },
+ {
+  "transaction_id": "tx-D-7",
+  "type": "trade",
+  "status": "complete",
+  "roster_ids": [
+   1,
+   7
+  ],
+  "leg": 7,
+  "created": 1792608231963
+ },
+ {
+  "transaction_id": "tx-D-8",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   1
+  ],
+  "leg": 7,
+  "created": 1792582405645
+ },
+ {
+  "transaction_id": "tx-D-9",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   1
+  ],
+  "leg": 7,
+  "created": 1792582387832
+ },
+ {
+  "transaction_id": "tx-D-10",
+  "type": "trade",
+  "status": "complete",
+  "roster_ids": [
+   1,
+   3
+  ],
+  "leg": 6,
+  "created": 1792552748157
+ },
+ {
+  "transaction_id": "tx-D-11",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792540164546
+ },
+ {
+  "transaction_id": "tx-D-12",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   1
+  ],
+  "leg": 6,
+  "created": 1792506585750
+ },
+ {
+  "transaction_id": "tx-D-13",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 6,
+  "created": 1792351970551
+ },
+ {
+  "transaction_id": "tx-D-14",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 6,
+  "created": 1792306416156
+ },
+ {
+  "transaction_id": "tx-D-15",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792285432213
+ },
+ {
+  "transaction_id": "tx-D-16",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   10
+  ],
+  "leg": 6,
+  "created": 1792272417153
+ },
+ {
+  "transaction_id": "tx-D-17",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   4
+  ],
+  "leg": 6,
+  "created": 1792260795374
+ },
+ {
+  "transaction_id": "tx-D-18",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792084646812
+ },
+ {
+  "transaction_id": "tx-D-19",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792084634577
+ },
+ {
+  "transaction_id": "tx-D-20",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792084629710
+ },
+ {
+  "transaction_id": "tx-D-21",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   9
+  ],
+  "leg": 6,
+  "created": 1792043808949
+ },
+ {
+  "transaction_id": "tx-D-22",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   1
+  ],
+  "leg": 5,
+  "created": 1791914656098
+ },
+ {
+  "transaction_id": "tx-D-23",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   1
+  ],
+  "leg": 5,
+  "created": 1791914632999
+ },
+ {
+  "transaction_id": "tx-D-24",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   1
+  ],
+  "leg": 5,
+  "created": 1791914624126
+ },
+ {
+  "transaction_id": "tx-D-25",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   1
+  ],
+  "leg": 5,
+  "created": 1791914615949
+ },
+ {
+  "transaction_id": "tx-D-26",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 5,
+  "created": 1791655857329
+ },
+ {
+  "transaction_id": "tx-D-27",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   5
+  ],
+  "leg": 5,
+  "created": 1791498331898
+ },
+ {
+  "transaction_id": "tx-D-28",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   3
+  ],
+  "leg": 5,
+  "created": 1791497433407
+ }
+]

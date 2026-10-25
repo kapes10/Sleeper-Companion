@@ -2,7 +2,8 @@
 
 A personal, read-only companion app for your Sleeper fantasy football leagues. It runs in your browser (no login, no password) and can be installed on your phone's home screen. Player values come from [FantasyCalc](https://fantasycalc.com), refreshed by a scheduled job on GitHub.
 
-**Current stage:** Stage 2: FantasyCalc player values on your rosters, match report, and manual CSV import.
+**Done so far:** league list and rosters (Stage 1), FantasyCalc player values with a match report and manual CSV import.
+**In progress:** Stage 2 (revised): Team Analyzer (built, awaiting review).
 
 ## Run it on your computer
 
@@ -63,6 +64,7 @@ Don't run `scripts/fetch-values.ts` yourself; it's for the scheduled job. A seco
 | Command | What it does |
 | --- | --- |
 | `npm test` | Runs all automated tests (uses saved, anonymised sample data, no internet needed). |
+| `npm run test:live` | Runs the Team Analyzer on all your real leagues and prints each result (needs internet; downloads Sleeper's player list once). |
 | `npm run typecheck` | Checks the code for type mistakes. |
 | `npm run build` | Builds the installable app into the `dist/` folder. |
 | `npm run preview` | Serves the built app locally so you can test the installable version. |
@@ -90,6 +92,7 @@ The script replaces every user ID, league ID, league name, team name and manager
 - `src/api/`: talks to Sleeper's public API (retries, timeouts, readable errors)
 - `src/domain/`: pure logic: league summaries, finding your roster, starters/bench
 - `src/data/`: the 24-hour player cache
+- `src/analysis/`: Team Analyzer logic (standings, season state, age/pick/trade signals, tiers, stance); no screen code
 - `src/valuations/`: FantasyCalc parameter mapping, the scheduled job's core, Sleeper-ID matching, 0–100 scale, stale checks, CSV import
 - `scripts/fetch-values.ts`: the scheduled FantasyCalc job (run by GitHub Actions)
 - `.github/workflows/deploy.yml`: the hourly schedule, tests, build and deploy

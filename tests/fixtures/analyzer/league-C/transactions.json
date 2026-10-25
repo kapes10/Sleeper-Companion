@@ -1,0 +1,293 @@
+[
+ {
+  "transaction_id": "tx-C-1",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 7,
+  "created": 1792894947220
+ },
+ {
+  "transaction_id": "tx-C-2",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   8
+  ],
+  "leg": 7,
+  "created": 1792894932457
+ },
+ {
+  "transaction_id": "tx-C-3",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   2
+  ],
+  "leg": 7,
+  "created": 1792726694950
+ },
+ {
+  "transaction_id": "tx-C-4",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 7,
+  "created": 1792726683786
+ },
+ {
+  "transaction_id": "tx-C-5",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 7,
+  "created": 1792726656332
+ },
+ {
+  "transaction_id": "tx-C-6",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 6,
+  "created": 1792563749143
+ },
+ {
+  "transaction_id": "tx-C-7",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 6,
+  "created": 1792563733218
+ },
+ {
+  "transaction_id": "tx-C-8",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 6,
+  "created": 1792563722554
+ },
+ {
+  "transaction_id": "tx-C-9",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   9
+  ],
+  "leg": 6,
+  "created": 1792528542576
+ },
+ {
+  "transaction_id": "tx-C-10",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   6
+  ],
+  "leg": 6,
+  "created": 1792503340613
+ },
+ {
+  "transaction_id": "tx-C-11",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   5
+  ],
+  "leg": 6,
+  "created": 1792363554629
+ },
+ {
+  "transaction_id": "tx-C-12",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792249782073
+ },
+ {
+  "transaction_id": "tx-C-13",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 6,
+  "created": 1792249142665
+ },
+ {
+  "transaction_id": "tx-C-14",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   8
+  ],
+  "leg": 6,
+  "created": 1792129354790
+ },
+ {
+  "transaction_id": "tx-C-15",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   4
+  ],
+  "leg": 6,
+  "created": 1792124252182
+ },
+ {
+  "transaction_id": "tx-C-16",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792124239462
+ },
+ {
+  "transaction_id": "tx-C-17",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792124216444
+ },
+ {
+  "transaction_id": "tx-C-18",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792124198389
+ },
+ {
+  "transaction_id": "tx-C-19",
+  "type": "free_agent",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 6,
+  "created": 1792124173316
+ },
+ {
+  "transaction_id": "tx-C-20",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   9
+  ],
+  "leg": 6,
+  "created": 1792111767830
+ },
+ {
+  "transaction_id": "tx-C-21",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   11
+  ],
+  "leg": 6,
+  "created": 1792006183057
+ },
+ {
+  "transaction_id": "tx-C-22",
+  "type": "trade",
+  "status": "complete",
+  "roster_ids": [
+   2,
+   5
+  ],
+  "leg": 6,
+  "created": 1792002147121
+ },
+ {
+  "transaction_id": "tx-C-23",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   8
+  ],
+  "leg": 5,
+  "created": 1791961095601
+ },
+ {
+  "transaction_id": "tx-C-24",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   9
+  ],
+  "leg": 5,
+  "created": 1791943275501
+ },
+ {
+  "transaction_id": "tx-C-25",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   9
+  ],
+  "leg": 5,
+  "created": 1791943250726
+ },
+ {
+  "transaction_id": "tx-C-26",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   9
+  ],
+  "leg": 5,
+  "created": 1791943231680
+ },
+ {
+  "transaction_id": "tx-C-27",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   12
+  ],
+  "leg": 5,
+  "created": 1791929354168
+ },
+ {
+  "transaction_id": "tx-C-28",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   2
+  ],
+  "leg": 5,
+  "created": 1791760309710
+ },
+ {
+  "transaction_id": "tx-C-29",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   8
+  ],
+  "leg": 5,
+  "created": 1791580250796
+ }
+]

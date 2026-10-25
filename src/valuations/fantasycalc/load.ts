@@ -1,12 +1,14 @@
 // Browser-side reading of the snapshots published by the scheduled job. The browser never
 // calls FantasyCalc itself (CLAUDE.md); it only reads static files from this app's own site.
 import type { ValueRow } from '../match';
-import { parseFcResponse } from './parse.ts';
+import { parseFcResponse, type FcPickValue } from './parse.ts';
 import type { SnapshotMeta, ValuesIndex } from './refresh.ts';
 
 export interface FcSnapshot {
   meta: SnapshotMeta;
   rows: ValueRow[];
+  /** Draft-pick values (display context only). */
+  picks: FcPickValue[];
   unreadableCount: number;
 }
 
@@ -58,6 +60,7 @@ export async function loadFcSnapshot(meta: SnapshotMeta, fetchImpl: typeof fetch
   return {
     meta,
     rows: parsed.players.map((p) => ({ sleeperId: p.sleeperId, name: p.name, position: p.position, team: p.team, value: p.value })),
+    picks: parsed.picks,
     unreadableCount: parsed.unreadable.length,
   };
 }

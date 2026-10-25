@@ -1,0 +1,132 @@
+[
+ {
+  "transaction_id": "tx-B-1",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 7,
+  "created": 1792680175876
+ },
+ {
+  "transaction_id": "tx-B-2",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   4
+  ],
+  "leg": 7,
+  "created": 1792649811769
+ },
+ {
+  "transaction_id": "tx-B-3",
+  "type": "waiver",
+  "status": "failed",
+  "roster_ids": [
+   1
+  ],
+  "leg": 7,
+  "created": 1792639587664
+ },
+ {
+  "transaction_id": "tx-B-4",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   1
+  ],
+  "leg": 7,
+  "created": 1792639579505
+ },
+ {
+  "transaction_id": "tx-B-5",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   4
+  ],
+  "leg": 6,
+  "created": 1792075239714
+ },
+ {
+  "transaction_id": "tx-B-6",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 5,
+  "created": 1791922427857
+ },
+ {
+  "transaction_id": "tx-B-7",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 5,
+  "created": 1791922393494
+ },
+ {
+  "transaction_id": "tx-B-8",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 5,
+  "created": 1791771731962
+ },
+ {
+  "transaction_id": "tx-B-9",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 5,
+  "created": 1791771688811
+ },
+ {
+  "transaction_id": "tx-B-10",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 5,
+  "created": 1791574672542
+ },
+ {
+  "transaction_id": "tx-B-11",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   10
+  ],
+  "leg": 5,
+  "created": 1791573079146
+ },
+ {
+  "transaction_id": "tx-B-12",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   10
+  ],
+  "leg": 5,
+  "created": 1791573061890
+ },
+ {
+  "transaction_id": "tx-B-13",
+  "type": "waiver",
+  "status": "complete",
+  "roster_ids": [
+   7
+  ],
+  "leg": 5,
+  "created": 1791374986681
+ }
+]

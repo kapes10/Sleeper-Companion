@@ -1,21 +1,15 @@
 import { useCallback } from 'react';
 import { Button, ErrorMessage, Loading, Notice, Screen, formatTime } from '../../components/ui';
 import { useAsync } from '../../components/useAsync';
-import { leagueStatusLabel, summarizeLeague } from '../../domain/league';
+import { leagueStatusLabel } from '../../domain/league';
+import { MainTabs } from '../../components/MainTabs';
+import { loadMyLeagues } from './loadLeagues';
 import { useServices } from '../../services';
 import type { SavedAccount } from '../../storage/prefs';
 
 export function LeagueListScreen({ account, onChangeUser }: { account: SavedAccount; onChangeUser: () => void }) {
   const services = useServices();
-  const load = useCallback(
-    async (force: boolean) => {
-      const state = await services.cached('state:nfl', () => services.api.getNflState(), force);
-      const season = state.data.league_season || state.data.season;
-      const leagues = await services.cached(`leagues:${account.userId}:${season}`, () => services.api.getUserLeagues(account.userId, season), force);
-      return { state: state.data, season, leagues: leagues.data.map(summarizeLeague), fetchedAt: leagues.fetchedAt };
-    },
-    [services, account.userId],
-  );
+  const load = useCallback((force: boolean) => loadMyLeagues(services, account, force), [services, account]);
   const { state, reload } = useAsync(`leagues:${account.userId}`, load);
   const data = state.data;
 
@@ -40,6 +34,7 @@ export function LeagueListScreen({ account, onChangeUser }: { account: SavedAcco
         </>
       }
     >
+      <MainTabs active="leagues" />
       <div className="space-y-3">
         {state.status === 'loading' && <Loading label={data ? 'Refreshing…' : 'Loading your leagues…'} />}
         {state.status === 'error' && <ErrorMessage error={state.error} title="Couldn't load your leagues" onRetry={reload} />}

@@ -9,6 +9,8 @@ export interface Player {
   fantasyPositions: string[];
   status: string | null;
   injuryStatus: string | null;
+  /** From Sleeper's player list (whole years); null when Sleeper has none. */
+  age: number | null;
 }
 
 export type PlayerIndex = Record<string, Player>;
@@ -33,6 +35,7 @@ export function toPlayerIndex(raw: SleeperPlayerMap): PlayerIndex {
       fantasyPositions: p.fantasy_positions ?? [],
       status: p.status ?? null,
       injuryStatus: p.injury_status ?? null,
+      age: typeof p.age === 'number' && Number.isFinite(p.age) ? p.age : null,
     };
   }
   return out;

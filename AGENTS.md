@@ -5,9 +5,9 @@
   Current status, limitations and next step: NOTES.md.
 -->
 
-# Sleeper Trade Tool
+# Sleeper Team Analyzer
 
-Personal fantasy football tool for Sleeper leagues. Mobile-first PWA that also works on desktop. Built for a nontechnical owner: explain decisions in plain English, and keep things simple.
+Personal fantasy football team analyzer for Sleeper leagues. Mobile-first PWA that also works on desktop. Built for a nontechnical owner: explain decisions in plain English, and keep things simple.
 
 ## My leagues (fill in before starting)
 - Sleeper username: kapes10 (user ID 819017179583361024)
@@ -18,7 +18,6 @@ Personal fantasy football tool for Sleeper leagues. Mobile-first PWA that also w
 - TypeScript, React, Vite, Tailwind, Vitest
 - Single app (no monorepo, no separate packages)
 - Installable PWA, mobile-first, dark theme
-<!-- CHANGED -->
 - No backend and no database, except one scheduled job that fetches player valuations and saves them to a small database or JSON file that the app reads. Static hosting otherwise. Preferences live in localStorage, which does NOT sync between devices. Tell me whenever this limitation affects a feature.
 
 ## Sleeper API rules
@@ -28,7 +27,6 @@ Personal fantasy football tool for Sleeper leagues. Mobile-first PWA that also w
 - Stay well under Sleeper's documented rate limit and handle network errors gracefully.
 - Personal, noncommercial use only.
 
-<!-- ADDED -->
 ## Valuation source rules (FantasyCalc)
 - Use only the documented GET /values/current endpoint (https://fantasycalc.com/api-docs). Do not call any other FantasyCalc endpoint without written permission.
 - Cache responses and reuse them. Refresh each unique set of query parameters no more than once every 3 hours.
@@ -42,10 +40,11 @@ Personal fantasy football tool for Sleeper leagues. Mobile-first PWA that also w
 - Save real Sleeper API responses from my leagues as test fixtures.
 - Anything not validated against live data must be labeled as such.
 
-## Trade logic rules
+## Analysis logic rules
 - Deterministic, explainable functions kept separate from UI components.
 - Every recommendation shows what went into it and why.
 - Do not invent weights or formulas. Propose them in plain English and wait for my approval before using them.
+- Buyer/seller tiers are estimates. Show a confidence level based on games played, and get my approval on thresholds in plain English before using them.
 - Probabilities like "chance a team accepts" are estimates and must be labeled as estimates.
 
 ## Workflow
@@ -56,5 +55,4 @@ Personal fantasy football tool for Sleeper leagues. Mobile-first PWA that also w
 - Record known limitations in NOTES.md.
 
 ## Out of scope for now
-<!-- CHANGED -->
-Chrome extension, automatic lineup or trade submission, user accounts, any backend beyond the valuation fetch job, AI features, IDP leagues, multi-team trades.
+Chrome extension, automatic lineup or trade submission, user accounts, any backend beyond the valuation fetch job, AI features, IDP leagues, multi-team trades, trade evaluator, trade finder, lineup manager.
