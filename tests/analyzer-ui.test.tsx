@@ -34,13 +34,14 @@ function analyzerFetch() {
   }) as typeof fetch;
 }
 
-function renderApp(hash: string, opts: { fetchImpl?: typeof fetch; values?: Record<string, string> | 'offline' } = {}) {
+function renderApp(hash: string, opts: { fetchImpl?: typeof fetch; values?: Record<string, string> | 'offline'; now?: number } = {}) {
   saveAccount({ username: 'fixture_owner', userId: AZ_OWNER, displayName: 'Fixture Owner' });
   location.hash = hash;
   const services = createServices({
     client: { fetchImpl: opts.fetchImpl ?? analyzerFetch(), backoffMs: 0 },
     store: memoryStore(),
     valuesFetch: valuesFetch(opts.values ?? {}),
+    ...(opts.now ? { now: () => opts.now! } : {}),
   });
   return render(
     <ServicesProvider services={services}>
@@ -94,6 +95,19 @@ describe('Team Analyzer screens', () => {
     expect(await screen.findByText(/are shown for context only and are/)).toHaveTextContent('not used');
     await waitFor(() => expect(screen.getAllByText(/FantasyCalc context: roster/).length).toBe(12));
     expect(screen.getAllByRole('link', { name: 'FantasyCalc.com' }).length).toBeGreaterThan(0);
+  });
+
+  it('warns when the FantasyCalc context is older than 6 hours, with the failed refresh', async () => {
+    const values = await publishedValues({ failLaterAt: '2026-10-25T05:30:00.000Z' }); // snapshot from 02:00
+    renderApp(`#/analyzer/${leagueId('A')}`, { values, now: Date.parse('2026-10-25T09:00:00.000Z') });
+    expect(await screen.findByText(/These values are 7 h old/)).toHaveTextContent('The latest refresh failed: FantasyCalc returned HTTP 503');
+    expect(screen.getByRole('region', { name: 'Your team' })).toBeInTheDocument(); // tiers unaffected
+  });
+
+  it('shows no stale warning while the FantasyCalc context is fresh', async () => {
+    renderApp(`#/analyzer/${leagueId('A')}`, { values: await publishedValues(), now: Date.parse('2026-10-25T03:00:00.000Z') });
+    await screen.findByText(/are shown for context only and are/);
+    expect(screen.queryByText(/These values are .* old/)).not.toBeInTheDocument();
   });
 
   it("says when there are no FantasyCalc values for the league's format, without affecting tiers", async () => {

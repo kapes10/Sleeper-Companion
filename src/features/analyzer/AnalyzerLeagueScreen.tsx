@@ -17,6 +17,8 @@ import type { SavedAccount } from '../../storage/prefs';
 import { describeParams } from '../../valuations/fantasycalc/params';
 import { selectFcSet } from '../../valuations/leagueValues';
 import { matchValues } from '../../valuations/match';
+import type { SetState } from '../../valuations/fantasycalc/refresh';
+import { fcFreshness, formatAge } from '../../valuations/staleness';
 
 /** Weeks of transactions fetched for "recent trades" (the current week and the two before it). */
 const RECENT_WEEKS = 3;
@@ -121,7 +123,7 @@ function useFcContext(data: Loaded | undefined) {
         const team = data!.analysis.teams?.find((t) => t.rosterId === r.roster_id);
         byRoster.set(r.roster_id, teamFcContext(r, values, team?.futurePicks ?? null, snap.picks));
       }
-      return { kind: 'available', label: describeParams(sel.params), fetchedAt: Date.parse(sel.state.latest!.fetchedAt), byRoster };
+      return { kind: 'available', label: describeParams(sel.params), fetchedAt: Date.parse(sel.state.latest!.fetchedAt), state: sel.state, byRoster };
     },
     [services, data],
   );
@@ -131,7 +133,7 @@ function useFcContext(data: Loaded | undefined) {
 }
 
 type FcLoaded =
-  | { kind: 'available'; label: string; fetchedAt: number; byRoster: Map<number, TeamFcContext> }
+  | { kind: 'available'; label: string; fetchedAt: number; state: SetState; byRoster: Map<number, TeamFcContext> }
   /** No FantasyCalc snapshot for this league's format, or the format can't be mapped. */
   | { kind: 'missing' | 'unsupported' };
 type FcState = FcLoaded | null;
@@ -276,6 +278,8 @@ function TeamCard({ team, name, isMine, fc }: { team: TeamAnalysis; name: string
 }
 
 function FcLegend({ fc, fcError }: { fc: FcState; fcError: boolean }) {
+  const services = useServices();
+  const fresh = fc?.kind === 'available' ? fcFreshness(fc.state, services.now()) : null;
   let text: ReactNode;
   if (fcError) text = "FantasyCalc context couldn't be loaded. Tiers are unaffected.";
   else if (!fc) text = 'Loading FantasyCalc context…';
@@ -289,6 +293,12 @@ function FcLegend({ fc, fcError }: { fc: FcState; fcError: boolean }) {
   return (
     <div className="space-y-1 rounded-xl bg-slate-900 p-3 text-xs text-slate-400">
       <p>{text}</p>
+      {fresh?.kind === 'stale' && (
+        <Notice tone="warn">
+          These values are {formatAge(fresh.ageMs)} old (refreshes normally happen every 3–4 hours).
+          {fresh.lastAttemptFailed && fresh.lastError && ` The latest refresh failed: ${fresh.lastError}`}
+        </Notice>
+      )}
       <FantasyCalcAttribution />
     </div>
   );
