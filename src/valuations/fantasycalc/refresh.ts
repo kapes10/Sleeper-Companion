@@ -10,6 +10,7 @@ import { parseFcResponse, type FcParseOptions } from './parse.ts';
 export const FC_ENDPOINT = 'https://api.fantasycalc.com/values/current';
 /** FantasyCalc terms: each unique parameter set may be refreshed no more than once every 3 hours. */
 export const FC_MIN_REFRESH_MS = 3 * 60 * 60 * 1000;
+export const SIMULATED_FAILURE_ERROR = 'Simulated failure (test run; FantasyCalc was not contacted)';
 
 export interface SnapshotMeta {
   file: string;
@@ -63,6 +64,12 @@ export interface RefreshDeps {
   get: (url: string) => Promise<HttpResult>;
   sha256: (text: string) => Promise<string>;
   parseOptions?: FcParseOptions;
+  /**
+   * Test switch: record a failed attempt for every needed set WITHOUT contacting FantasyCalc.
+   * Snapshots are kept, and the attempt time is left unchanged so it doesn't use up the
+   * 3-hour allowance (no request was made).
+   */
+  simulateFailure?: boolean;
 }
 
 export interface RefreshResult {
@@ -92,6 +99,13 @@ export async function runRefresh(previous: ValuesIndex, needed: FcParams[], deps
   for (const [key, params] of unique) {
     const state: SetState = index.sets[key] ?? { key, params, latest: null, previous: null, lastAttemptAt: null, lastAttemptOk: null, lastError: null };
     index.sets[key] = state;
+    if (deps.simulateFailure) {
+      state.lastAttemptOk = false;
+      state.lastError = SIMULATED_FAILURE_ERROR;
+      changed = true;
+      log.push(`${key}: simulated failure recorded; kept previous snapshot; no request sent`);
+      continue;
+    }
     const now = deps.now();
     if (!isDue(state, now)) {
       log.push(`${key}: skipped, last attempt ${state.lastAttemptAt} is less than 3 hours ago`);

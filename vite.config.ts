@@ -13,6 +13,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
+        // Stable identity so a reinstall/update is recognised as the same app.
+        id: './',
         name: 'Sleeper Companion',
         short_name: 'Companion',
         description: 'Personal, read-only companion for your Sleeper fantasy leagues.',

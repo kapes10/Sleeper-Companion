@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { parseFcResponse } from '../src/valuations/fantasycalc/parse';
-import { emptyIndex, FC_MIN_REFRESH_MS, isDue, runRefresh, type RefreshDeps } from '../src/valuations/fantasycalc/refresh';
+import { emptyIndex, FC_MIN_REFRESH_MS, isDue, runRefresh, SIMULATED_FAILURE_ERROR, type RefreshDeps } from '../src/valuations/fantasycalc/refresh';
 import type { FcParams } from '../src/valuations/fantasycalc/params';
 
 const realText = readFileSync('tests/fixtures/fantasycalc/dynasty-2qb-12tm-ppr1-teplus.trimmed.json', 'utf8');
@@ -161,5 +161,30 @@ describe('storing snapshots', () => {
     const again = await runRefresh(first.index, [P12], d);
     expect(again.changed).toBe(false);
     expect(again.index).toEqual(first.index);
+  });
+});
+
+describe('simulated failure (test switch)', () => {
+  it('records a failure, keeps snapshots, makes no request and does not use up the 3-hour allowance', async () => {
+    const ok = deps();
+    const good = await runRefresh(emptyIndex(), [P12], ok.d);
+    const before = good.index.sets['dynasty-2qb-12tm-ppr1-teplus']!;
+
+    const sim = deps({ simulateFailure: true });
+    sim.advance(HOUR);
+    const r = await runRefresh(good.index, [P12, P10], sim.d);
+    expect(sim.get).not.toHaveBeenCalled();
+    expect(r.calls).toEqual([]);
+    expect(r.writes).toEqual([]);
+    expect(r.changed).toBe(true);
+    const after = r.index.sets['dynasty-2qb-12tm-ppr1-teplus']!;
+    expect(after).toMatchObject({ latest: before.latest, previous: before.previous, lastAttemptAt: before.lastAttemptAt, lastAttemptOk: false, lastError: SIMULATED_FAILURE_ERROR });
+
+    // The next real run still waits for the full 3 hours from the last REAL attempt, then succeeds.
+    const real = deps();
+    real.advance(3 * HOUR);
+    const next = await runRefresh(r.index, [P12], real.d);
+    expect(next.calls).toHaveLength(1);
+    expect(next.index.sets['dynasty-2qb-12tm-ppr1-teplus']).toMatchObject({ lastAttemptOk: true, lastError: null });
   });
 });

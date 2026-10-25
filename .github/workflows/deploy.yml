@@ -2,6 +2,7 @@
 #
 # Runs every hour, but scripts/fetch-values.ts only calls FantasyCalc for a parameter set when
 # its last attempt is at least 3 hours old (FantasyCalc's terms). Only one run at a time.
+# No secrets are used: Pages deploys with GitHub's built-in, per-run token.
 name: Refresh values and deploy
 
 on:
@@ -10,6 +11,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: 'Test only: record a failed fetch WITHOUT contacting FantasyCalc (old values are kept)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -26,8 +32,8 @@ jobs:
     outputs:
       changed: ${{ steps.values.outputs.changed }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -36,18 +42,20 @@ jobs:
       # whose attempt time goes unpublished (which would let the next run call too early).
       - run: npm test
       - run: npm run build
+      - name: Check the build (manifest, service worker, no secrets)
+        run: npm run check:build
       - id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Download currently published values
         run: node scripts/pull-values.mjs "${{ steps.pages.outputs.base_url }}/"
         env:
           VALUES_DIR: dist/data/fantasycalc
       - name: Refresh FantasyCalc values that are due
         id: values
-        run: node scripts/fetch-values.ts --ci
+        run: node scripts/fetch-values.ts --ci ${{ inputs.simulate_failure && '--simulate-failure' || '' }}
         env:
           VALUES_DIR: dist/data/fantasycalc
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -61,4 +69,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

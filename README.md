@@ -4,6 +4,7 @@ A personal, read-only companion app for your Sleeper fantasy football leagues. I
 
 **Done so far:** league list and rosters (Stage 1), FantasyCalc player values with a match report and manual CSV import.
 **Also done:** Stage 2 (revised): Team Analyzer.
+**In progress:** Stage 3: hosting (awaiting review).
 
 ## Run it on your computer
 
@@ -27,37 +28,85 @@ You need [Node.js](https://nodejs.org/) (version 20 or newer) installed once.
 npm run dev -- --host
 ```
 
-Open the "Network" address it prints (e.g. `http://192.168.1.20:5173`) on your phone. Note that **installing** to the home screen and offline start-up need HTTPS, so that part only works after deployment (Stage 5) or on `localhost`.
+Open the "Network" address it prints (e.g. `http://192.168.1.20:5173`) on your phone. Note that **installing** to the home screen and offline start-up need HTTPS, so use the live address below for that.
 
-## Put it online (GitHub Pages + scheduled values job)
+## The live app
 
-This is what makes values update on their own and look the same on your phone and desktop. One-time setup, about 10 minutes. Everything here is free for a public repository.
+**Address:** <https://kapes10.github.io/Sleeper-Companion/> (HTTPS, hosted free on GitHub Pages from the public repository `kapes10/Sleeper-Companion`).
 
-1. **Create a GitHub account** at <https://github.com/signup> if you don't have one.
-2. **Create an empty public repository**: <https://github.com/new>, name it `sleeper-companion`, choose **Public**, and do **not** add a README or license.
-3. **Turn on Pages first**: in the new repository, open **Settings → Pages**, and under **Build and deployment → Source** choose **GitHub Actions**.
-4. **Upload the code** from a terminal in this folder (replace `YOUR-NAME`):
-   ```
-   git remote add origin https://github.com/YOUR-NAME/sleeper-companion.git
-   git push -u origin main
-   ```
-   Git will open a browser window to sign in the first time.
-5. **Watch the first run**: open the **Actions** tab. "Refresh values and deploy" runs for 2–3 minutes. When it's green, your app is at `https://YOUR-NAME.github.io/sleeper-companion/`. Open that on your phone and desktop.
+It's public: anyone with the link can open it. A `noindex` tag asks search engines not to list it. Nothing private is stored on the server.
 
-After that, the job runs **every hour on its own**. It only calls FantasyCalc for a format when the last call for that format is at least **3 hours** old, so values refresh about every 3–4 hours.
+### How deploys happen
+Every push to the `main` branch starts **Actions → "Refresh values and deploy"**, which:
+1. runs the tests;
+2. builds the app and checks the build (`npm run check:build`);
+3. refreshes FantasyCalc values that are due;
+4. publishes everything.
 
-**Things to know**
-- **Public repository:** anyone can see the code, your Sleeper username, and the stored FantasyCalc values (you approved this).
-- **GitHub pauses schedules** in public repositories after **60 days with no new commits**. GitHub emails you first. To restart, open **Actions → Refresh values and deploy → Enable workflow**.
-- **Manual run:** **Actions → Refresh values and deploy → Run workflow** redeploys right away. It still won't call FantasyCalc early.
+It takes about 1–2 minutes. Your phone gets the new version the next time you open or switch back to the app. GitHub caches files for up to 10 minutes, so allow that long after a deploy.
 
-### Seeing values when running locally
+### How to roll back
+- **Quick (temporary):**
+  1. On GitHub, open **Actions → Refresh values and deploy**.
+  2. Click the last run that was working (green tick, before the bad change).
+  3. Click **Re-run all jobs**. That redeploys the older code, still with the latest values.
+  4. Note: the next push, or the next scheduled values refresh, deploys `main` again. Do the permanent fix as well.
+- **Permanent:** in a terminal in this folder:
+  ```
+  git revert HEAD --no-edit
+  git push
+  ```
+  This adds a new commit that undoes the last one (nothing is deleted), and the push redeploys. To undo several commits, run `git log --oneline` and send the list to your assistant.
 
-`npm run dev` shows "no values" until you download the published ones (this never calls FantasyCalc):
-```
-node scripts/pull-values.mjs https://YOUR-NAME.github.io/sleeper-companion/
-```
-Don't run `scripts/fetch-values.ts` yourself; it's for the scheduled job. A second caller could break FantasyCalc's 3-hour rule.
+### Check that the values job ran
+- **In the app:** **Player values & match report** shows each format's snapshot time, and says if the latest refresh failed.
+- **On GitHub:** **Actions → Refresh values and deploy**. Scheduled runs show "schedule" as the trigger. Open a run, then the **build** job, then **Refresh FantasyCalc values that are due**, to see "updated", "skipped (less than 3 hours)" or "FAILED".
+- **Raw data:** <https://kapes10.github.io/Sleeper-Companion/data/fantasycalc/index.json> (`lastAttemptAt`, `lastAttemptOk`, `lastError` for each format).
+
+### Refresh values by hand
+**Actions → Refresh values and deploy → Run workflow → Run workflow** (green button). It only contacts FantasyCalc for formats whose last attempt was **at least 3 hours ago**, so you can't break FantasyCalc's rate limit by clicking it.
+
+**To test a failure:** tick **"Test only: record a failed fetch"** before running. The old values are kept, FantasyCalc is **not** contacted, and the app shows "The latest refresh failed". The stale-values warning appears once the kept values are more than 6 hours old. The next normal run clears the failure.
+
+### If the hourly schedule stops running
+GitHub sometimes delays or skips scheduled runs. It also pauses schedules after **60 days with no new commits**; to restart, open **Actions → Refresh values and deploy → Enable workflow**. If scheduled runs never appear, the fallback (approved, not set up yet) is a free cron-job.org timer that presses "Run workflow" hourly. Ask your assistant for the setup steps.
+
+## Install it on your phone
+
+**iPhone (Safari):**
+1. Open the address above in **Safari** (not Chrome; iPhone only installs from Safari).
+2. Tap **Share** (square with an arrow), then **Add to Home Screen**, then **Add**.
+3. Open it from the new **Companion** icon. It opens full-screen, with no address bar.
+
+**Android (Chrome):**
+1. Open the address in **Chrome**.
+2. Tap **⋮**, then **Add to Home screen** (or **Install app**), then **Install**.
+3. Open it from the new icon.
+
+### On-device checklist (tick each on your phone)
+| # | Check | iPhone | Android |
+|---|---|---|---|
+| 1 | Site opens over HTTPS (padlock) in the browser | ☐ | ☐ |
+| 2 | "Add to Home Screen" / "Install app" is offered | ☐ | ☐ |
+| 3 | Icon (green football on dark) and name "Companion" on the home screen | ☐ | ☐ |
+| 4 | Opens full-screen, no browser bars; the title isn't hidden under the clock or notch | ☐ | ☐ |
+| 5 | Enter username, see all 23 leagues | ☐ | ☐ |
+| 6 | A roster shows values; "Values from FantasyCalc.com" is visible | ☐ | ☐ |
+| 7 | Team Analyzer: open 3 leagues; each shows your team card and all teams | ☐ | ☐ |
+| 8 | Moving around: "← All leagues" / "← Team Analyzer" links work (no browser back button in full-screen); Android's back gesture also works | ☐ | ☐ |
+| 9 | Refresh buttons reload data (there's no pull-to-refresh in full-screen) | ☐ | ☐ |
+| 10 | Rotate the phone sideways: nothing is cut off by the notch | ☐ | ☐ |
+| 11 | Airplane mode, then open the app: it opens, and shows a readable "Couldn't reach Sleeper" message | ☐ | ☐ |
+| 12 | After a push (wait ~10 minutes), switch away from and back to the app: the new version loads without clearing anything | ☐ | ☐ |
+
+## Local vs hosted setup
+| | Local (`npm run dev` / `npm run preview`) | Hosted (GitHub Pages) |
+|---|---|---|
+| App address | `http://localhost:5173` / `:4173` | https://kapes10.github.io/Sleeper-Companion/ |
+| FantasyCalc values | Only after `node scripts/pull-values.mjs https://kapes10.github.io/Sleeper-Companion/` (downloads the published copy; never calls FantasyCalc). Saved in `public/data/`, which git ignores | Written by the scheduled job into the deployed site |
+| Values job | Refuses to run (`scripts/fetch-values.ts` needs `--ci`), so you can't become a second FantasyCalc caller | Runs in GitHub Actions (`--ci`) |
+| Settings | `valuations.config.json` (your public Sleeper user ID) and `VALUES_DIR` (where values are written; set by the workflow) | Same files, no extra settings |
+| Secrets | None needed | None. Deploys use GitHub's built-in token. If the cron-job.org fallback is ever added, its key lives only in cron-job.org |
 
 ## Check that everything works
 
@@ -68,6 +117,7 @@ Don't run `scripts/fetch-values.ts` yourself; it's for the scheduled job. A seco
 | `npm run typecheck` | Checks the code for type mistakes. |
 | `npm run build` | Builds the installable app into the `dist/` folder. |
 | `npm run preview` | Serves the built app locally so you can test the installable version. |
+| `npm run check:build` | After a build: checks the app manifest, icons, service worker, the noindex and FantasyCalc tags, and that no keys or personal emails are in the files to be published. |
 
 ## Where your data lives
 

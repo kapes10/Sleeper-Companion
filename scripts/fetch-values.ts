@@ -1,6 +1,9 @@
 // Scheduled FantasyCalc job. Run by GitHub Actions (see .github/workflows/deploy.yml):
 //
-//   node scripts/fetch-values.ts --ci
+//   node scripts/fetch-values.ts --ci [--simulate-failure]
+//
+// --simulate-failure records a failed attempt without contacting FantasyCalc (to test that the
+// previous snapshot is kept and the app shows the failure / stale warnings).
 //
 // 1. Reads the owner's current Sleeper leagues and works out which FantasyCalc parameter sets they need.
 // 2. For each set whose last attempt is ≥ 3 hours old, calls GET /values/current once.
@@ -52,7 +55,10 @@ console.log(`${leagues.length} leagues for ${season}; ${unsupported} can't be ma
 const indexPath = join(DATA_DIR, 'index.json');
 const previous: ValuesIndex = existsSync(indexPath) ? JSON.parse(readFileSync(indexPath, 'utf8')) : emptyIndex();
 
+const simulateFailure = args.includes('--simulate-failure');
+if (simulateFailure) console.log('SIMULATED FAILURE run: FantasyCalc will not be contacted.');
 const result = await runRefresh(previous, needed, {
+  simulateFailure,
   now: Date.now,
   get: async (url) => {
     const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });

@@ -28,3 +28,11 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 - **Co-owners:** keep the existing handling. A roster you own or co-own is "your team"; if you appear on more than one roster in a league, no team is treated as yours and the app says so.
 - **Pick values (display only):** a team's future picks use FantasyCalc's plain per-round value (e.g. "2027 1st"), not Early/Mid/Late. Picks FantasyCalc doesn't list show no value.
 - CLAUDE.md config lines (username, league formats) restored after a template update reset them to placeholders.
+
+## 2026-10-25: Stage 3 (hosting) decisions
+- **Hosting:** stay on GitHub Pages + GitHub Actions (free, HTTPS, deploys from `main`). The scheduled values job stays in the same workflow. If GitHub's hourly schedule still hasn't fired after ~24 hours, add a free cron-job.org timer that triggers the workflow (its GitHub key lives only in cron-job.org).
+- **Phone caching (service worker), approved:** app files precached; a new version activates immediately and the app reloads onto it; update checks on every return to the foreground and hourly. Sleeper data is never cached by the service worker. The FantasyCalc index is network-first (offline: last copy); snapshot files are time-stamped and never change. Staleness is always judged from the snapshot's own fetch time.
+- **Access:** public, with a `noindex` tag.
+- **Commit email:** commits use GitHub's private address (129905720+kapes10@users.noreply.github.com). The 7 earlier commits were rewritten to remove the personal email; the owner approved replacing the public history.
+- **League names in docs:** fine to keep; don't change them.
+- **Failure test:** a manual-run checkbox records a simulated failed fetch without contacting FantasyCalc and without using up the 3-hour allowance.
