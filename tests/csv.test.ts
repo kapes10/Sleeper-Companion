@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { buildCsvRows, guessMapping } from '../src/valuations/csv/import';
 import { parseCsv } from '../src/valuations/csv/parse';
-import { loadCsvLibrary, saveCsvSet, type CsvSet } from '../src/valuations/csv/store';
+import { describeCsvFormat, loadCsvLibrary, saveCsvSet, type CsvSet } from '../src/valuations/csv/store';
+import type { FcParams } from '../src/valuations/fantasycalc/params';
 import { memoryStore } from '../src/storage/idb';
 
 const sample = readFileSync('tests/fixtures/csv/synthetic-sample.csv', 'utf8');
@@ -110,27 +111,42 @@ describe('CSV rows and validation', () => {
 });
 
 describe('CSV set storage', () => {
-  const set = (id: string, isDynasty = true, numQbs: 1 | 2 = 2): CsvSet => ({
+  const P: FcParams = { isDynasty: true, numQbs: 2, numTeams: 12, ppr: 1, tep: 'te+' };
+  /** `null` = a set imported before scoring was recorded. */
+  const set = (id: string, recorded: FcParams | null = P): CsvSet => ({
     id,
     name: id,
     source: 'test',
     exportDate: '2026-10-20',
     importedAt: '2026-10-21T00:00:00Z',
-    isDynasty,
-    numQbs,
+    isDynasty: recorded?.isDynasty ?? true,
+    numQbs: recorded?.numQbs ?? 2,
+    params: recorded ?? undefined,
     rows: [],
     skippedRows: 0,
   });
 
-  it('keeps latest and previous per format, and never mixes formats', async () => {
+  it('keeps latest and previous per full format, and never mixes formats', async () => {
     const store = memoryStore();
     await saveCsvSet(store, set('a'));
     await saveCsvSet(store, set('b'));
     await saveCsvSet(store, set('c'));
-    await saveCsvSet(store, set('r', false, 1));
+    await saveCsvSet(store, set('half', { ...P, ppr: 0.5 }));
+    await saveCsvSet(store, set('r', { ...P, isDynasty: false, numQbs: 1 }));
+    await saveCsvSet(store, set('legacy', null));
     const lib = await loadCsvLibrary(store);
-    expect(lib['dynasty-2qb']).toMatchObject({ latest: { id: 'c' }, previous: { id: 'b' } });
-    expect(lib['redraft-1qb']).toMatchObject({ latest: { id: 'r' }, previous: null });
-    expect(Object.keys(lib).sort()).toEqual(['dynasty-2qb', 'redraft-1qb']);
+    expect(lib['dynasty-2qb-12tm-ppr1-teplus']).toMatchObject({ latest: { id: 'c' }, previous: { id: 'b' } });
+    expect(lib['dynasty-2qb-12tm-ppr0.5-teplus']).toMatchObject({ latest: { id: 'half' }, previous: null });
+    expect(Object.keys(lib).sort()).toEqual([
+      'dynasty-2qb',
+      'dynasty-2qb-12tm-ppr0.5-teplus',
+      'dynasty-2qb-12tm-ppr1-teplus',
+      'redraft-1qb-12tm-ppr1-teplus',
+    ]);
+  });
+
+  it('describes formats, flagging sets without recorded scoring', () => {
+    expect(describeCsvFormat(set('a'))).toBe('Dynasty · Superflex/2QB · 12 teams · PPR 1 · TE+');
+    expect(describeCsvFormat(set('legacy', null))).toBe('Dynasty · Superflex/2QB · scoring not recorded');
   });
 });

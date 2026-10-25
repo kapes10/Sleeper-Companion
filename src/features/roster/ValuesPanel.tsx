@@ -7,14 +7,16 @@ import type { PlayerIndex } from '../../domain/players';
 import { useServices } from '../../services';
 import { describeCsvFormat, loadCsvLibrary, type CsvSet } from '../../valuations/csv/store';
 import { describeParams } from '../../valuations/fantasycalc/params';
-import { selectCsvSet, selectFcSet, type FcSelection } from '../../valuations/leagueValues';
+import { selectCsvSet, selectFcSet, type CsvSelection, type FcSelection } from '../../valuations/leagueValues';
 import { matchValues, type PlayerValue } from '../../valuations/match';
 import { fcFreshness, formatAge } from '../../valuations/staleness';
 
 interface Loaded {
   fc: FcSelection;
   fcValues: Map<string, PlayerValue> | null;
+  /** Only set when a CSV set matches this league's full format. */
   csv: CsvSet | null;
+  csvSelection: CsvSelection;
   csvValues: Map<string, PlayerValue> | null;
 }
 
@@ -29,9 +31,10 @@ export function useLeagueValues(league: SleeperLeague | undefined, players: Play
       const [{ data: index }, library] = await Promise.all([services.fcIndex(force), loadCsvLibrary(services.store).catch(() => ({}))]);
       const fc = selectFcSet(league!, index);
       const fcValues = fc.kind === 'available' ? matchValues((await services.fcSnapshot(fc.state.latest!)).rows, players!).bySleeperId : null;
-      const csv = selectCsvSet(league!, library);
+      const csvSelection = selectCsvSet(league!, library);
+      const csv = csvSelection.kind === 'match' ? csvSelection.set : null;
       const csvValues = csv ? matchValues(csv.rows, players!).bySleeperId : null;
-      return { fc, fcValues, csv, csvValues };
+      return { fc, fcValues, csv, csvSelection, csvValues };
     },
     [services, league, players],
   );
@@ -56,7 +59,7 @@ export function ValuesPanel({
   const services = useServices();
   if (state.status === 'loading' && !state.data) return <Loading label="Loading player values…" />;
   if (state.status === 'error' && !state.data) return <ErrorMessage error={state.error} title="Couldn't load player values" onRetry={reload} />;
-  const { fc, fcValues, csv, csvValues } = state.data!;
+  const { fc, fcValues, csv, csvSelection, csvValues } = state.data!;
   const active = source === 'csv' && csv ? csvValues : fcValues;
   const withValue = active ? rosterIds.filter((id) => active.has(id)).length : 0;
 
@@ -81,7 +84,7 @@ export function ValuesPanel({
       {source === 'csv' && csv ? (
         <>
           <p className="text-sm text-slate-200">
-            Using <strong>manual CSV</strong> “{csv.name}” · {describeCsvFormat(csv.isDynasty, csv.numQbs)}
+            Using <strong>manual CSV</strong> “{csv.name}” · {describeCsvFormat(csv)}
           </p>
           <p className="text-xs text-slate-400">
             Source: {csv.source} · exported {csv.exportDate} · imported {formatTime(Date.parse(csv.importedAt))} · stored on this device only
@@ -91,12 +94,32 @@ export function ValuesPanel({
         <FcDetails fc={fc} now={services.now()} />
       )}
 
+      {csvSelection.kind === 'mismatch' && <CsvMismatch others={csvSelection.others} />}
+
       {active && (
         <p className="text-xs text-slate-400">
           {withValue} of {rosterIds.length} players on this roster have a value. Scale: 100 = highest-valued player in the set.
         </p>
       )}
     </section>
+  );
+}
+
+function CsvMismatch({ others }: { others: CsvSet[] }) {
+  return (
+    <details className="text-xs text-slate-400">
+      <summary className="cursor-pointer py-1 text-slate-300">
+        {others.length} manual CSV set{others.length === 1 ? '' : 's'} not used here (different format)
+      </summary>
+      <ul className="mt-1 list-disc space-y-1 pl-5">
+        {others.map((o) => (
+          <li key={o.id}>
+            “{o.name}” ({describeCsvFormat(o)}){' '}
+            {o.params ? "doesn't match this league's settings." : 'was imported before scoring details were recorded. Re-import it to use it.'}
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 

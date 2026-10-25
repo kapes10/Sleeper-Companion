@@ -3,7 +3,7 @@
 ## Status (2026-10-25)
 
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
-- **Stage 2** (FantasyCalc values): built, pushed and **live at https://kapes10.github.io/Sleeper-Companion/**, awaiting owner review.
+- **Stage 2** (FantasyCalc values): review fixes done 2026-10-25, owner moving on to Stage 3; **live at https://kapes10.github.io/Sleeper-Companion/**.
 
 ### Stage 2: verified live on 2026-10-25
 Production build in headless Edge at phone width, with real Sleeper data and two real FantasyCalc snapshots:
@@ -36,9 +36,14 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - GitHub may run scheduled jobs late, and pauses schedules after 60 days without commits.
 - CSV sets are stored on one device only.
 
+## Resolved in the Stage 2 review (2026-10-25)
+- CSV 0–100 scale approved.
+- Trade calculator dropped from Stage 3 for now.
+- AGENTS.md rewritten to mirror CLAUDE.md (keep them identical).
+- CSV scoring compatibility fixed: imports now record teams, PPR and TE premium tier, and a CSV set is only used when all five format settings match the league. A set saved before this fix has no scoring recorded and is never used; the roster says so and asks for a re-import.
+
 ## Open questions for the owner
-1. **0–100 scale for CSV sets:** I applied the approved FantasyCalc formula, with the top taken from the CSV set. Confirm, or choose something else (TRADE_LOGIC.md).
-2. **FantasyCalc's trade-calculator restriction:** decide before Stage 3 (DECISIONS.md).
+1. **Stage 3:** owner to describe the feature replacing the trade calculator.
 
 ## Next step
-Owner reviews Stage 2 on phone and desktop at https://kapes10.github.io/Sleeper-Companion/.
+Plan Stage 3 once the owner describes it.

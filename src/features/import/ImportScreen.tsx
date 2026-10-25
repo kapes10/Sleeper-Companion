@@ -6,6 +6,7 @@ import { useServices } from '../../services';
 import { buildCsvRows, CSV_FIELDS, guessMapping, type ColumnMapping, type CsvField } from '../../valuations/csv/import';
 import { parseCsv } from '../../valuations/csv/parse';
 import { saveCsvSet } from '../../valuations/csv/store';
+import type { FcParams } from '../../valuations/fantasycalc/params';
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const PREVIEW_ROWS = 10;
@@ -17,7 +18,7 @@ export function ImportScreen() {
   const [file, setFile] = useState<FileState>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [mapping, setMapping] = useState<ColumnMapping>({});
-  const [meta, setMeta] = useState({ name: '', source: '', exportDate: '', format: '', qb: '' });
+  const [meta, setMeta] = useState({ name: '', source: '', exportDate: '', format: '', qb: '', teams: '', ppr: '', tep: '' });
   const [acceptSkips, setAcceptSkips] = useState(false);
   const [saved, setSaved] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -46,6 +47,9 @@ export function ImportScreen() {
     meta.exportDate > today && "The export date can't be in the future.",
     !meta.format && 'Choose dynasty or redraft.',
     !meta.qb && 'Choose 1QB or superflex.',
+    !meta.teams && 'Choose the number of teams the values assume.',
+    !meta.ppr && 'Choose the points per reception the values assume.',
+    !meta.tep && 'Choose the TE premium the values assume.',
   ].filter((x): x is string => !!x);
   const blocking = [...(built?.blocking ?? []), ...metaErrors];
   const needsSkipConsent = !!built && built.invalidCount > 0;
@@ -56,6 +60,13 @@ export function ImportScreen() {
     setSaveError(null);
     const isDynasty = meta.format === 'dynasty';
     const numQbs = meta.qb === '2' ? 2 : 1;
+    const params: FcParams = {
+      isDynasty,
+      numQbs,
+      numTeams: Number(meta.teams) as FcParams['numTeams'],
+      ppr: Number(meta.ppr) as FcParams['ppr'],
+      tep: meta.tep as FcParams['tep'],
+    };
     try {
       await saveCsvSet(services.store, {
         id: `${Date.now()}`,
@@ -65,6 +76,7 @@ export function ImportScreen() {
         importedAt: new Date(services.now()).toISOString(),
         isDynasty,
         numQbs,
+        params,
         rows: built.results.flatMap((r) => (r.row ? [r.row] : [])),
         skippedRows: built.invalidCount,
       });
@@ -157,6 +169,38 @@ export function ImportScreen() {
                   <option value="2">Superflex / 2QB</option>
                 </select>
               </label>
+              <label className="block text-sm text-slate-300">
+                Teams
+                <select className={select} value={meta.teams} onChange={(e) => setMeta({ ...meta, teams: e.target.value })}>
+                  <option value="">Choose…</option>
+                  {['8', '10', '12', '14'].map((n) => (
+                    <option key={n} value={n}>
+                      {n} teams
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm text-slate-300">
+                Points per reception
+                <select className={select} value={meta.ppr} onChange={(e) => setMeta({ ...meta, ppr: e.target.value })}>
+                  <option value="">Choose…</option>
+                  <option value="1">Full PPR (1)</option>
+                  <option value="0.5">Half PPR (0.5)</option>
+                  <option value="0">Standard (0)</option>
+                </select>
+              </label>
+              <label className="block text-sm text-slate-300">
+                TE premium
+                <select className={select} value={meta.tep} onChange={(e) => setMeta({ ...meta, tep: e.target.value })}>
+                  <option value="">Choose…</option>
+                  <option value="none">None (+0.25 per TE catch or less)</option>
+                  <option value="te+">TE+ (+0.5 to +1.0 per TE catch)</option>
+                  <option value="te++">TE++ (more than +1.0, or 2+ TE starters)</option>
+                </select>
+              </label>
+              <p className="text-xs text-slate-500 sm:col-span-2">
+                These say what scoring the values were built for. The set is only used in leagues whose settings match all of them.
+              </p>
             </fieldset>
 
             <section aria-label="Preview" className="rounded-xl bg-slate-900 p-4">

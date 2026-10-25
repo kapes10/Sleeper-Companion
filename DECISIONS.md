@@ -11,4 +11,8 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 - **League mapping:** all 23 leagues map to FantasyCalc parameters (22 → dynasty / 2 QB / 12 teams / PPR 1 / te+; Game On Dynasty → same with 10 teams). Settings FantasyCalc can't express are **accepted with visible notes**: TE premium +0.5 and +1.0 both use `te+`; best ball; passing-TD points; yardage/first-down bonuses; lineup sizes.
 - **0–100 scale:** approved (see TRADE_LOGIC.md).
 - **CLAUDE.md config:** all 23 leagues in scope; priority test league is The Dynasty Collective.
-- **FantasyCalc terms on trade calculators** (data may not be used to "replicate or create a substitute for our trade calculator"): owner will decide whether to email FantasyCalc **before Stage 3**. Until then, FantasyCalc values are display-only.
+- **FantasyCalc terms on trade calculators** (data may not be used to "replicate or create a substitute for our trade calculator"): see 2026-10-25 Stage 2 review below.
+
+## 2026-10-25: Stage 2 review
+- **CSV 0–100 scale approved:** manual CSV sets use the same formula as FantasyCalc, with the top value taken from that CSV set.
+- **No trade calculator for now:** the Trade Evaluator is removed from the planned Stage 3 and will be replaced by another feature (to be defined). FantasyCalc values stay display-only.

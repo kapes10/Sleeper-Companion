@@ -29,4 +29,4 @@ Examples (dynasty / 2 QB / 12 teams / PPR 1 / te+, 2026-10-25):
 | CJ Donaldson | 225 | 2 |
 | Foster Moreau | 3 | <1 |
 
-**Pending owner approval:** manual CSV sets use the same formula, with the top value taken from that CSV set. (Implemented in Stage 2 so CSV values can display; confirm or change at Stage 2 review.)
+**Manual CSV sets (approved 2026-10-25):** same formula, with the top value taken from that CSV set.

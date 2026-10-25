@@ -7,7 +7,8 @@ import { selectCsvSet, selectFcSet } from '../src/valuations/leagueValues';
 import { countByReason, matchValues, type ValueRow } from '../src/valuations/match';
 import { formatScaled, scaleValue, topValue } from '../src/valuations/scale';
 import { fcFreshness, FC_STALE_AFTER_MS } from '../src/valuations/staleness';
-import type { CsvSet } from '../src/valuations/csv/store';
+import { csvFormatKey, type CsvLibrary, type CsvSet } from '../src/valuations/csv/store';
+import type { FcParams } from '../src/valuations/fantasycalc/params';
 import { clone, fx } from './helpers';
 
 const players = toPlayerIndex(fx.players);
@@ -94,11 +95,52 @@ describe('choosing the value set for a league', () => {
     expect(selectFcSet(odd, emptyIndex())).toMatchObject({ kind: 'unsupported' });
   });
 
-  it('chooses a CSV set by dynasty/redraft and QB count, never a mismatched one', () => {
-    const csv = (isDynasty: boolean, numQbs: 1 | 2): CsvSet => ({ id: 'x', name: 'n', source: 's', exportDate: '2026-10-20', importedAt: '2026-10-21T00:00:00Z', isDynasty, numQbs, rows: [], skippedRows: 0 });
-    expect(selectCsvSet(fx.league02, { 'dynasty-2qb': { latest: csv(true, 2), previous: null } })).not.toBeNull();
-    expect(selectCsvSet(fx.league02, { 'dynasty-1qb': { latest: csv(true, 1), previous: null } })).toBeNull();
-    expect(selectCsvSet(fx.league02, { 'redraft-2qb': { latest: csv(false, 2), previous: null } })).toBeNull();
+  describe('CSV set selection requires all five format settings to match', () => {
+    const P: FcParams = { isDynasty: true, numQbs: 2, numTeams: 12, ppr: 1, tep: 'te+' };
+    const csv = (params: FcParams | undefined, id = 'x'): CsvSet => ({
+      id,
+      name: id,
+      source: 's',
+      exportDate: '2026-10-20',
+      importedAt: '2026-10-21T00:00:00Z',
+      isDynasty: params?.isDynasty ?? true,
+      numQbs: params?.numQbs ?? 2,
+      params,
+      rows: [],
+      skippedRows: 0,
+    });
+    const lib = (...sets: CsvSet[]): CsvLibrary => Object.fromEntries(sets.map((s) => [csvFormatKey(s), { latest: s, previous: null }]));
+
+    it('uses a set built for exactly this format', () => {
+      expect(selectCsvSet(fx.league02, lib(csv(P, 'exact')))).toMatchObject({ kind: 'match', set: { id: 'exact' } });
+    });
+
+    it.each([
+      ['redraft', { isDynasty: false }],
+      ['1QB', { numQbs: 1 }],
+      ['10 teams', { numTeams: 10 }],
+      ['half PPR', { ppr: 0.5 }],
+      ['no TE premium', { tep: 'none' }],
+      ['TE++', { tep: 'te++' }],
+    ] as const)('does not use a set built for %s, and says one exists', (_, change) => {
+      const other = csv({ ...P, ...change } as FcParams, 'other');
+      expect(selectCsvSet(fx.league02, lib(other))).toEqual({ kind: 'mismatch', others: [other] });
+    });
+
+    it('never uses an older set whose scoring was not recorded', () => {
+      const legacy = csv(undefined, 'legacy');
+      expect(csvFormatKey(legacy)).toBe('dynasty-2qb');
+      expect(selectCsvSet(fx.league02, lib(legacy))).toEqual({ kind: 'mismatch', others: [legacy] });
+    });
+
+    it('picks the matching set when several formats are stored', () => {
+      const r = selectCsvSet(fx.league02, lib(csv({ ...P, ppr: 0.5 }, 'half'), csv(P, 'exact'), csv(undefined, 'legacy')));
+      expect(r).toMatchObject({ kind: 'match', set: { id: 'exact' } });
+    });
+
+    it('reports none when nothing is stored', () => {
+      expect(selectCsvSet(fx.league02, {})).toEqual({ kind: 'none' });
+    });
   });
 
   it('flags values older than 6 hours as stale, and a failed last attempt', () => {

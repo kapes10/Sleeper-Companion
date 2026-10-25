@@ -102,7 +102,7 @@ export function ValuesScreen({ account }: { account: SavedAccount }) {
             {data.csvSets.map(({ csv, match }) => (
               <article key={csv.id} className="space-y-2 rounded-xl bg-slate-900 p-4" aria-label={`CSV ${csv.name}`}>
                 <h3 className="font-medium text-slate-50">
-                  {csv.name} <span className="text-sm font-normal text-slate-400">· {describeCsvFormat(csv.isDynasty, csv.numQbs)}</span>
+                  {csv.name} <span className="text-sm font-normal text-slate-400">· {describeCsvFormat(csv)}</span>
                 </h3>
                 <p className="text-xs text-slate-400">
                   Source: {csv.source} · exported {csv.exportDate} · imported {formatTime(Date.parse(csv.importedAt))} · {csv.skippedRows} row(s) skipped at import

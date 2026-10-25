@@ -5,6 +5,7 @@ import { App } from '../src/App';
 import { createServices, ServicesProvider } from '../src/services';
 import { memoryStore, type KeyValueStore } from '../src/storage/idb';
 import { saveAccount } from '../src/storage/prefs';
+import { saveCsvSet } from '../src/valuations/csv/store';
 import { FC_12, fixtureFetch, LEAGUE_02_ID, OWNER_ID, publishedValues, valuesFetch } from './helpers';
 
 const HOUR = 3_600_000;
@@ -129,6 +130,10 @@ describe('manual CSV import', () => {
     fireEvent.change(screen.getByLabelText('Export date'), { target: { value: '2026-10-20' } });
     fireEvent.change(screen.getByLabelText('Format'), { target: { value: 'dynasty' } });
     fireEvent.change(screen.getByLabelText('QB setting'), { target: { value: '2' } });
+    expect(save).toBeDisabled(); // scoring assumptions are required too
+    fireEvent.change(screen.getByLabelText('Teams'), { target: { value: '12' } });
+    fireEvent.change(screen.getByLabelText('Points per reception'), { target: { value: '1' } });
+    fireEvent.change(screen.getByLabelText('TE premium'), { target: { value: 'te+' } });
     expect(save).toBeEnabled();
     fireEvent.click(save);
     expect(await screen.findByText(/Saved “my-values” with 5 values/)).toBeInTheDocument();
@@ -138,10 +143,31 @@ describe('manual CSV import', () => {
     await waitFor(() => expect(valueOf('Brock Purdy')).toBe('596,309')); // FantasyCalc by default
     fireEvent.click(await screen.findByRole('button', { name: 'Manual CSV' }));
     const panel = screen.getByRole('region', { name: 'Player values' });
-    expect(panel).toHaveTextContent('Using manual CSV “my-values” · Dynasty · Superflex/2QB');
+    expect(panel).toHaveTextContent('Using manual CSV “my-values” · Dynasty · Superflex/2QB · 12 teams · PPR 1 · TE+');
     expect(panel).toHaveTextContent('Source: Test spreadsheet · exported 2026-10-20');
     expect(valueOf('Brock Purdy')).toBe('726,500'); // 6,500 ÷ 9,000 top → 72
     expect(valueOf('Tee Higgins')).toBe('no value');
+  });
+
+  it('does not use a CSV set built for different scoring, and says why', async () => {
+    const store = memoryStore();
+    await saveCsvSet(store, {
+      id: 'half',
+      name: 'Half PPR values',
+      source: 'x',
+      exportDate: '2026-10-20',
+      importedAt: '2026-10-21T00:00:00Z',
+      isDynasty: true,
+      numQbs: 2,
+      params: { ...FC_12, ppr: 0.5 },
+      rows: [{ sleeperId: '8183', name: 'Brock Purdy', position: 'QB', team: 'SF', value: 100 }],
+      skippedRows: 0,
+    });
+    renderApp({ values: await publishedValues(), store, hash: `#/league/${LEAGUE_02_ID}` });
+    await waitFor(() => expect(valueOf('Brock Purdy')).toBe('596,309')); // still FantasyCalc
+    expect(screen.queryByRole('button', { name: 'Manual CSV' })).not.toBeInTheDocument();
+    expect(screen.getByText('1 manual CSV set not used here (different format)')).toBeInTheDocument();
+    expect(screen.getByText(/“Half PPR values” \(Dynasty · Superflex\/2QB · 12 teams · PPR 0\.5 · TE\+\) doesn't match this league's settings/)).toBeInTheDocument();
   });
 
   it('requires consent before skipping problem rows', async () => {
@@ -152,6 +178,9 @@ describe('manual CSV import', () => {
     fireEvent.change(screen.getByLabelText('Export date'), { target: { value: '2026-10-20' } });
     fireEvent.change(screen.getByLabelText('Format'), { target: { value: 'dynasty' } });
     fireEvent.change(screen.getByLabelText('QB setting'), { target: { value: '2' } });
+    fireEvent.change(screen.getByLabelText('Teams'), { target: { value: '12' } });
+    fireEvent.change(screen.getByLabelText('Points per reception'), { target: { value: '1' } });
+    fireEvent.change(screen.getByLabelText('TE premium'), { target: { value: 'te+' } });
     const save = screen.getByRole('button', { name: 'Save set' });
     expect(save).toBeDisabled();
     fireEvent.click(screen.getByLabelText(/Import the 1 usable rows and skip the 1 row/));
