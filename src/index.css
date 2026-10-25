@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  @apply min-h-dvh bg-slate-950 font-sans text-slate-100 antialiased;
+  -webkit-tap-highlight-color: transparent;
+}

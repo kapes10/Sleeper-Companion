@@ -1,0 +1,10 @@
+node_modules
+dist
+dev-dist
+coverage
+*.local
+.env*
+.DS_Store
+# Raw, unredacted API captures must never be committed
+fixtures-raw/
+*.tsbuildinfo
