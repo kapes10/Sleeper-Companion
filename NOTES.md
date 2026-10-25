@@ -5,7 +5,8 @@
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
 - **FantasyCalc valuation import** (previously called Stage 2): complete and approved 2026-10-25; **live at https://kapes10.github.io/Sleeper-Companion/**.
 - **Stage 2 (revised): Team Analyzer**: approved 2026-10-25 and deployed.
-- **Stage 3: hosting**: built and committed locally, **awaiting the owner's force-push** of the rewritten history (blocked for the assistant as a destructive action), then on-device checks.
+- **Stage 3: hosting**: deployed 2026-10-25; rewritten history pushed (no personal email in commits). **Awaiting the owner's on-device checklist.**
+  - Live failure test (19:38 UTC): simulated failure recorded for both formats, snapshots kept, no FantasyCalc request; the match report shows it. A later skipped run kept it, as designed. It clears at the first due refresh after about 22:06 UTC.
 
 ### Team Analyzer: verified 2026-10-25 (week 7)
 - `npm run test:live` ran the analyzer on all 23 real leagues: every team placed exactly once, no errors.
@@ -63,4 +64,4 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 2. **On-device checklist** (README) on iPhone and Android: owner to confirm.
 
 ## Next step
-Owner force-pushes (command in the Stage 3 summary), then runs the on-device checklist.
+Owner runs the README on-device checklist on iPhone/Android and reports results.
