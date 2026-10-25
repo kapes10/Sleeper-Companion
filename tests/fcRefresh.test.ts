@@ -180,7 +180,14 @@ describe('simulated failure (test switch)', () => {
     const after = r.index.sets['dynasty-2qb-12tm-ppr1-teplus']!;
     expect(after).toMatchObject({ latest: before.latest, previous: before.previous, lastAttemptAt: before.lastAttemptAt, lastAttemptOk: false, lastError: SIMULATED_FAILURE_ERROR });
 
-    // The next real run still waits for the full 3 hours from the last REAL attempt, then succeeds.
+    // A run before a refresh is due skips the format, so the simulated failure stays recorded.
+    const early = deps();
+    early.advance(2 * HOUR);
+    const skipped = await runRefresh(r.index, [P12], early.d);
+    expect(early.get).not.toHaveBeenCalled();
+    expect(skipped.index.sets['dynasty-2qb-12tm-ppr1-teplus']).toMatchObject({ lastAttemptOk: false, lastError: SIMULATED_FAILURE_ERROR });
+
+    // It clears only when a due refresh succeeds (3 hours after the last REAL attempt).
     const real = deps();
     real.advance(3 * HOUR);
     const next = await runRefresh(r.index, [P12], real.d);

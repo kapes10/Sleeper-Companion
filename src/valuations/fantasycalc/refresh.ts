@@ -67,7 +67,8 @@ export interface RefreshDeps {
   /**
    * Test switch: record a failed attempt for every needed set WITHOUT contacting FantasyCalc.
    * Snapshots are kept, and the attempt time is left unchanged so it doesn't use up the
-   * 3-hour allowance (no request was made).
+   * 3-hour allowance (no request was made). The failure stays recorded until the next
+   * successful refresh, which only happens once a refresh is due; runs before then skip.
    */
   simulateFailure?: boolean;
 }
