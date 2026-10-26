@@ -39,4 +39,4 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 
 ## 2026-10-26: Stage 3 (hosting) approved
 - The owner tested the hosted app on phone and computer and approved Stage 3.
-- GitHub's schedule ran only 5 times in its first ~21 hours, so the approved fallback (Option B: cron-job.org triggers the workflow hourly) is now needed. Pending the owner's account setup.
+- GitHub's schedule ran only 5 times in its first ~21 hours. The owner accepts values sometimes being a few hours stale (the warning shows), so the cron-job.org fallback (Option B) is **deferred** as a possible future update.

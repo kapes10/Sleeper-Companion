@@ -61,8 +61,10 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - CSV scoring compatibility fixed: imports now record teams, PPR and TE premium tier, and a CSV set is only used when all five format settings match the league. A set saved before this fix has no scoring recorded and is never used; the roster says so and asks for a re-import.
 
 ## Open questions for the owner
-1. **Hourly schedule is unreliable:** in the first ~21 hours, GitHub ran the scheduled job only 5 times (2026-10-25 19:05, 21:50; 2026-10-26 00:25, 06:19, 14:20 UTC). All succeeded, but an 8-hour gap left values stale for about 2 hours. Per the approved plan ("A, then B if needed"), set up the cron-job.org timer (Option B). It needs the owner to create a GitHub fine-grained key and a cron-job.org account (steps in the Stage 3 hosting proposal).
-2. **Next stage:** owner to describe it.
+1. **Next stage:** owner to describe it.
+
+## Possible future updates (not planned)
+- **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Set up the cron-job.org timer (Option B) with the owner, then plan the next stage.
+Owner describes the next stage.
