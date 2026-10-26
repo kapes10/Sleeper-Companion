@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { App } from '../src/App';
 import { createServices, ServicesProvider } from '../src/services';
 import { memoryStore } from '../src/storage/idb';
 import { saveAccount } from '../src/storage/prefs';
-import { AZ_OWNER, azLeague, azPlayersRaw, azState, type Letter } from './analyzerHelpers';
+import { AZ_OWNER, azFcText, azLeague, azPlayersRaw, azState, type Letter } from './analyzerHelpers';
+import { emptyIndex, runRefresh } from '../src/valuations/fantasycalc/refresh';
 import { json, publishedValues, valuesFetch } from './helpers';
 
 const LETTERS: Letter[] = ['A', 'B', 'C', 'D'];
@@ -125,5 +126,72 @@ describe('Team Analyzer screens', () => {
     const alert = await screen.findByRole('alert');
     expect(alert).toHaveTextContent("Couldn't analyze this league");
     expect(alert).toHaveTextContent("Couldn't reach Sleeper. Check your internet connection and try again.");
+  });
+});
+
+// ---------- Stage 4: positional market value (real FantasyCalc values published 2026-10-26) ----------
+async function azPublished(formats: (10 | 12)[] = [12, 10]) {
+  const r = await runRefresh(
+    emptyIndex(),
+    formats.map((numTeams) => ({ isDynasty: true, numQbs: 2 as const, numTeams, ppr: 1 as const, tep: 'te+' as const })),
+    {
+      now: () => Date.parse('2026-10-26T14:20:35.021Z'),
+      get: async (url) => ({ status: 200, text: azFcText(url.includes('numTeams=10') ? 'dynasty-2qb-10tm-ppr1-teplus' : 'dynasty-2qb-12tm-ppr1-teplus') }),
+      sha256: async () => 'test',
+    },
+  );
+  const files: Record<string, string> = { 'index.json': JSON.stringify(r.index) };
+  for (const w of r.writes) files[w.path] = w.content;
+  return files;
+}
+const NOTE = /Market value, not projected production\./;
+
+describe('positional market value screens', () => {
+  it('shows the overview, market-value reasons and "what to look for", each with the market-value note', async () => {
+    renderApp(`#/analyzer/${leagueId('A')}`, { values: await azPublished(), now: Date.parse('2026-10-26T15:00:00Z') });
+    const overview = await screen.findByRole('region', { name: 'Positional market value overview' });
+    expect(overview).toHaveTextContent(NOTE);
+    expect(within(overview).getAllByRole('row')).toHaveLength(5); // header + QB/RB/WR/TE
+    expect(within(overview).getByRole('link', { name: 'FantasyCalc.com' })).toBeInTheDocument();
+
+    // Every tier card gets a market-value line; existing reasons are untouched.
+    await waitFor(() => expect(screen.getAllByText(/^Market value: /)).toHaveLength(12));
+    const card = screen.getByRole('region', { name: 'Your team' });
+    expect(card).toHaveTextContent('4-2, 4th in points, 1 game clear of the cutoff.');
+    expect(card).toHaveTextContent('Not enough data for a confident recommendation. Leaning: Buy.');
+    const look = within(card).getByLabelText('What to look for');
+    expect(look).toHaveTextContent(NOTE);
+    expect(look).toHaveTextContent(/No position stands out|Top needs|Top surpluses/);
+  });
+
+  it("opens a team profile with both lineups, value by position and data coverage", async () => {
+    renderApp(`#/analyzer/${leagueId('A')}`, { values: await azPublished(), now: Date.parse('2026-10-26T15:00:00Z') });
+    const card = await screen.findByRole('region', { name: 'Your team' });
+    const toggle = await within(card).findByRole('button', { name: /Team profile \(market value\)/ });
+    fireEvent.click(toggle);
+    const profile = within(card).getByLabelText('Profile your team');
+    expect(profile).toHaveTextContent(NOTE);
+    expect(profile).toHaveTextContent("Sleeper's current starters");
+    expect(profile).toHaveTextContent('Exactly as stored in Sleeper.');
+    expect(profile).toHaveTextContent('Market-value lineup (estimate)');
+    expect(profile).toHaveTextContent('Not a weekly lineup recommendation.');
+    expect(profile).toHaveTextContent(/of \d+ rostered players have no FantasyCalc value\. They're left out of totals, not counted as zero\./);
+    const table = within(profile).getByRole('table', { name: 'Value by position' });
+    expect(within(table).getAllByRole('row')).toHaveLength(5);
+    expect(table).toHaveTextContent('#2 of 12');
+    expect(profile).toHaveTextContent('Stashed (not in lineup)');
+  });
+
+  it('10-team league uses the 10-team values', async () => {
+    renderApp(`#/analyzer/${leagueId('D')}`, { values: await azPublished(), now: Date.parse('2026-10-26T15:00:00Z') });
+    const card = await screen.findByRole('region', { name: 'Your team' });
+    await waitFor(() => expect(within(card).getByLabelText('What to look for')).toHaveTextContent(/Top surpluses: QB \(.*Aaron Rodgers/));
+  });
+
+  it("says clearly when positional analysis isn't available, and tiers still show", async () => {
+    renderApp(`#/analyzer/${leagueId('D')}`, { values: await azPublished([12]), now: Date.parse('2026-10-26T15:00:00Z') });
+    expect(await screen.findByText(/Positional market value: No FantasyCalc values have been published for this league's format yet\./)).toBeInTheDocument();
+    expect(within(screen.getByRole('region', { name: 'Your team' })).getByLabelText('What to look for')).toHaveTextContent('Not enough data to say');
+    expect(screen.getAllByRole('listitem', { name: /^Team / })).toHaveLength(10);
   });
 });

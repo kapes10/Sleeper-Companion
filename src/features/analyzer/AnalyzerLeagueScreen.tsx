@@ -19,6 +19,9 @@ import { selectFcSet } from '../../valuations/leagueValues';
 import { matchValues } from '../../valuations/match';
 import type { SetState } from '../../valuations/fantasycalc/refresh';
 import { fcFreshness, formatAge } from '../../valuations/staleness';
+import { analyzePositions, type LeaguePositional } from '../../analysis/positional/positional';
+import { lookFor } from '../../analysis/positional/lookFor';
+import { LookForSection, PositionalLine, PositionalOverview, PositionalUnavailable, TeamProfileToggle } from './Positional';
 
 /** Weeks of transactions fetched for "recent trades" (the current week and the two before it). */
 const RECENT_WEEKS = 3;
@@ -115,7 +118,11 @@ function useFcContext(data: Loaded | undefined) {
     async (force: boolean): Promise<FcLoaded> => {
       const { data: index } = await services.fcIndex(force);
       const sel = selectFcSet(data!.league, index);
-      if (sel.kind !== 'available') return { kind: sel.kind };
+      const base = { league: data!.league, rosters: data!.rosters, players: data!.players };
+      if (sel.kind !== 'available') {
+        const why = sel.kind === 'missing' ? "No FantasyCalc values have been published for this league's format yet." : "This league's settings can't be matched to FantasyCalc values.";
+        return { kind: sel.kind, positional: analyzePositions({ ...base, values: null, valuesMissingReason: why }) };
+      }
       const snap = await services.fcSnapshot(sel.state.latest!);
       const values = matchValues(snap.rows, data!.players).bySleeperId;
       const byRoster = new Map<number, TeamFcContext>();
@@ -123,7 +130,8 @@ function useFcContext(data: Loaded | undefined) {
         const team = data!.analysis.teams?.find((t) => t.rosterId === r.roster_id);
         byRoster.set(r.roster_id, teamFcContext(r, values, team?.futurePicks ?? null, snap.picks));
       }
-      return { kind: 'available', label: describeParams(sel.params), fetchedAt: Date.parse(sel.state.latest!.fetchedAt), state: sel.state, byRoster };
+      const positional = analyzePositions({ ...base, values });
+      return { kind: 'available', label: describeParams(sel.params), fetchedAt: Date.parse(sel.state.latest!.fetchedAt), state: sel.state, byRoster, positional };
     },
     [services, data],
   );
@@ -133,9 +141,9 @@ function useFcContext(data: Loaded | undefined) {
 }
 
 type FcLoaded =
-  | { kind: 'available'; label: string; fetchedAt: number; state: SetState; byRoster: Map<number, TeamFcContext> }
+  | { kind: 'available'; label: string; fetchedAt: number; state: SetState; byRoster: Map<number, TeamFcContext>; positional: LeaguePositional }
   /** No FantasyCalc snapshot for this league's format, or the format can't be mapped. */
-  | { kind: 'missing' | 'unsupported' };
+  | { kind: 'missing' | 'unsupported'; positional: LeaguePositional };
 type FcState = FcLoaded | null;
 
 function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedAccount; fc: FcState; fcError: boolean }) {
@@ -145,13 +153,24 @@ function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedA
   const stance = recommendStance(analysis, mine);
   const name = (r: TeamRecord) => teamName(users, r.ownerId) ?? `Team ${r.rosterId} (no owner)`;
   const fcFor = (rosterId: number) => (fc && fc.kind === 'available' ? (fc.byRoster.get(rosterId) ?? null) : null);
+  const positional = fcError ? ({ status: 'unavailable', reason: "FantasyCalc values couldn't be loaded.", unsupportedSlots: [] } as LeaguePositional) : (fc?.positional ?? null);
+  const posOk = positional?.status === 'ok' ? positional : null;
+  const posFor = (rosterId: number) => posOk?.teams.find((t) => t.rosterId === rosterId) ?? null;
+  const nameById = (rosterId: number) => {
+    const r = analysis.standings.find((x) => x.rosterId === rosterId);
+    return r ? name(r) : `Team ${rosterId}`;
+  };
+  const myLookFor = lookFor(stance, positional, myRosterId !== null ? posFor(myRosterId) : null);
 
   return (
     <>
       <Notice>
         <strong>These are estimates</strong> inferred from records, points, roster ages and draft picks. They are not anyone's stated plans.
       </Notice>
-      <YourTeamCard stance={stance} />
+      <YourTeamCard stance={stance}>
+        <LookForSection lookFor={myLookFor} />
+        {myRosterId !== null && posOk && posFor(myRosterId) && <TeamProfileToggle team={posFor(myRosterId)!} positional={posOk} teamName="your team" />}
+      </YourTeamCard>
       <p className="text-xs text-slate-500">
         Sleeper data loaded {formatTime(data.fetchedAt)} · {analysis.season.weeksScored} of {analysis.season.regularWeeks ?? '?'} regular-season weeks played ·{' '}
         {analysis.season.gamesRemaining} games left per team
@@ -161,10 +180,31 @@ function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedA
         <>
           <Notice tone="warn">{analysis.noTiersReason}</Notice>
           <StandingsTable standings={analysis.standings} name={name} myRosterId={myRosterId} />
+          <FcLegend fc={fc} fcError={fcError} />
+          <PositionalUnavailable positional={positional} />
+          {posOk && (
+            <>
+              <PositionalOverview positional={posOk} name={nameById} />
+              <section aria-label="Team profiles" className="space-y-2">
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Team profiles</h2>
+                <ul className="space-y-2">
+                  {posOk.teams.map((t) => (
+                    <li key={t.rosterId} className="rounded-xl bg-slate-900 p-3 text-sm" aria-label={`Team ${nameById(t.rosterId)}`}>
+                      <p className="text-slate-100">{nameById(t.rosterId)}</p>
+                      <PositionalLine team={t} />
+                      <TeamProfileToggle team={t} positional={posOk} teamName={nameById(t.rosterId)} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </>
+          )}
         </>
       ) : (
         <>
           <FcLegend fc={fc} fcError={fcError} />
+          <PositionalUnavailable positional={positional} />
+          {posOk && <PositionalOverview positional={posOk} name={nameById} />}
           {TIER_ORDER.filter((t) => analysis.logic !== 'redraft' || t !== 'deep_rebuild').map((tier) => {
             const teams = analysis.teams!.filter((t) => t.tier === tier);
             return (
@@ -178,7 +218,14 @@ function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedA
                 ) : (
                   <ul className="space-y-2">
                     {teams.map((t) => (
-                      <TeamCard key={t.rosterId} team={t} name={name(t.record)} isMine={t.rosterId === myRosterId} fc={fcFor(t.rosterId)} />
+                      <TeamCard key={t.rosterId} team={t} name={name(t.record)} isMine={t.rosterId === myRosterId} fc={fcFor(t.rosterId)}>
+                        {posOk && posFor(t.rosterId) && (
+                          <>
+                            <PositionalLine team={posFor(t.rosterId)!} />
+                            <TeamProfileToggle team={posFor(t.rosterId)!} positional={posOk} teamName={name(t.record)} />
+                          </>
+                        )}
+                      </TeamCard>
                     ))}
                   </ul>
                 )}
@@ -217,7 +264,7 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   return <span className={`shrink-0 rounded px-2 py-0.5 text-xs ${CONF_STYLE[confidence]}`}>{confidence[0]!.toUpperCase() + confidence.slice(1)} confidence</span>;
 }
 
-function YourTeamCard({ stance }: { stance: StanceResult }) {
+function YourTeamCard({ stance, children }: { stance: StanceResult; children?: ReactNode }) {
   const tier = stance.team ? TIER_LABELS[stance.team.tier].title : null;
   return (
     <section aria-label="Your team" className="space-y-2 rounded-xl border border-emerald-800 bg-slate-900 p-4">
@@ -234,11 +281,12 @@ function YourTeamCard({ stance }: { stance: StanceResult }) {
           ))}
         </ul>
       )}
+      {children}
     </section>
   );
 }
 
-function TeamCard({ team, name, isMine, fc }: { team: TeamAnalysis; name: string; isMine: boolean; fc: TeamFcContext | null }) {
+function TeamCard({ team, name, isMine, fc, children }: { team: TeamAnalysis; name: string; isMine: boolean; fc: TeamFcContext | null; children?: ReactNode }) {
   const r = team.record;
   const context = [
     team.ageMedian !== null ? `Median age ${team.ageMedian}` : null,
@@ -258,6 +306,7 @@ function TeamCard({ team, name, isMine, fc }: { team: TeamAnalysis; name: string
         #{r.rank} · {formatRecord(r)} · PF {r.pf.toFixed(1)} · PA {r.pa.toFixed(1)}
       </p>
       <p className="mt-1 text-sm text-slate-200">{team.reason}</p>
+      {children}
       <p className="mt-1 text-xs text-slate-500">{context.join(' · ')}</p>
       {fc && (
         <p className="mt-1 text-xs text-slate-500">

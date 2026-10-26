@@ -41,3 +41,23 @@ export function setWeeksPlayed(rosters: SleeperRoster[], weeks: number) {
     r.settings = { ...r.settings, wins, losses: weeks - wins, ties: 0 };
   });
 }
+
+// ---------- Real FantasyCalc values for the analyzer fixture leagues (published 2026-10-26) ----------
+import { parseFcResponse } from '../src/valuations/fantasycalc/parse';
+import { matchValues, type PlayerValue } from '../src/valuations/match';
+
+export const AZ_FC_KEY: Record<Letter, string> = {
+  A: 'dynasty-2qb-12tm-ppr1-teplus',
+  B: 'dynasty-2qb-12tm-ppr1-teplus',
+  C: 'dynasty-2qb-12tm-ppr1-teplus',
+  D: 'dynasty-2qb-10tm-ppr1-teplus',
+};
+export const azFcText = (key: string) => readFileSync(`tests/fixtures/analyzer/fantasycalc-${key}.trimmed.json`, 'utf8');
+
+/** Matched values (Sleeper ID → value, scaled 0–100) for a fixture league's format. */
+export function azValues(letter: Letter): Map<string, PlayerValue> {
+  const parsed = parseFcResponse(JSON.parse(azFcText(AZ_FC_KEY[letter])));
+  if (!parsed.ok) throw new Error(parsed.error);
+  const rows = parsed.players.map((p) => ({ sleeperId: p.sleeperId, name: p.name, position: p.position, team: p.team, value: p.value }));
+  return matchValues(rows, azPlayers).bySleeperId;
+}

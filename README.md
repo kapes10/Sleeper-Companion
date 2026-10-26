@@ -5,6 +5,7 @@ A personal, read-only companion app for your Sleeper fantasy football leagues. I
 **Done so far:** league list and rosters (Stage 1), FantasyCalc player values with a match report and manual CSV import.
 **Also done:** Stage 2 (revised): Team Analyzer.
 **Also done:** Stage 3: hosting (live, installable on phones).
+**In progress:** Stage 4: positional market-value analysis (built, awaiting review).
 
 ## Run it on your computer
 
@@ -113,7 +114,7 @@ GitHub sometimes delays or skips scheduled runs. It also pauses schedules after 
 | Command | What it does |
 | --- | --- |
 | `npm test` | Runs all automated tests (uses saved, anonymised sample data, no internet needed). |
-| `npm run test:live` | Runs the Team Analyzer on all your real leagues and prints each result (needs internet; downloads Sleeper's player list once). |
+| `npm run test:live` | Runs the Team Analyzer and the positional market-value analysis on all your real leagues and prints each result (needs internet; downloads Sleeper's player list once; reads published FantasyCalc values, never calls FantasyCalc). |
 | `npm run typecheck` | Checks the code for type mistakes. |
 | `npm run build` | Builds the installable app into the `dist/` folder. |
 | `npm run preview` | Serves the built app locally so you can test the installable version. |
@@ -143,6 +144,7 @@ The script replaces every user ID, league ID, league name, team name and manager
 - `src/domain/`: pure logic: league summaries, finding your roster, starters/bench
 - `src/data/`: the 24-hour player cache
 - `src/analysis/`: Team Analyzer logic (standings, season state, age/pick/trade signals, tiers, stance); no screen code
+- `src/analysis/positional/`: positional market-value analysis (slot rules, optimal lineup assignment, position value, rank, labels, "what to look for"); display-only, never used by tiers or stance
 - `src/valuations/`: FantasyCalc parameter mapping, the scheduled job's core, Sleeper-ID matching, 0–100 scale, stale checks, CSV import
 - `scripts/fetch-values.ts`: the scheduled FantasyCalc job (run by GitHub Actions)
 - `.github/workflows/deploy.yml`: the hourly schedule, tests, build and deploy
