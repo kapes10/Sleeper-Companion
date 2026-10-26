@@ -13,6 +13,22 @@
   - Review changes (2026-10-26, approved and deployed): withheld positions are no longer ranked; card lines name incomplete positions; FantasyCalc notice updated. On identical data the ranking change moved 24 team-positions in the 6 leagues that have a withheld team; for the owner only Hype Train BB Dyno 28 QB (strong #4 → adequate #4 of 11 compared).
   - This is the **first stage where FantasyCalc market values drive analysis output** (need/adequate/strong/surplus labels), not just context. Any future partner matching built on it would pair teams on **market-value** needs, not production needs.
 
+- **Stage 5: within-league trade partner matching**: rules approved 2026-10-26 (see DECISIONS.md); **building**.
+  - Matching pairs teams on **market-value** needs and surpluses (FantasyCalc trade prices), **not production needs**.
+  - Every label (tiers, stances, partners, targets, offers, fit) is an **estimate**; partner stances are inferred from tiers.
+  - These rules **do not authorize a future trade evaluator**, trade builder, fairness verdicts or acceptance predictions.
+  - Trade deadline **99 = "no deadline" is an observed convention, not documented** by Sleeper.
+
+### Stage 5 audit (live, 2026-10-26, NFL week 7)
+- Re-checked today: 23 dynasty leagues; owner roster exactly once in each; no abandoned rosters; 2 rosters with co-owners (neither is the owner's); deadlines 12 (1 league), 13 (3), 14 (15), 99 (4), none passed; 10 leagues with completed trades in weeks 5–7; future picks in Sleeper's traded-pick records cover 2027–2029, rounds 1–4.
+- Limitations:
+  - Sleeper lists only **traded** picks, so holdings are inferred (own picks plus received minus traded away), and only for seasons that appear in some trade.
+  - The trade-deadline field and its 99 value are undocumented.
+  - Completed trades show who traded, not why; trade counts are context only.
+  - FantasyCalc gives plain per-round pick values for 2027–2029 (plus early/mid/late for some 2027 picks, never used); picks outside that range show "no value".
+  - Not validated live (no current examples): past-deadline, no-games-remaining, abandoned-roster and redraft behavior. Covered by fixtures only.
+  - Today's preview: 14 of 23 leagues would show a list (4 with the low-confidence caveat); 9 an explanation (3 Hold, 5 leaning Hold, 1 no reasonable fit).
+
 ### Stage 4: verified 2026-10-26
 - `npm run test:live` ran the positional analysis on all 23 real leagues with the published FantasyCalc values. Every active team got lineups, value by position with rank, and labels. A few positions are withheld (8) or low confidence (5) across all leagues, by the coverage rule.
 - Production build in headless Edge at 390 and 320 px with real data (Game On Dynasty): overview, market-value lines on all tier cards, "what to look for", and the team profile with both lineups. No horizontal scroll.
@@ -92,4 +108,4 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Owner describes the next stage.
+Build Stage 5, then owner review.

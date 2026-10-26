@@ -48,4 +48,6 @@ Personal fantasy football team analyzer for Sleeper leagues. Mobile-first PWA th
 - Record known limitations in NOTES.md.
 
 ## Out of scope for now
-Chrome extension, automatic lineup or trade submission, user accounts, any backend beyond the valuation fetch job, AI features, IDP leagues, multi-team trades, trade evaluator, trade finder, lineup manager.
+Chrome extension, automatic lineup or trade submission, user accounts, any backend beyond the valuation fetch job, AI features, IDP leagues, multi-team trades, trade evaluator, trade builder (complete trade proposals), fairness verdicts, acceptance predictions or probabilities, lineup manager.
+
+In scope (approved 2026-10-26): market-value trade partner matching within one league. It suggests which teams to approach and which assets to consider; it never builds trades, judges fairness or predicts acceptance.
