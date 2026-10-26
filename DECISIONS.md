@@ -15,12 +15,12 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 
 ## 2026-10-25: Stage 2 review
 - **CSV 0–100 scale approved:** manual CSV sets use the same formula as FantasyCalc, with the top value taken from that CSV set.
-- **No trade calculator for now:** the Trade Evaluator is removed from the planned Stage 3 and will be replaced by another feature (to be defined). FantasyCalc values stay display-only.
+- **No trade calculator for now:** the Trade Evaluator is removed from the planned Stage 3 and will be replaced by another feature (to be defined). FantasyCalc values stay display-only. *(Updated 2026-10-26: Stage 4 uses them to produce display-only positional market-value labels; they are still never used for tiers, stance or any trade calculation.)*
 
 ## 2026-10-25: Stage plan revised
 - The FantasyCalc valuation import (previously "Stage 2") is complete and approved.
 - **Stage 2 (revised) is the Team Analyzer**: a tab that sorts every team in one league into Contender / Bubble / Seller / Deep Rebuild and suggests a stance for the owner's team. It's added alongside the existing features, not a rebuild. Tier, confidence and stance rules need owner approval before they're implemented.
-- Still out of scope: partner matching, trade evaluator/finder, lineup manager, positional-needs analysis, multi-source valuations. FantasyCalc values may be shown as context in the analyzer but not used in its tier logic.
+- Still out of scope: partner matching, trade evaluator/finder, lineup manager, multi-source valuations. *(Positional-needs analysis moved in scope on 2026-10-26: see Stage 4 below.)* FantasyCalc values may be shown as context in the analyzer but not used in its tier logic.
 
 ## 2026-10-25: Team Analyzer rules approved
 - **Tier, confidence and stance rules approved** as written in TRADE_LOGIC.md ("Team Analyzer").
@@ -40,3 +40,17 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 ## 2026-10-26: Stage 3 (hosting) approved
 - The owner tested the hosted app on phone and computer and approved Stage 3.
 - GitHub's schedule ran only 5 times in its first ~21 hours. The owner accepts values sometimes being a few hours stale (the warning shows), so the cron-job.org fallback (Option B) is **deferred** as a possible future update.
+
+## 2026-10-26: Stage 4 (positional market-value analysis) approved
+- **Scope (in scope now):** positional market-value analysis added to the Team Analyzer. It is **display-only**: needs and surpluses never feed tier assignment, confidence or the stance logic, which stay unchanged. Everything is labeled "market value, not projected production"; the market-value lineup is an analytical estimate, never a weekly lineup recommendation.
+- **Decisions made by the owner (not to be reopened):**
+  - Strength = the FantasyCalc market value of the assigned lineup at each position, ranked among teams in the same league.
+  - Injury status is a visible note only; no automatic value penalty.
+  - No extra age adjustment on top of dynasty FantasyCalc values (the tier logic's existing use of roster age is unchanged).
+  - Needs and surpluses do not feed tier assignment or the stance; display-only.
+- **Slot interpretation (confirmed for all 23 leagues):** slot types in use are QB, RB, WR, TE, FLEX, SUPER_FLEX, BN; none unsupported. FLEX = RB/WR/TE; SUPER_FLEX = QB/RB/WR/TE; eligibility from Sleeper's `fantasy_positions`. Travis Hunter (Sleeper: DB, eligible DB/WR) counts as a WR. Rostered kickers fill no slot and are counted as "not analyzed". IR and taxi players never fill lineup slots. In best ball leagues, "Sleeper's current starters" is the lineup Sleeper has stored. Any other slot type is flagged as unsupported, never treated as FLEX.
+- **Market-value lineup:** built by optimal assignment (each player fills at most one slot) to maximise total matched value; unvalued players only fill a slot no valued player can.
+- **Strength labels:** rank by lineup value at the position among active teams. Top third = **strong**, middle third = **adequate**, bottom third = **need** (relative: about a third of teams are a need at each position). Starters decide the rank; bench depth doesn't.
+- **Depth and surplus:** useful depth = the most valuable bench players at the position, up to 1 QB, 2 RB, 2 WR, 1 TE. A further bench player is a **surplus** player if worth at least **10 on the approved 0–100 scale**. A position is labeled **surplus** if it has a surplus player and isn't a need.
+- **Coverage:** a position's label is **withheld** ("not enough data") if a player Sleeper currently starts there has no value, or the market-value lineup can only fill a slot there with an unvalued player. It is **low confidence** if more than a third of the team's active players at that position are unvalued. Unvalued players are always counted and shown, and excluded from totals (never treated as zero).
+- **League types:** **dynasty only.** Redraft and keeper leagues show "positional analysis is available for dynasty leagues only" (no redraft or keeper handling built). In dynasty, IR and taxi players are shown as roster assets in a separate "stashed, not in lineup" section and don't count toward strength or surplus.

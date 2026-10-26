@@ -9,6 +9,20 @@
   - Commit history rewritten and pushed: no personal email in commits.
   - Live failure test (2026-10-25 19:38 UTC): simulated failure recorded for both formats, snapshots kept, no FantasyCalc request, the match report showed it. A skipped run kept it, as designed; it cleared at the next due refresh (00:25 UTC).
 
+- **Stage 4: positional market-value analysis**: rules approved 2026-10-26 (see DECISIONS.md); **building**.
+  - This is the **first stage where FantasyCalc market values drive analysis output** (need/adequate/strong/surplus labels), not just context. Any future partner matching built on it would pair teams on **market-value** needs, not production needs.
+
+### Stage 4 slot audit (live, all 23 leagues, 2026-10-26)
+- Slot types in use: QB, RB, WR, TE, FLEX, SUPER_FLEX, BN. None unsupported. Six distinct configurations (9 to 12 starters).
+- Limitations found:
+  - The contents of `roster_positions` and league `settings` (IR and taxi capacity) aren't documented; the roster `taxi` list appears in live data but not in the docs.
+  - Travis Hunter is listed as a DB eligible at DB/WR (23 rostered copies); counted as WR.
+  - 2 kickers are rostered in leagues with no kicker slot (not analyzed).
+  - FantasyCalc values QB/RB/WR/TE only (about 396 players); deep reserves are unvalued.
+  - Injury status values aren't documented (seen: Out, IR, Questionable, PUP, NA, DNR). 847 rostered players show "IR" but only 241 sit in IR slots. The app's copy can be up to 24 hours old.
+  - No usage or role data (by design: market value only).
+  - Today: no rosters shorter than the number of lineup slots and no ownerless rosters (both still handled and tested).
+
 ### Team Analyzer: verified 2026-10-25 (week 7)
 - `npm run test:live` ran the analyzer on all 23 real leagues: every team placed exactly once, no errors.
 - Production build in headless Edge at 390 px with real data: tab and league list, results for The Dynasty Collective, Hype Train BB Dyno 28 and Game On Dynasty; no horizontal scroll. The roster view and match report still work.
