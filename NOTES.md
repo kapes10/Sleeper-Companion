@@ -5,8 +5,9 @@
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
 - **FantasyCalc valuation import** (previously called Stage 2): complete and approved 2026-10-25; **live at https://kapes10.github.io/Sleeper-Companion/**.
 - **Stage 2 (revised): Team Analyzer**: approved 2026-10-25 and deployed.
-- **Stage 3: hosting**: deployed 2026-10-25; rewritten history pushed (no personal email in commits). **Awaiting the owner's on-device checklist.**
-  - Live failure test (19:38 UTC): simulated failure recorded for both formats, snapshots kept, no FantasyCalc request; the match report shows it. A later skipped run kept it, as designed. It clears at the first due refresh after about 22:06 UTC.
+- **Stage 3: hosting**: **complete and approved 2026-10-26.** Live at https://kapes10.github.io/Sleeper-Companion/ (HTTPS, installable PWA). The owner tested it on phone and computer.
+  - Commit history rewritten and pushed: no personal email in commits.
+  - Live failure test (2026-10-25 19:38 UTC): simulated failure recorded for both formats, snapshots kept, no FantasyCalc request, the match report showed it. A skipped run kept it, as designed; it cleared at the next due refresh (00:25 UTC).
 
 ### Team Analyzer: verified 2026-10-25 (week 7)
 - `npm run test:live` ran the analyzer on all 23 real leagues: every team placed exactly once, no errors.
@@ -60,8 +61,8 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - CSV scoring compatibility fixed: imports now record teams, PPR and TE premium tier, and a CSV set is only used when all five format settings match the league. A set saved before this fix has no scoring recorded and is never used; the roster says so and asks for a re-import.
 
 ## Open questions for the owner
-1. **Hourly schedule:** the first scheduled run happened at 19:05 UTC on 2026-10-25, about 3.5 hours after setup. It fetched both formats on its own (2 calls) and deployed. Keep an eye on it for a day; if scheduled runs stop, set up the cron-job.org fallback.
-2. **On-device checklist** (README) on iPhone and Android: owner to confirm.
+1. **Hourly schedule is unreliable:** in the first ~21 hours, GitHub ran the scheduled job only 5 times (2026-10-25 19:05, 21:50; 2026-10-26 00:25, 06:19, 14:20 UTC). All succeeded, but an 8-hour gap left values stale for about 2 hours. Per the approved plan ("A, then B if needed"), set up the cron-job.org timer (Option B). It needs the owner to create a GitHub fine-grained key and a cron-job.org account (steps in the Stage 3 hosting proposal).
+2. **Next stage:** owner to describe it.
 
 ## Next step
-Owner runs the README on-device checklist on iPhone/Android and reports results.
+Set up the cron-job.org timer (Option B) with the owner, then plan the next stage.

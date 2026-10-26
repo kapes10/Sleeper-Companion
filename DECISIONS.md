@@ -36,3 +36,7 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 - **Commit email:** commits use GitHub's private address (129905720+kapes10@users.noreply.github.com). The 7 earlier commits were rewritten to remove the personal email; the owner approved replacing the public history.
 - **League names in docs:** fine to keep; don't change them.
 - **Failure test:** a manual-run checkbox records a simulated failed fetch without contacting FantasyCalc and without using up the 3-hour allowance.
+
+## 2026-10-26: Stage 3 (hosting) approved
+- The owner tested the hosted app on phone and computer and approved Stage 3.
+- GitHub's schedule ran only 5 times in its first ~21 hours, so the approved fallback (Option B: cron-job.org triggers the workflow hourly) is now needed. Pending the owner's account setup.

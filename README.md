@@ -4,7 +4,7 @@ A personal, read-only companion app for your Sleeper fantasy football leagues. I
 
 **Done so far:** league list and rosters (Stage 1), FantasyCalc player values with a match report and manual CSV import.
 **Also done:** Stage 2 (revised): Team Analyzer.
-**In progress:** Stage 3: hosting (awaiting review).
+**Also done:** Stage 3: hosting (live, installable on phones).
 
 ## Run it on your computer
 
