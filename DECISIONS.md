@@ -57,3 +57,8 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 
 ## 2026-10-26: Stage 4 approved
 - The owner reviewed and approved Stage 4 (positional market-value analysis); deployed the same day.
+
+## 2026-10-26: Stage 4 review changes
+- **Withheld positions are never ranked (owner approved):** if a team's position label is withheld ("not enough data"), that position gets no rank and is left out of the comparison. Ranks and the strong/adequate/need thirds at each position are calculated only among the teams with enough data there ("#3 of 11 compared"). The league overview leaves those teams out and shows how many teams were compared. Low-confidence positions stay in the comparison. This replaces "ranked among active teams" in the Stage 4 entry for withheld positions only; no other Stage 4 rule changed.
+- Tier-card market-value lines also name incomplete positions ("not enough data at QB", "low confidence at TE"), so a short line never reads as a clean assessment.
+- The FantasyCalc notice on the Team Analyzer now says the values are used for the display-only positional analysis and are not used for tiers or the stance (it previously said "context only").

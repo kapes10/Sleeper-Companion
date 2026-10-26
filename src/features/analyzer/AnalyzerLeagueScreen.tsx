@@ -169,7 +169,7 @@ function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedA
       </Notice>
       <YourTeamCard stance={stance}>
         <LookForSection lookFor={myLookFor} />
-        {myRosterId !== null && posOk && posFor(myRosterId) && <TeamProfileToggle team={posFor(myRosterId)!} positional={posOk} teamName="your team" />}
+        {myRosterId !== null && posOk && posFor(myRosterId) && <TeamProfileToggle team={posFor(myRosterId)!} teamName="your team" />}
       </YourTeamCard>
       <p className="text-xs text-slate-500">
         Sleeper data loaded {formatTime(data.fetchedAt)} · {analysis.season.weeksScored} of {analysis.season.regularWeeks ?? '?'} regular-season weeks played ·{' '}
@@ -192,7 +192,7 @@ function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedA
                     <li key={t.rosterId} className="rounded-xl bg-slate-900 p-3 text-sm" aria-label={`Team ${nameById(t.rosterId)}`}>
                       <p className="text-slate-100">{nameById(t.rosterId)}</p>
                       <PositionalLine team={t} />
-                      <TeamProfileToggle team={t} positional={posOk} teamName={nameById(t.rosterId)} />
+                      <TeamProfileToggle team={t} teamName={nameById(t.rosterId)} />
                     </li>
                   ))}
                 </ul>
@@ -222,7 +222,7 @@ function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedA
                         {posOk && posFor(t.rosterId) && (
                           <>
                             <PositionalLine team={posFor(t.rosterId)!} />
-                            <TeamProfileToggle team={posFor(t.rosterId)!} positional={posOk} teamName={name(t.record)} />
+                            <TeamProfileToggle team={posFor(t.rosterId)!} teamName={name(t.record)} />
                           </>
                         )}
                       </TeamCard>
@@ -336,7 +336,7 @@ function FcLegend({ fc, fcError }: { fc: FcState; fcError: boolean }) {
   else
     text = (
       <>
-        FantasyCalc values ({fc.label}, snapshot {formatTime(fc.fetchedAt)}) are shown for context only and are <strong>not used</strong> to decide tiers. Pick values use FantasyCalc's plain per-round value.
+        FantasyCalc values ({fc.label}, snapshot {formatTime(fc.fetchedAt)}) are <strong>used for the positional market-value analysis</strong> (display-only) and shown as roster and pick context. They are <strong>not used</strong> to decide tiers or your stance. Pick values use FantasyCalc's plain per-round value.
       </>
     );
   return (

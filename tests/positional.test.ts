@@ -132,7 +132,10 @@ describe('positional market value on real leagues (redacted Sleeper + real Fanta
       for (const pos of POS) {
         const p = t.positions[pos];
         expect(p.value).toBe(p.lineupPlayers.reduce((s, x) => s + (x.value ?? 0), 0));
-        expect(p.rank).toBe(1 + r.teams.filter((o) => o.positions[pos].value > p.value).length);
+        const pool = r.teams.filter((o) => o.positions[pos].label !== 'withheld');
+        expect(p.compared).toBe(pool.length);
+        if (p.label === 'withheld') expect(p.rank).toBeNull();
+        else expect(p.rank).toBe(1 + pool.filter((o) => o.positions[pos].value > p.value).length);
         for (const s of p.surplus) expect(s.scaled!).toBeGreaterThanOrEqual(POSITIONAL_RULES.surplusMinScaled);
         expect(p.depth.length).toBeLessThanOrEqual(POSITIONAL_RULES.usefulDepth[pos]);
       }
@@ -146,8 +149,9 @@ describe('positional market value on real leagues (redacted Sleeper + real Fanta
       for (const pos of POS) {
         const p = t.positions[pos];
         if (p.label === 'withheld') continue;
-        if (p.rank > 8) expect(p.label).toBe('need');
-        else if (p.label !== 'surplus') expect(p.label).toBe(p.rank <= 4 ? 'strong' : 'adequate');
+        const rank = p.rank!;
+        if (rank > (2 * p.compared) / 3) expect(p.label).toBe('need');
+        else if (p.label !== 'surplus') expect(p.label).toBe(rank <= p.compared / 3 ? 'strong' : 'adequate');
       }
     }
   });
@@ -170,14 +174,15 @@ describe('positional market value on real leagues (redacted Sleeper + real Fanta
   it('league D (10 teams) uses the 10-team values and thirds (7–10 need)', () => {
     const r = ok(run('D').result);
     expect(r.activeTeams).toBe(10);
-    for (const t of r.teams) for (const pos of POS) if (t.positions[pos].rank > 20 / 3 && t.positions[pos].label !== 'withheld') expect(t.positions[pos].label).toBe('need');
+    for (const t of r.teams) for (const pos of POS) if (t.positions[pos].label !== 'withheld' && t.positions[pos].rank! > (2 * t.positions[pos].compared) / 3) expect(t.positions[pos].label).toBe('need');
     expect(myTeam(r, 'D').positions.QB.surplus.map((p) => p.name)).toEqual(expect.arrayContaining(['Aaron Rodgers']));
   });
 
   it('overview lists the 3 strongest and 3 thinnest teams per position', () => {
     const r = ok(run('A').result);
     for (const pos of POS) {
-      const byRank = [...r.teams].sort((a, b) => a.positions[pos].rank - b.positions[pos].rank || a.rosterId - b.rosterId);
+      const byRank = r.teams.filter((t) => t.positions[pos].rank !== null).sort((a, b) => a.positions[pos].rank! - b.positions[pos].rank! || a.rosterId - b.rosterId);
+      expect(r.overview[pos].compared).toBe(byRank.length);
       expect(r.overview[pos].strongest).toEqual(byRank.slice(0, 3).map((t) => t.rosterId));
       expect(r.overview[pos].thinnest).toEqual(byRank.slice(-3).reverse().map((t) => t.rosterId));
     }
@@ -246,7 +251,7 @@ describe('roster groups and edge cases (derived from real league A)', () => {
     expect(r.excluded).toHaveLength(1);
     expect(r.excluded[0]!.reason).toMatch(/abandoned/);
     expect(r.activeTeams).toBe(11);
-    expect(Math.max(...r.teams.map((t) => t.positions.QB.rank))).toBeLessThanOrEqual(11);
+    expect(Math.max(...r.teams.map((t) => t.positions.QB.rank ?? 0))).toBeLessThanOrEqual(11);
   });
 
   it('injury status is a note only: no value penalty, same lineup', () => {
@@ -331,6 +336,62 @@ describe('roster groups and edge cases (derived from real league A)', () => {
 });
 
 // ---------------------------------------------------------------------------------------------
+describe('withheld positions are never ranked (approved 2026-10-26)', () => {
+  /** League A with one team's Sleeper QB starter stripped of its value, so that team's QB label is withheld. */
+  function withOneWithheld() {
+    const values = azValues('A');
+    const input = azInput('A');
+    const base = ok(analyzePositions({ league: input.league, rosters: input.rosters, players: azPlayers, values }));
+    // Pick the team with the MOST QB value, so under the old rule its incomplete total would still outrank others.
+    const target = [...base.teams].sort((a, b) => b.positions.QB.value - a.positions.QB.value)[0]!;
+    const qbStarter = target.sleeperStarters.find((e) => e.slot === 'QB')!.player!;
+    const reduced = new Map(values);
+    reduced.delete(qbStarter.id);
+    const after = ok(analyzePositions({ league: input.league, rosters: input.rosters, players: azPlayers, values: reduced }));
+    return { base, after, target };
+  }
+
+  it('the withheld team has no rank, and the others are compared among themselves', () => {
+    const { after, target } = withOneWithheld();
+    const t = after.teams.find((x) => x.rosterId === target.rosterId)!;
+    expect(t.positions.QB).toMatchObject({ label: 'withheld', rank: null, compared: 11 });
+    expect(t.positions.QB.note).toMatch(/isn't ranked/);
+    const others = after.teams.filter((x) => x.rosterId !== target.rosterId);
+    for (const o of others) {
+      expect(o.positions.QB.compared).toBe(11);
+      expect(o.positions.QB.rank).toBe(1 + others.filter((x) => x.positions.QB.value > o.positions.QB.value).length);
+    }
+    expect(Math.max(...others.map((o) => o.positions.QB.rank!))).toBeLessThanOrEqual(11);
+  });
+
+  it("an incomplete total can't push other teams down", () => {
+    const { base, after, target } = withOneWithheld();
+    // Every other team moves up exactly one place if the removed team used to be ahead of it, never down.
+    for (const o of after.teams.filter((x) => x.rosterId !== target.rosterId)) {
+      const before = base.teams.find((x) => x.rosterId === o.rosterId)!.positions.QB.rank!;
+      const wasBehindTarget = base.teams.find((x) => x.rosterId === target.rosterId)!.positions.QB.value > o.positions.QB.value;
+      expect(o.positions.QB.rank).toBe(wasBehindTarget ? before - 1 : before);
+    }
+  });
+
+  it('the overview leaves the withheld team out at that position and reports how many were compared', () => {
+    const { after, target } = withOneWithheld();
+    expect(after.overview.QB.compared).toBe(11);
+    expect([...after.overview.QB.strongest, ...after.overview.QB.thinnest]).not.toContain(target.rosterId);
+    expect(after.overview.RB.compared).toBe(after.teams.filter((t) => t.positions.RB.label !== 'withheld').length);
+  });
+
+  it('thirds use the number of teams compared (11 → ranks 8–11 are a need)', () => {
+    const { after } = withOneWithheld();
+    for (const t of after.teams) {
+      const p = t.positions.QB;
+      if (p.rank === null) continue;
+      if (p.rank >= 8) expect(p.label).toBe('need');
+      if (p.rank <= 3 && p.label !== 'surplus') expect(p.label).toBe('strong');
+    }
+  });
+});
+
 describe('"what to look for" (uses the unchanged stance)', () => {
   const team = (needs: Position[], surpluses: Position[]): TeamPositional => {
     const me = structuredClone(myTeam(run('A').result, 'A'));
@@ -345,7 +406,7 @@ describe('"what to look for" (uses the unchanged stance)', () => {
   it('Buy: points at the needs and offers the surplus', () => {
     const l = lookFor(stance({ kind: 'recommendation', stance: 'buy' }), pos, team(['RB'], ['WR']));
     expect(l.lines).toEqual([
-      expect.stringMatching(/^Top needs: RB \(#7 of 12 in market value\)\.$/),
+      'Top needs: RB (#7 of 11 in market value).', // one team is withheld at RB in this league, so 11 are compared
       'Top surpluses: WR (Spare Player 1,500).',
       'Buying: look to add market value at RB; your surplus at WR is what you could offer.',
     ]);
@@ -365,9 +426,13 @@ describe('"what to look for" (uses the unchanged stance)', () => {
     ]);
   });
 
-  it('summary line for tier cards', () => {
+  it('summary line for tier cards names incomplete positions too', () => {
     expect(positionalSummary(team(['RB', 'TE'], ['WR']))).toBe('thin at RB, TE · surplus at WR');
     expect(positionalSummary(team([], []))).toBeNull();
+    const incomplete = team([], []);
+    incomplete.positions.QB = { ...incomplete.positions.QB, label: 'withheld', rank: null };
+    incomplete.positions.TE = { ...incomplete.positions.TE, lowConfidence: true };
+    expect(positionalSummary(incomplete)).toBe('not enough data at QB · low confidence at TE');
   });
 });
 

@@ -18,13 +18,12 @@ export function lookFor(stance: StanceResult, positional: LeaguePositional | nul
   if (positional.status !== 'ok') return { available: false, lines: [`Not enough data to say: ${positional.reason}`] };
   if (!mine) return { available: false, lines: ['Not enough data to say: your team could not be analyzed.'] };
 
-  const n = positional.activeTeams;
   const needs = mine.needs.slice(0, LOOK_FOR_MAX);
   const surpluses = mine.surpluses.slice(0, LOOK_FOR_MAX);
   const withheld = (['QB', 'RB', 'WR', 'TE'] as const).filter((p) => mine.positions[p].label === 'withheld');
   const lines: string[] = [];
 
-  if (needs.length) lines.push(`Top needs: ${needs.map((p) => `${p} (#${mine.positions[p].rank} of ${n} in market value)`).join(', ')}.`);
+  if (needs.length) lines.push(`Top needs: ${needs.map((p) => `${p} (#${mine.positions[p].rank} of ${mine.positions[p].compared} in market value)`).join(', ')}.`);
   if (surpluses.length) {
     lines.push(
       `Top surpluses: ${surpluses
@@ -32,7 +31,7 @@ export function lookFor(stance: StanceResult, positional: LeaguePositional | nul
         .join('; ')}.`,
     );
   }
-  if (withheld.length) lines.push(`Not enough data at ${withheld.join(', ')} (a key player has no FantasyCalc value).`);
+  if (withheld.length) lines.push(`Not enough data at ${withheld.join(', ')} (a key player has no FantasyCalc value), so it isn't ranked.`);
   if (!needs.length && !surpluses.length) {
     lines.push(withheld.length ? 'No other position stands out by market value.' : 'No position stands out: your market value ranks in the middle or better everywhere, with no surplus.');
   }

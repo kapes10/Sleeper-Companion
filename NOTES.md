@@ -10,16 +10,17 @@
   - Live failure test (2026-10-25 19:38 UTC): simulated failure recorded for both formats, snapshots kept, no FantasyCalc request, the match report showed it. A skipped run kept it, as designed; it cleared at the next due refresh (00:25 UTC).
 
 - **Stage 4: positional market-value analysis**: **approved and deployed 2026-10-26.** Rules approved 2026-10-26 (see DECISIONS.md).
+  - Review changes (2026-10-26, committed locally, awaiting push): withheld positions are no longer ranked; card lines name incomplete positions; FantasyCalc notice updated. On identical data the ranking change moved 24 team-positions in the 6 leagues that have a withheld team; for the owner only Hype Train BB Dyno 28 QB (strong #4 → adequate #4 of 11 compared).
   - This is the **first stage where FantasyCalc market values drive analysis output** (need/adequate/strong/surplus labels), not just context. Any future partner matching built on it would pair teams on **market-value** needs, not production needs.
 
 ### Stage 4: verified 2026-10-26
 - `npm run test:live` ran the positional analysis on all 23 real leagues with the published FantasyCalc values. Every active team got lineups, value by position with rank, and labels. A few positions are withheld (8) or low confidence (5) across all leagues, by the coverage rule.
 - Production build in headless Edge at 390 and 320 px with real data (Game On Dynasty): overview, market-value lines on all tier cards, "what to look for", and the team profile with both lineups. No horizontal scroll.
 - Tier, confidence and stance outputs match the pre-Stage-4 baseline for all four fixture leagues (regression test).
-- Phone check: the owner can confirm on the deployed site (not yet reported).
+- **Phone check: the owner confirmed on 2026-10-26 that Stage 4 works on their phone.**
 - Behaviours worth knowing:
   - A player Sleeper currently starts can be listed as **surplus**, because the market-value lineup prefers more valuable players. Example: in Game On Dynasty, Aaron Rodgers starts in Sleeper, but Purdy and Trevor Lawrence fill QB/SF by value. This is about trade value, not who should start.
-  - Labels are relative: about a third of teams are a "need" at each position. In the 10-team league the bottom third is ranks 7–10. (The proposal message said 8–10; the rule as approved, "bottom third", gives 7–10.)
+  - Labels are relative: about a third of the teams *compared* are a "need" at each position. In the 10-team league the bottom third is ranks 7–10. (The proposal message said 8–10; the rule as approved, "bottom third", gives 7–10.) When a team is withheld at a position, the thirds use the smaller count.
   - "Surplus" can appear at a position ranked adequate (e.g. RB #8), because surplus depends on spare bench value, not on the starters' rank.
 
 ### Stage 4 slot audit (live, all 23 leagues, 2026-10-26)
@@ -91,4 +92,4 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Owner describes the next stage.
+Owner reviews the Stage 4 review changes; on approval, push (deploys). Then the owner describes the next stage.

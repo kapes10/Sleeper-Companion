@@ -41,8 +41,13 @@ export interface LineupEntry {
 export interface PositionResult {
   /** Sum of matched market values of the market-value lineup's players at this position. */
   value: number;
-  /** 1 = most market value at this position among active teams (ties share a rank). */
-  rank: number;
+  /**
+   * 1 = most market value at this position among the teams compared (ties share a rank).
+   * null when the label is withheld: an incomplete total is never ranked.
+   */
+  rank: number | null;
+  /** How many teams had enough data at this position to be compared. */
+  compared: number;
   label: PositionLabel;
   lowConfidence: boolean;
   /** Why the label is withheld or low confidence. */
@@ -85,7 +90,8 @@ export type LeaguePositional =
       /** Ownerless rosters: not analyzed (existing rule). */
       excluded: { rosterId: number; reason: string }[];
       activeTeams: number;
-      overview: Record<Position, { strongest: number[]; thinnest: number[] }>;
+      /** Per position; teams whose label is withheld there are left out. */
+      overview: Record<Position, { strongest: number[]; thinnest: number[]; compared: number }>;
     }
   | { status: 'unavailable'; reason: string; unsupportedSlots: string[] };
 
@@ -163,42 +169,59 @@ export function analyzePositions(input: PositionalInput): LeaguePositional {
     };
   });
 
-  // Position values and ranks among active teams
+  // Position values. Unvalued players add nothing, so a total that relies on one is incomplete.
   const valueAt = (t: (typeof teams)[number], pos: Position) =>
-    t.marketLineup.reduce((s, e) => s + (e.player && e.player.position === pos && e.player.value !== null ? e.player.value : 0), 0);
-  const rankOf = (pos: Position, v: number) => 1 + teams.filter((t) => valueAt(t, pos) > v).length;
-  const n = teams.length;
+    t.marketLineup.reduce((sum, e) => sum + (e.player && e.player.position === pos && e.player.value !== null ? e.player.value : 0), 0);
 
-  const results: TeamPositional[] = teams.map((t) => {
-    const positions = {} as Record<Position, PositionResult>;
+  // Step 1: each team's own facts per position, including whether there is enough data.
+  type Draft = Omit<PositionResult, 'rank' | 'compared' | 'label'> & { withheld: boolean };
+  const drafts = teams.map((t) => {
+    const byPos = {} as Record<Position, Draft>;
     for (const pos of ANALYZED_POSITIONS) {
-      const value = valueAt(t, pos);
-      const rank = rankOf(pos, value);
       const lineupPlayers = t.marketLineup.flatMap((e) => (e.player && e.player.position === pos ? [e.player] : []));
       const benchValued = t.bench.filter((x) => x.position === pos && x.value !== null).sort((a, b) => b.value! - a.value!);
       const depth = benchValued.slice(0, POSITIONAL_RULES.usefulDepth[pos]);
       const surplus = benchValued.slice(POSITIONAL_RULES.usefulDepth[pos]).filter((x) => x.scaled! >= POSITIONAL_RULES.surplusMinScaled);
       const activeAtPos = t.activeRefs.filter((x) => x.position === pos);
       const unvaluedCount = activeAtPos.filter((x) => x.value === null).length;
-
-      let label: PositionLabel = rank <= n / 3 ? 'strong' : rank > (2 * n) / 3 ? 'need' : 'adequate';
-      if (surplus.length && label !== 'need') label = 'surplus';
-      let note: string | null = null;
       const unvaluedLineup = lineupPlayers.filter((x) => x.value === null);
       const unvaluedStarters = t.sleeperStarters.flatMap((e) => (e.player && e.player.position === pos && e.player.value === null ? [e.player] : []));
-      if (unvaluedStarters.length || unvaluedLineup.length) {
-        label = 'withheld';
+      const withheld = unvaluedStarters.length > 0 || unvaluedLineup.length > 0;
+      let note: string | null = null;
+      if (withheld) {
         const who = [...new Map([...unvaluedStarters, ...unvaluedLineup].map((x) => [x.id, x.name])).values()].join(', ');
-        note = `Not enough data: ${who} ${unvaluedStarters.length ? 'starts in Sleeper' : 'is needed in the lineup'} but has no FantasyCalc value.`;
+        note = `Not enough data: ${who} ${unvaluedStarters.length ? 'starts in Sleeper' : 'is needed in the lineup'} but has no FantasyCalc value, so this position isn't ranked.`;
       }
-      const lowConfidence = label !== 'withheld' && activeAtPos.length > 0 && unvaluedCount / activeAtPos.length > POSITIONAL_RULES.lowCoverageShare;
+      const lowConfidence = !withheld && activeAtPos.length > 0 && unvaluedCount / activeAtPos.length > POSITIONAL_RULES.lowCoverageShare;
       if (lowConfidence) note = `Low confidence: ${unvaluedCount} of ${activeAtPos.length} active ${pos}s have no FantasyCalc value.`;
-
-      positions[pos] = { value, rank, label, lowConfidence, note, lineupPlayers, depth, surplus, activeCount: activeAtPos.length, unvaluedCount };
+      byPos[pos] = { value: valueAt(t, pos), withheld, lowConfidence, note, lineupPlayers, depth, surplus, activeCount: activeAtPos.length, unvaluedCount };
     }
-    const needs = ANALYZED_POSITIONS.filter((p) => positions[p].label === 'need').sort((a, b) => positions[b].rank - positions[a].rank);
+    return byPos;
+  });
+
+  // Step 2: rank and label each position only among the teams with enough data there
+  // (approved 2026-10-26: an incomplete total is never ranked and never moves anyone else's rank).
+  const comparedAt = (pos: Position) => drafts.filter((d) => !d[pos].withheld);
+  const n = teams.length;
+
+  const results: TeamPositional[] = teams.map((t, ti) => {
+    const positions = {} as Record<Position, PositionResult>;
+    for (const pos of ANALYZED_POSITIONS) {
+      const { withheld, ...d } = drafts[ti]![pos];
+      const pool = comparedAt(pos);
+      const compared = pool.length;
+      if (withheld) {
+        positions[pos] = { ...d, rank: null, compared, label: 'withheld' };
+        continue;
+      }
+      const rank = 1 + pool.filter((o) => o[pos].value > d.value).length;
+      let label: PositionLabel = rank <= compared / 3 ? 'strong' : rank > (2 * compared) / 3 ? 'need' : 'adequate';
+      if (d.surplus.length && label !== 'need') label = 'surplus';
+      positions[pos] = { ...d, rank, compared, label };
+    }
+    const needs = ANALYZED_POSITIONS.filter((p) => positions[p].label === 'need').sort((a, b) => positions[b].rank! - positions[a].rank!);
     const surpluses = ANALYZED_POSITIONS.filter((p) => positions[p].label === 'surplus').sort(
-      (a, b) => positions[b].surplus.reduce((s, x) => s + x.value!, 0) - positions[a].surplus.reduce((s, x) => s + x.value!, 0),
+      (a, b) => positions[b].surplus.reduce((sum, x) => sum + x.value!, 0) - positions[a].surplus.reduce((sum, x) => sum + x.value!, 0),
     );
     return {
       rosterId: t.r.roster_id,
@@ -213,24 +236,37 @@ export function analyzePositions(input: PositionalInput): LeaguePositional {
       injuries: t.all.filter((x) => x.injury),
       needs,
       surpluses,
-      lineupValue: t.marketLineup.reduce((s, e) => s + (e.player?.value ?? 0), 0),
+      lineupValue: t.marketLineup.reduce((sum, e) => sum + (e.player?.value ?? 0), 0),
     };
   });
 
-  const overview = {} as Record<Position, { strongest: number[]; thinnest: number[] }>;
+  const overview = {} as Record<Position, { strongest: number[]; thinnest: number[]; compared: number }>;
   for (const pos of ANALYZED_POSITIONS) {
-    const sorted = [...results].sort((a, b) => a.positions[pos].rank - b.positions[pos].rank || a.rosterId - b.rosterId);
+    const ranked = results.filter((t) => t.positions[pos].rank !== null);
+    const sorted = [...ranked].sort((a, b) => a.positions[pos].rank! - b.positions[pos].rank! || a.rosterId - b.rosterId);
     overview[pos] = {
       strongest: sorted.slice(0, OVERVIEW_COUNT).map((t) => t.rosterId),
       thinnest: sorted.slice(-OVERVIEW_COUNT).reverse().map((t) => t.rosterId),
+      compared: ranked.length,
     };
   }
 
   return { status: 'ok', teams: results, excluded, activeTeams: n, overview };
 }
 
-/** Short market-value summary for reason lines, e.g. "thin at RB, TE · surplus at WR". */
+/**
+ * Short market-value summary for tier-card reason lines, e.g.
+ * "thin at RB, TE · surplus at WR · not enough data at QB · low confidence at TE".
+ * Incomplete positions are always named, so a short line never reads as a clean assessment.
+ */
 export function positionalSummary(t: TeamPositional): string | null {
-  const parts = [t.needs.length ? `thin at ${t.needs.join(', ')}` : null, t.surpluses.length ? `surplus at ${t.surpluses.join(', ')}` : null].filter(Boolean);
+  const withheld = ANALYZED_POSITIONS.filter((p) => t.positions[p].label === 'withheld');
+  const low = ANALYZED_POSITIONS.filter((p) => t.positions[p].lowConfidence);
+  const parts = [
+    t.needs.length ? `thin at ${t.needs.join(', ')}` : null,
+    t.surpluses.length ? `surplus at ${t.surpluses.join(', ')}` : null,
+    withheld.length ? `not enough data at ${withheld.join(', ')}` : null,
+    low.length ? `low confidence at ${low.join(', ')}` : null,
+  ].filter(Boolean);
   return parts.length ? parts.join(' · ') : null;
 }

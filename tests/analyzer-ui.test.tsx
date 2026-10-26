@@ -93,7 +93,9 @@ describe('Team Analyzer screens', () => {
 
   it('shows FantasyCalc context with attribution, labeled as not used for tiers', async () => {
     renderApp(`#/analyzer/${leagueId('A')}`, { values: await publishedValues() });
-    expect(await screen.findByText(/are shown for context only and are/)).toHaveTextContent('not used');
+    const notice = (await screen.findAllByText(/used for the positional market-value analysis/))[0]!.closest('p')!;
+    expect(notice).toHaveTextContent('(display-only) and shown as roster and pick context. They are not used to decide tiers or your stance.');
+    expect(notice).not.toHaveTextContent(/context only/);
     await waitFor(() => expect(screen.getAllByText(/FantasyCalc context: roster/).length).toBe(12));
     expect(screen.getAllByRole('link', { name: 'FantasyCalc.com' }).length).toBeGreaterThan(0);
   });
@@ -107,7 +109,7 @@ describe('Team Analyzer screens', () => {
 
   it('shows no stale warning while the FantasyCalc context is fresh', async () => {
     renderApp(`#/analyzer/${leagueId('A')}`, { values: await publishedValues(), now: Date.parse('2026-10-25T03:00:00.000Z') });
-    await screen.findByText(/are shown for context only and are/);
+    await screen.findAllByText(/used for the positional market-value analysis/);
     expect(screen.queryByText(/These values are .* old/)).not.toBeInTheDocument();
   });
 

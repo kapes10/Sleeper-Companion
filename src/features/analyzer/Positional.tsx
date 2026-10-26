@@ -75,6 +75,12 @@ export function PositionalOverview({ positional, name }: { positional: LeaguePos
         </tbody>
       </table>
       <p className="text-xs text-slate-500">Ranked by the market value of each team's market-value lineup at that position ({positional.activeTeams} active teams).</p>
+      {ANALYZED_POSITIONS.some((pos) => positional.overview[pos].compared < positional.activeTeams) && (
+        <p className="text-xs text-amber-300">
+          Teams with enough data to compare:{' '}
+          {ANALYZED_POSITIONS.map((pos) => `${pos} ${positional.overview[pos].compared} of ${positional.activeTeams}`).join(' · ')}. Teams missing a key value at a position are left out there.
+        </p>
+      )}
       <FantasyCalcAttribution />
     </section>
   );
@@ -95,7 +101,7 @@ export function LookForSection({ lookFor }: { lookFor: LookFor }) {
 }
 
 /** Expandable team profile: both lineups, value by position with rank, needs/surpluses, groups, notes. */
-export function TeamProfileToggle({ team, positional, teamName }: { team: TeamPositional; positional: Extract<LeaguePositional, { status: 'ok' }>; teamName: string }) {
+export function TeamProfileToggle({ team, teamName }: { team: TeamPositional; teamName: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="mt-1">
@@ -107,7 +113,7 @@ export function TeamProfileToggle({ team, positional, teamName }: { team: TeamPo
       >
         {open ? '▾ Hide team profile' : '▸ Team profile (market value)'}
       </button>
-      {open && <TeamProfile team={team} n={positional.activeTeams} teamName={teamName} />}
+      {open && <TeamProfile team={team} teamName={teamName} />}
     </div>
   );
 }
@@ -145,7 +151,7 @@ function LineupList({ title, subtitle, entries }: { title: string; subtitle: str
   );
 }
 
-function TeamProfile({ team, n, teamName }: { team: TeamPositional; n: number; teamName: string }) {
+function TeamProfile({ team, teamName }: { team: TeamPositional; teamName: string }) {
   const unvaluedActive = team.unvalued.length;
   return (
     <div className="mt-2 space-y-3 rounded-lg border border-slate-800 p-2" aria-label={`Profile ${teamName}`}>
@@ -171,9 +177,7 @@ function TeamProfile({ team, n, teamName }: { team: TeamPositional; n: number; t
               <tr key={pos} className="border-t border-slate-800">
                 <td className="py-1 pr-1 font-semibold">{pos}</td>
                 <td className="py-1 pr-1 tabular-nums">{fmt(r.value)}</td>
-                <td className="py-1 pr-1">
-                  #{r.rank} of {n}
-                </td>
+                <td className="py-1 pr-1">{r.rank === null ? '—' : `#${r.rank} of ${r.compared}`}</td>
                 <td className="py-1 pr-1">
                   <LabelBadge label={r.label} lowConfidence={r.lowConfidence} />
                 </td>
@@ -190,7 +194,7 @@ function TeamProfile({ team, n, teamName }: { team: TeamPositional; n: number; t
       <div className="space-y-1 text-xs text-slate-300">
         {team.needs.map((pos: Position) => (
           <p key={`need-${pos}`}>
-            <LabelBadge label="need" /> {pos} (#{team.positions[pos].rank} of {n}): lineup {pos}s{' '}
+            <LabelBadge label="need" /> {pos} (#{team.positions[pos].rank} of {team.positions[pos].compared} compared): lineup {pos}s{' '}
             {team.positions[pos].lineupPlayers.length ? team.positions[pos].lineupPlayers.map((p) => `${p.name} ${p.value === null ? 'no value' : fmt(p.value)}`).join(', ') : 'none'}.
           </p>
         ))}
