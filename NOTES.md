@@ -10,7 +10,7 @@
   - Live failure test (2026-10-25 19:38 UTC): simulated failure recorded for both formats, snapshots kept, no FantasyCalc request, the match report showed it. A skipped run kept it, as designed; it cleared at the next due refresh (00:25 UTC).
 
 - **Stage 4: positional market-value analysis**: **approved and deployed 2026-10-26.** Rules approved 2026-10-26 (see DECISIONS.md).
-  - Review changes (2026-10-26, committed locally, awaiting push): withheld positions are no longer ranked; card lines name incomplete positions; FantasyCalc notice updated. On identical data the ranking change moved 24 team-positions in the 6 leagues that have a withheld team; for the owner only Hype Train BB Dyno 28 QB (strong #4 → adequate #4 of 11 compared).
+  - Review changes (2026-10-26, approved and deployed): withheld positions are no longer ranked; card lines name incomplete positions; FantasyCalc notice updated. On identical data the ranking change moved 24 team-positions in the 6 leagues that have a withheld team; for the owner only Hype Train BB Dyno 28 QB (strong #4 → adequate #4 of 11 compared).
   - This is the **first stage where FantasyCalc market values drive analysis output** (need/adequate/strong/surplus labels), not just context. Any future partner matching built on it would pair teams on **market-value** needs, not production needs.
 
 ### Stage 4: verified 2026-10-26
@@ -92,4 +92,4 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Owner reviews the Stage 4 review changes; on approval, push (deploys). Then the owner describes the next stage.
+Owner describes the next stage.
