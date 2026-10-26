@@ -6,7 +6,7 @@ A personal, read-only companion app for your Sleeper fantasy football leagues. I
 **Also done:** Stage 2 (revised): Team Analyzer.
 **Also done:** Stage 3: hosting (live, installable on phones).
 **Also done:** Stage 4: positional market-value analysis (Team Analyzer).
-**In progress:** Stage 5: trade partner matching (built, awaiting review).
+**Also done:** Stage 5: trade partner matching (Team Analyzer → Trade partners).
 
 ## Run it on your computer
 

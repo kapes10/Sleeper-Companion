@@ -76,3 +76,6 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 - **Picks:** never targets or offers. Shown as "Draft picks (context)" for both teams, valued only by FantasyCalc's plain per-round value for the exact season and round; otherwise "no value". Early/mid/late is never inferred.
 - **Trade deadline 99:** read as "no trade deadline", an **observed convention, not documented**, and labeled that way wherever shown.
 - **Protected players:** the owner can mark players as protected, per league, in this browser's local storage (device-only, no sync, nothing sent anywhere). Protected players never appear as offers; if every surplus player at a position is protected, that position no longer counts toward "you have what they need" (a partner's fit and order can change).
+
+## 2026-10-26: Stage 5 approved
+- The owner reviewed and approved Stage 5 (within-league trade partner matching); deployed the same day.
