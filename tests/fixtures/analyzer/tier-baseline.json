@@ -1,0 +1,548 @@
+{
+ "A": {
+  "teams": [
+   {
+    "rosterId": 8,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "6-0, 2nd in points, 3 games clear of the cutoff",
+    "details": [
+     "3 games clear of the first team out (needs at least 1).",
+     "High confidence: 2 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 10,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "5-1, 7th in points, 2 games clear of the cutoff",
+    "details": [
+     "In a playoff spot, but 7th in points for (Contenders need the top half).",
+     "Young roster: median age 24 vs league 25.5.",
+     "Gained 2 future 1st/2nd-round picks through trades.",
+     "High confidence: 4 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 6,
+    "tier": "contender",
+    "confidence": "low",
+    "reason": "4-2, 3rd in points, 1 game clear of the cutoff",
+    "details": [
+     "1 game clear of the first team out (needs at least 1).",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 3,
+    "tier": "contender",
+    "confidence": "low",
+    "reason": "4-2, 4th in points, 1 game clear of the cutoff",
+    "details": [
+     "1 game clear of the first team out (needs at least 1).",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 2,
+    "tier": "contender",
+    "confidence": "low",
+    "reason": "4-2, 5th in points, 1 game clear of the cutoff",
+    "details": [
+     "1 game clear of the first team out (needs at least 1).",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 4,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "3-3, 1st in points, tied with the first team out",
+    "details": [
+     "In a playoff spot but only 0 games clear of the first team out (Contenders need at least 1).",
+     "Low confidence: a tiebreaker decides which side of the playoff line this team is on."
+    ]
+   },
+   {
+    "rosterId": 1,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "3-3, 6th in points, tied with the last playoff seed",
+    "details": [
+     "0 games back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Young roster: median age 24 vs league 25.5.",
+     "Low confidence: a tiebreaker decides which side of the playoff line this team is on."
+    ]
+   },
+   {
+    "rosterId": 5,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "3-3, 9th in points, tied with the last playoff seed",
+    "details": [
+     "0 games back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Gained 2 future 1st/2nd-round picks through trades.",
+     "Low confidence: a tiebreaker decides which side of the playoff line this team is on."
+    ]
+   },
+   {
+    "rosterId": 7,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "2-4, 10th in points, 1 game back of the cutoff",
+    "details": [
+     "1 game back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Young roster: median age 24 vs league 25.5.",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 9,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "1-5, 8th in points, 2 games back of the cutoff",
+    "details": [
+     "2 games back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 11,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "1-5, 12th in points, 2 games back of the cutoff",
+    "details": [
+     "2 games back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Young roster: median age 24 vs league 25.5.",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 12,
+    "tier": "seller",
+    "confidence": "high",
+    "reason": "0-6, 11th in points, 3 games back of the cutoff",
+    "details": [
+     "3 games back of the last playoff spot, beyond reach (2 games with 8 games left).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   }
+  ],
+  "excluded": [],
+  "stance": {
+   "kind": "insufficient",
+   "headline": "Not enough data for a confident recommendation. Leaning: Buy.",
+   "reasons": [
+    "4-2, 4th in points, 1 game clear of the cutoff.",
+    "1 game clear of the first team out (needs at least 1).",
+    "Low confidence: 0 games past the line that decided this tier.",
+    "Trade deadline: week 13."
+   ],
+   "stance": null,
+   "leaning": "buy"
+  }
+ },
+ "B": {
+  "teams": [
+   {
+    "rosterId": 3,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "6-0, 5th in points, 3 games clear of the cutoff",
+    "details": [
+     "3 games clear of the first team out (needs at least 1).",
+     "High confidence: 2 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 6,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "5-1, 1st in points, 2 games clear of the cutoff",
+    "details": [
+     "2 games clear of the first team out (needs at least 1).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 8,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "5-1, 2nd in points, 2 games clear of the cutoff",
+    "details": [
+     "2 games clear of the first team out (needs at least 1).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 1,
+    "tier": "contender",
+    "confidence": "low",
+    "reason": "4-2, 6th in points, 1 game clear of the cutoff",
+    "details": [
+     "1 game clear of the first team out (needs at least 1).",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 9,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "4-2, 7th in points, 1 game clear of the cutoff",
+    "details": [
+     "In a playoff spot, but 7th in points for (Contenders need the top half).",
+     "High confidence: 3 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 7,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "4-2, 8th in points, 1 game clear of the cutoff",
+    "details": [
+     "In a playoff spot, but 8th in points for (Contenders need the top half).",
+     "High confidence: 3 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 2,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "3-3, 3rd in points, 1 game back of the cutoff",
+    "details": [
+     "1 game back of the last playoff spot, within reach (2 games with 8 games left).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 10,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "3-3, 4th in points, 1 game back of the cutoff",
+    "details": [
+     "1 game back of the last playoff spot, within reach (2 games with 8 games left).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 5,
+    "tier": "seller",
+    "confidence": "high",
+    "reason": "1-5, 9th in points, 3 games back of the cutoff",
+    "details": [
+     "3 games back of the last playoff spot, beyond reach (2 games with 8 games left).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 11,
+    "tier": "seller",
+    "confidence": "high",
+    "reason": "1-5, 10th in points, 3 games back of the cutoff",
+    "details": [
+     "3 games back of the last playoff spot, beyond reach (2 games with 8 games left).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 4,
+    "tier": "deep_rebuild",
+    "confidence": "low",
+    "reason": "0-6, 11th in points, 4 games back of the cutoff, young roster",
+    "details": [
+     "4 games back with 8 games left (far out means at least 4 games).",
+     "Young roster: median age 24 vs league 25.",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 12,
+    "tier": "deep_rebuild",
+    "confidence": "low",
+    "reason": "0-6, 12th in points, 4 games back of the cutoff, +22 future 1st/2nds",
+    "details": [
+     "4 games back with 8 games left (far out means at least 4 games).",
+     "Gained 22 future 1st/2nd-round picks through trades.",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   }
+  ],
+  "excluded": [],
+  "stance": {
+   "kind": "insufficient",
+   "headline": "Not enough data for a confident recommendation. Leaning: Sell veterans for youth and picks.",
+   "reasons": [
+    "0-6, 11th in points, 4 games back of the cutoff, young roster.",
+    "4 games back with 8 games left (far out means at least 4 games).",
+    "Young roster: median age 24 vs league 25.",
+    "Low confidence: 0 games past the line that decided this tier.",
+    "Trade deadline: week 14."
+   ],
+   "stance": null,
+   "leaning": "sell"
+  }
+ },
+ "C": {
+  "teams": [
+   {
+    "rosterId": 6,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "12-0, 2nd in points, 7 games clear of the cutoff",
+    "details": [
+     "7 games clear of the first team out (needs at least 1).",
+     "High confidence: 6 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 3,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "11-1, 3rd in points, 6 games clear of the cutoff",
+    "details": [
+     "6 games clear of the first team out (needs at least 1).",
+     "High confidence: 5 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 11,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "10-2, 1st in points, 5 games clear of the cutoff",
+    "details": [
+     "5 games clear of the first team out (needs at least 1).",
+     "High confidence: 4 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 2,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "7-5, 5th in points, 2 games clear of the cutoff",
+    "details": [
+     "2 games clear of the first team out (needs at least 1).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 7,
+    "tier": "contender",
+    "confidence": "low",
+    "reason": "6-6, 4th in points, 1 game clear of the cutoff",
+    "details": [
+     "1 game clear of the first team out (needs at least 1).",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 8,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "5-7, 6th in points, tied with the first team out",
+    "details": [
+     "In a playoff spot but only 0 games clear of the first team out (Contenders need at least 1).",
+     "Gained 2 future 1st/2nd-round picks through trades.",
+     "Low confidence: a tiebreaker decides which side of the playoff line this team is on."
+    ]
+   },
+   {
+    "rosterId": 9,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "5-7, 7th in points, tied with the last playoff seed",
+    "details": [
+     "0 games back of the last playoff spot, within reach (4 games with 16 games left).",
+     "Young roster: median age 23.5 vs league 26.",
+     "Low confidence: a tiebreaker decides which side of the playoff line this team is on."
+    ]
+   },
+   {
+    "rosterId": 12,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "4-8, 8th in points, 1 game back of the cutoff",
+    "details": [
+     "1 game back of the last playoff spot, within reach (4 games with 16 games left).",
+     "High confidence: 3 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 1,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "4-8, 9th in points, 1 game back of the cutoff",
+    "details": [
+     "1 game back of the last playoff spot, within reach (4 games with 16 games left).",
+     "High confidence: 3 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 10,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "3-9, 10th in points, 2 games back of the cutoff",
+    "details": [
+     "2 games back of the last playoff spot, within reach (4 games with 16 games left).",
+     "Young roster: median age 24 vs league 26.",
+     "High confidence: 2 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 5,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "3-9, 11th in points, 2 games back of the cutoff",
+    "details": [
+     "2 games back of the last playoff spot, within reach (4 games with 16 games left).",
+     "Gained 5 future 1st/2nd-round picks through trades.",
+     "High confidence: 2 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 4,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "2-10, 12th in points, 3 games back of the cutoff",
+    "details": [
+     "3 games back of the last playoff spot, within reach (4 games with 16 games left).",
+     "Young roster: median age 24 vs league 26.",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   }
+  ],
+  "excluded": [],
+  "stance": {
+   "kind": "recommendation",
+   "headline": "Buy",
+   "reasons": [
+    "12-0, 2nd in points, 7 games clear of the cutoff.",
+    "7 games clear of the first team out (needs at least 1).",
+    "High confidence: 6 games past the line that decided this tier."
+   ],
+   "stance": "buy",
+   "leaning": null
+  }
+ },
+ "D": {
+  "teams": [
+   {
+    "rosterId": 2,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "5-1, 3rd in points, 3 games clear of the cutoff",
+    "details": [
+     "3 games clear of the first team out (needs at least 1).",
+     "High confidence: 2 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 10,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "4-2, 1st in points, 2 games clear of the cutoff",
+    "details": [
+     "2 games clear of the first team out (needs at least 1).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 8,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "4-2, 2nd in points, 2 games clear of the cutoff",
+    "details": [
+     "2 games clear of the first team out (needs at least 1).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 6,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "4-2, 4th in points, 2 games clear of the cutoff",
+    "details": [
+     "2 games clear of the first team out (needs at least 1).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 1,
+    "tier": "contender",
+    "confidence": "high",
+    "reason": "4-2, 5th in points, 2 games clear of the cutoff",
+    "details": [
+     "2 games clear of the first team out (needs at least 1).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 3,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "3-3, 8th in points, 1 game clear of the cutoff",
+    "details": [
+     "In a playoff spot, but 8th in points for (Contenders need the top half).",
+     "Gained 3 future 1st/2nd-round picks through trades.",
+     "High confidence: 3 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 9,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "2-4, 6th in points, 1 game back of the cutoff",
+    "details": [
+     "1 game back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Young roster: median age 24 vs league 25.5.",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 4,
+    "tier": "bubble",
+    "confidence": "high",
+    "reason": "2-4, 7th in points, 1 game back of the cutoff",
+    "details": [
+     "1 game back of the last playoff spot, within reach (2 games with 8 games left).",
+     "High confidence: 1 game past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 7,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "1-5, 9th in points, 2 games back of the cutoff",
+    "details": [
+     "2 games back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Young roster: median age 23.5 vs league 25.5.",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   },
+   {
+    "rosterId": 5,
+    "tier": "bubble",
+    "confidence": "low",
+    "reason": "1-5, 10th in points, 2 games back of the cutoff",
+    "details": [
+     "2 games back of the last playoff spot, within reach (2 games with 8 games left).",
+     "Young roster: median age 24 vs league 25.5.",
+     "Gained 2 future 1st/2nd-round picks through trades.",
+     "Low confidence: 0 games past the line that decided this tier."
+    ]
+   }
+  ],
+  "excluded": [],
+  "stance": {
+   "kind": "recommendation",
+   "headline": "Buy",
+   "reasons": [
+    "4-2, 2nd in points, 2 games clear of the cutoff.",
+    "2 games clear of the first team out (needs at least 1).",
+    "High confidence: 1 game past the line that decided this tier.",
+    "Trade deadline: week 12."
+   ],
+   "stance": "buy",
+   "leaning": null
+  }
+ }
+}
