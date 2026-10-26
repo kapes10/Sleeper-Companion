@@ -1,6 +1,6 @@
 # Notes
 
-## Status (2026-10-25)
+## Status (2026-10-26)
 
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
 - **FantasyCalc valuation import** (previously called Stage 2): complete and approved 2026-10-25; **live at https://kapes10.github.io/Sleeper-Companion/**.
