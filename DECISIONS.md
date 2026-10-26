@@ -54,3 +54,6 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 - **Depth and surplus:** useful depth = the most valuable bench players at the position, up to 1 QB, 2 RB, 2 WR, 1 TE. A further bench player is a **surplus** player if worth at least **10 on the approved 0–100 scale**. A position is labeled **surplus** if it has a surplus player and isn't a need.
 - **Coverage:** a position's label is **withheld** ("not enough data") if a player Sleeper currently starts there has no value, or the market-value lineup can only fill a slot there with an unvalued player. It is **low confidence** if more than a third of the team's active players at that position are unvalued. Unvalued players are always counted and shown, and excluded from totals (never treated as zero).
 - **League types:** **dynasty only.** Redraft and keeper leagues show "positional analysis is available for dynasty leagues only" (no redraft or keeper handling built). In dynasty, IR and taxi players are shown as roster assets in a separate "stashed, not in lineup" section and don't count toward strength or surplus.
+
+## 2026-10-26: Stage 4 approved
+- The owner reviewed and approved Stage 4 (positional market-value analysis); deployed the same day.
