@@ -1,8 +1,7 @@
 // Team Analyzer results for ONE league, calculated when the screen opens. The calculations live in
 // src/analysis (no UI code there); this file only loads data and displays the results.
 import { useCallback, type ReactNode } from 'react';
-import type { SleeperLeague, SleeperLeagueUser, SleeperRoster, SleeperTransaction } from '../../api/types';
-import { analyzeLeague, TIER_ORDER, type Confidence, type LeagueAnalysis, type TeamAnalysis, type Tier } from '../../analysis/tiers';
+import { TIER_ORDER, type Confidence, type LeagueAnalysis, type TeamAnalysis, type Tier } from '../../analysis/tiers';
 import { recommendStance, type StanceResult } from '../../analysis/stance';
 import { formatRecord, type TeamRecord } from '../../analysis/standings';
 import { teamFcContext, type TeamFcContext } from '../../analysis/fcContext';
@@ -11,20 +10,16 @@ import { Button, ErrorMessage, Loading, Notice, Screen, formatTime } from '../..
 import { useAsync } from '../../components/useAsync';
 import { summarizeLeague } from '../../domain/league';
 import { findOwnerRoster, teamName } from '../../domain/roster';
-import type { PlayerIndex } from '../../domain/players';
 import { useServices } from '../../services';
 import type { SavedAccount } from '../../storage/prefs';
 import { describeParams } from '../../valuations/fantasycalc/params';
-import { selectFcSet } from '../../valuations/leagueValues';
-import { matchValues } from '../../valuations/match';
 import type { SetState } from '../../valuations/fantasycalc/refresh';
 import { fcFreshness, formatAge } from '../../valuations/staleness';
-import { analyzePositions, type LeaguePositional } from '../../analysis/positional/positional';
+import type { LeaguePositional } from '../../analysis/positional/positional';
+import { loadAnalyzerData, loadLeagueValues, RECENT_WEEKS, type AnalyzerData } from './loadAnalyzer';
 import { lookFor } from '../../analysis/positional/lookFor';
 import { LookForSection, PositionalLine, PositionalOverview, PositionalUnavailable, TeamProfileToggle } from './Positional';
 
-/** Weeks of transactions fetched for "recent trades" (the current week and the two before it). */
-const RECENT_WEEKS = 3;
 
 export const TIER_LABELS: Record<Tier, { title: string; blurb: string }> = {
   contender: { title: 'Contenders', blurb: 'Likely buyers: safely in a playoff spot and scoring well.' },
@@ -39,44 +34,11 @@ const LOGIC_TEXT = {
   redraft: 'Redraft logic: tiers come from the playoff race only. Age and draft picks are not used, and there is no Deep Rebuild tier.',
 };
 
-interface Loaded {
-  league: SleeperLeague;
-  rosters: SleeperRoster[];
-  users: SleeperLeagueUser[];
-  players: PlayerIndex;
-  analysis: LeagueAnalysis;
-  fetchedAt: number;
-}
+type Loaded = AnalyzerData;
 
 export function AnalyzerLeagueScreen({ account, leagueId }: { account: SavedAccount; leagueId: string }) {
   const services = useServices();
-  const load = useCallback(
-    async (force: boolean): Promise<Loaded> => {
-      const c = <T,>(key: string, fn: () => Promise<T>) => services.cached(key, fn, force);
-      const nfl = await c('state:nfl', () => services.api.getNflState());
-      const week = nfl.data.week;
-      const weeks = Array.from({ length: RECENT_WEEKS }, (_, i) => week - i).filter((w) => w >= 1);
-      const [league, rosters, users, picks, players, ...tx] = await Promise.all([
-        c(`league:${leagueId}`, () => services.api.getLeague(leagueId)),
-        c(`rosters:${leagueId}`, () => services.api.getRosters(leagueId)),
-        c(`users:${leagueId}`, () => services.api.getLeagueUsers(leagueId)),
-        c(`traded-picks:${leagueId}`, () => services.api.getTradedPicks(leagueId)),
-        services.players(),
-        ...weeks.map((w) => c(`transactions:${leagueId}:${w}`, () => services.api.getTransactions(leagueId, w))),
-      ]);
-      if (!league.data) throw new Error('Sleeper has no league with this ID.');
-      const analysis = analyzeLeague({
-        league: league.data,
-        rosters: rosters.data,
-        tradedPicks: picks.data,
-        recentTransactions: tx.flatMap((t) => t.data as SleeperTransaction[]),
-        players: players.players,
-        currentWeek: week,
-      });
-      return { league: league.data, rosters: rosters.data, users: users.data, players: players.players, analysis, fetchedAt: rosters.fetchedAt };
-    },
-    [services, leagueId],
-  );
+  const load = useCallback((force: boolean) => loadAnalyzerData(services, leagueId, force), [services, leagueId]);
   const { state, reload } = useAsync(`analyzer:${leagueId}`, load);
   const data = state.data;
   const fc = useFcContext(data);
@@ -116,21 +78,14 @@ function useFcContext(data: Loaded | undefined) {
   const services = useServices();
   const load = useCallback(
     async (force: boolean): Promise<FcLoaded> => {
-      const { data: index } = await services.fcIndex(force);
-      const sel = selectFcSet(data!.league, index);
-      const base = { league: data!.league, rosters: data!.rosters, players: data!.players };
-      if (sel.kind !== 'available') {
-        const why = sel.kind === 'missing' ? "No FantasyCalc values have been published for this league's format yet." : "This league's settings can't be matched to FantasyCalc values.";
-        return { kind: sel.kind, positional: analyzePositions({ ...base, values: null, valuesMissingReason: why }) };
-      }
-      const snap = await services.fcSnapshot(sel.state.latest!);
-      const values = matchValues(snap.rows, data!.players).bySleeperId;
+      const v = await loadLeagueValues(services, data!, force);
+      if (v.kind !== 'available') return { kind: v.kind, positional: v.positional };
+      const { sel, snap, values, positional } = v;
       const byRoster = new Map<number, TeamFcContext>();
       for (const r of data!.rosters) {
         const team = data!.analysis.teams?.find((t) => t.rosterId === r.roster_id);
         byRoster.set(r.roster_id, teamFcContext(r, values, team?.futurePicks ?? null, snap.picks));
       }
-      const positional = analyzePositions({ ...base, values });
       return { kind: 'available', label: describeParams(sel.params), fetchedAt: Date.parse(sel.state.latest!.fetchedAt), state: sel.state, byRoster, positional };
     },
     [services, data],
@@ -168,6 +123,15 @@ function Results({ data, account, fc, fcError }: { data: Loaded; account: SavedA
         <strong>These are estimates</strong> inferred from records, points, roster ages and draft picks. They are not anyone's stated plans.
       </Notice>
       <YourTeamCard stance={stance}>
+        {myRosterId !== null && (
+          <a
+            href={`#/analyzer/${data.league.league_id}/partners`}
+            className="flex min-h-11 items-center justify-between rounded-lg bg-slate-800 px-3 text-sm font-medium text-emerald-300 hover:bg-slate-700"
+          >
+            <span>Trade partners (market-value estimates)</span>
+            <span aria-hidden>→</span>
+          </a>
+        )}
         <LookForSection lookFor={myLookFor} />
         {myRosterId !== null && posOk && posFor(myRosterId) && <TeamProfileToggle team={posFor(myRosterId)!} teamName="your team" />}
       </YourTeamCard>

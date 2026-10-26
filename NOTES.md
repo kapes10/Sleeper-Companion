@@ -13,7 +13,10 @@
   - Review changes (2026-10-26, approved and deployed): withheld positions are no longer ranked; card lines name incomplete positions; FantasyCalc notice updated. On identical data the ranking change moved 24 team-positions in the 6 leagues that have a withheld team; for the owner only Hype Train BB Dyno 28 QB (strong #4 → adequate #4 of 11 compared).
   - This is the **first stage where FantasyCalc market values drive analysis output** (need/adequate/strong/surplus labels), not just context. Any future partner matching built on it would pair teams on **market-value** needs, not production needs.
 
-- **Stage 5: within-league trade partner matching**: rules approved 2026-10-26 (see DECISIONS.md); **building**.
+- **Stage 5: within-league trade partner matching**: built 2026-10-26, committed locally (not pushed or deployed), **awaiting owner review**. Rules approved 2026-10-26 (see DECISIONS.md).
+  - Verified: `npm run test:live` ran matching on all 23 leagues. 10 lists, 4 lists with the low-confidence caveat, 8 Hold explanations (3 Hold + 5 leaning Hold), 1 "no reasonable fit" (The Dynasty Collective), matching the approved preview. Headless Edge at 390 and 320 px: list, caveat, Hold and no-fit states, the deadline-99 label and the protect control all work with real data; no horizontal scroll. Tier, confidence, stance and every Stage 4 output match the pre-Stage-5 baselines (regression tests).
+  - **Not verified on a phone yet.**
+  - Behaviours worth knowing: protecting your only surplus player at a position removes that "you have what they need" fit. In Chasin' 'Chips, protecting Hunter Henry drops the two-way contenders (they become one-way, grade 3, not listed) and leaves four bubble teams tied at #1. Recent-trade counts are mostly 0, so ties are common.
   - Matching pairs teams on **market-value** needs and surpluses (FantasyCalc trade prices), **not production needs**.
   - Every label (tiers, stances, partners, targets, offers, fit) is an **estimate**; partner stances are inferred from tiers.
   - These rules **do not authorize a future trade evaluator**, trade builder, fairness verdicts or acceptance predictions.
@@ -108,4 +111,4 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Build Stage 5, then owner review.
+Owner reviews Stage 5 (desktop and phone). On approval: push to GitHub (deploys).

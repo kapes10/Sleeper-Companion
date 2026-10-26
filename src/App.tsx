@@ -6,6 +6,7 @@ import { ValuesScreen } from './features/values/ValuesScreen';
 import { ImportScreen } from './features/import/ImportScreen';
 import { AnalyzerLeaguesScreen } from './features/analyzer/AnalyzerLeaguesScreen';
 import { AnalyzerLeagueScreen } from './features/analyzer/AnalyzerLeagueScreen';
+import { TradePartnersScreen } from './features/analyzer/TradePartnersScreen';
 import { clearAccount, loadAccount, type SavedAccount } from './storage/prefs';
 
 // Hash-based routes keep the app working on any static host and let the phone's back button work:
@@ -15,17 +16,21 @@ import { clearAccount, loadAccount, type SavedAccount } from './storage/prefs';
 //   #/import           manual CSV import
 //   #/analyzer         Team Analyzer: league list
 //   #/analyzer/<id>    Team Analyzer: one league
+//   #/analyzer/<id>/partners   Trade partners for one league
 type Route =
   | { name: 'leagues' }
   | { name: 'league'; leagueId: string }
   | { name: 'values' }
   | { name: 'import' }
   | { name: 'analyzer' }
-  | { name: 'analyzer-league'; leagueId: string };
+  | { name: 'analyzer-league'; leagueId: string }
+  | { name: 'partners'; leagueId: string };
 
 function parseRoute(hash: string): Route {
   if (hash.startsWith('#/values')) return { name: 'values' };
   if (hash.startsWith('#/import')) return { name: 'import' };
+  const tp = hash.match(/^#\/analyzer\/([^/?#]+)\/partners/);
+  if (tp) return { name: 'partners', leagueId: decodeURIComponent(tp[1]!) };
   const a = hash.match(/^#\/analyzer\/([^/?#]+)/);
   if (a) return { name: 'analyzer-league', leagueId: decodeURIComponent(a[1]!) };
   if (hash.startsWith('#/analyzer')) return { name: 'analyzer' };
@@ -60,6 +65,7 @@ export function App() {
     );
   }
 
+  if (route.name === 'partners') return <TradePartnersScreen key={route.leagueId} account={account} leagueId={route.leagueId} />;
   if (route.name === 'analyzer') return <AnalyzerLeaguesScreen account={account} />;
   if (route.name === 'analyzer-league') return <AnalyzerLeagueScreen key={route.leagueId} account={account} leagueId={route.leagueId} />;
   if (route.name === 'values') return <ValuesScreen account={account} />;

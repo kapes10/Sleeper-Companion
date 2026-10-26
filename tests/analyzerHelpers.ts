@@ -61,3 +61,36 @@ export function azValues(letter: Letter): Map<string, PlayerValue> {
   const rows = parsed.players.map((p) => ({ sleeperId: p.sleeperId, name: p.name, position: p.position, team: p.team, value: p.value }));
   return matchValues(rows, azPlayers).bySleeperId;
 }
+
+// ---------- Stage 5: full partner-matching input for a fixture league ----------
+import { analyzeLeague as _analyzeLeague } from '../src/analysis/tiers';
+import { recommendStance as _recommendStance } from '../src/analysis/stance';
+import { analyzePositions as _analyzePositions } from '../src/analysis/positional/positional';
+import { findOwnerRoster as _findOwnerRoster, teamName as _teamName } from '../src/domain/roster';
+import type { PartnerInput } from '../src/analysis/partners';
+
+/** Real FantasyCalc pick values from the fixture snapshot for a league's format. */
+export function azFcPicks(letter: Letter) {
+  const parsed = parseFcResponse(JSON.parse(azFcText(AZ_FC_KEY[letter])));
+  if (!parsed.ok) throw new Error(parsed.error);
+  return parsed.picks;
+}
+
+/** Everything matchPartners needs for a fixture league (fresh objects each call, safe to modify). */
+export function azPartnerInput(letter: Letter, change?: Parameters<typeof azInput>[1]): PartnerInput {
+  const input = azInput(letter, change);
+  const d = azLeague(letter);
+  const analysis = _analyzeLeague(input);
+  const mine = _findOwnerRoster(input.rosters, AZ_OWNER);
+  return {
+    league: input.league,
+    analysis,
+    stance: _recommendStance(analysis, mine),
+    mine,
+    positional: _analyzePositions({ league: input.league, rosters: input.rosters, players: azPlayers, values: azValues(letter) }),
+    fcPicks: azFcPicks(letter),
+    protectedIds: new Set(),
+    nameOf: (rosterId) => _teamName(d.users, input.rosters.find((r) => r.roster_id === rosterId)?.owner_id ?? null) ?? `Team ${rosterId}`,
+    currentWeek: input.currentWeek,
+  };
+}
