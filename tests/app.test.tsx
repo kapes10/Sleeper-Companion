@@ -30,9 +30,14 @@ describe('app screens (fixture-backed)', () => {
     expect(loadAccount()).toEqual({ username: 'fixture_owner', userId: OWNER_ID, displayName: 'Fixture Owner' });
 
     const card = screen.getByRole('link', { name: /Fixture League 02/ });
-    expect(within(card).getByText('Dynasty · Superflex · 12 teams')).toBeInTheDocument();
     expect(within(card).getByText('PPR · TE +0.5/rec · 6pt pass TD')).toBeInTheDocument();
-    expect(within(card).getByText(/24 spots \(10 starters \+ 14 bench\) · 4 IR · 4 taxi/)).toBeInTheDocument();
+    // Format and Roster lines were replaced by Standings / Points for / League high (2026-10-27).
+    expect(card).not.toHaveTextContent('Format');
+    expect(card).not.toHaveTextContent(/spots \(/);
+    expect(await within(card).findByText('Standings')).toBeInTheDocument();
+    // Leagues whose rosters can't be loaded say so instead of hiding the card.
+    const other = screen.getByRole('link', { name: /Fixture League 03/ });
+    expect(await within(other).findByText("Couldn't load standings")).toBeInTheDocument();
   });
 
   it('shows an unknown username as a readable message', async () => {

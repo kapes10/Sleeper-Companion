@@ -22,6 +22,8 @@
   - These rules **do not authorize a future trade evaluator**, trade builder, fairness verdicts or acceptance predictions.
   - Trade deadline **99 = "no deadline" is an observed convention, not documented** by Sleeper.
 
+- **Look-and-feel updates (2026-10-27, owner requested):** Leagues tab cards now show Standings (record and place, e.g. 4-2 · 4/12), Points for (total and rank) and the league-high points for, instead of the Format and Roster lines. Places use the same order as the Team Analyzer (win %, then points for; Sleeper tiebreakers aren't published). Costs one roster request per league, shared with the other screens' cache.
+
 ### Stage 5 audit (live, 2026-10-26, NFL week 7)
 - Re-checked today: 23 dynasty leagues; owner roster exactly once in each; no abandoned rosters; 2 rosters with co-owners (neither is the owner's); deadlines 12 (1 league), 13 (3), 14 (15), 99 (4), none passed; 10 leagues with completed trades in weeks 5–7; future picks in Sleeper's traded-pick records cover 2027–2029, rounds 1–4.
 - Limitations:

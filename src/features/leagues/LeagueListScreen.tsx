@@ -6,12 +6,27 @@ import { MainTabs } from '../../components/MainTabs';
 import { loadMyLeagues } from './loadLeagues';
 import { useServices } from '../../services';
 import type { SavedAccount } from '../../storage/prefs';
+import { ownerStanding, type OwnerStanding } from '../../analysis/ownerStanding';
+
+const pts = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 export function LeagueListScreen({ account, onChangeUser }: { account: SavedAccount; onChangeUser: () => void }) {
   const services = useServices();
   const load = useCallback((force: boolean) => loadMyLeagues(services, account, force), [services, account]);
   const { state, reload } = useAsync(`leagues:${account.userId}`, load);
   const data = state.data;
+
+  // Your standing in each league. Loaded after the list (one rosters call per league, shared
+  // cache with the roster screen); one league failing never hides the others.
+  const leagueIds = data?.leagues.map((l) => l.id) ?? [];
+  const loadStandings = async (force: boolean): Promise<Map<string, OwnerStanding | null>> => {
+    const results = await Promise.allSettled(
+      leagueIds.map((id) => services.cached(`rosters:${id}`, () => services.api.getRosters(id), force).then((r) => ownerStanding(r.data, account.userId))),
+    );
+    return new Map(leagueIds.map((id, i) => [id, results[i]!.status === 'fulfilled' ? (results[i] as PromiseFulfilledResult<OwnerStanding>).value : null]));
+  };
+  // Keyed by the league list, so it reloads when the list changes.
+  const standings = useAsync(`standings:${account.userId}:${leagueIds.join(',')}`, loadStandings);
 
   return (
     <Screen
@@ -28,7 +43,14 @@ export function LeagueListScreen({ account, onChangeUser }: { account: SavedAcco
       }
       actions={
         <>
-          <Button onClick={reload} disabled={state.status === 'loading'} aria-label="Refresh leagues">
+          <Button
+            onClick={() => {
+              reload();
+              standings.reload();
+            }}
+            disabled={state.status === 'loading'}
+            aria-label="Refresh leagues"
+          >
             Refresh
           </Button>
         </>
@@ -61,16 +83,9 @@ export function LeagueListScreen({ account, onChangeUser }: { account: SavedAcco
                   <span className="shrink-0 rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-300">{leagueStatusLabel(l.status)}</span>
                 </div>
                 <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
-                  <dt className="text-slate-500">Format</dt>
-                  <dd className="text-slate-200">{l.format} · {l.teams} teams</dd>
+                  <StandingRows standing={standings.state.data?.get(l.id)} loading={standings.state.status === 'loading'} />
                   <dt className="text-slate-500">Scoring</dt>
                   <dd className="text-slate-200">{l.scoring}</dd>
-                  <dt className="text-slate-500">Roster</dt>
-                  <dd className="text-slate-200">
-                    {l.rosterSize} spots ({l.starterSlots} starters + {l.benchSlots} bench)
-                    {l.reserveSlots > 0 && ` · ${l.reserveSlots} IR`}
-                    {l.taxiSlots > 0 && ` · ${l.taxiSlots} taxi`}
-                  </dd>
                 </dl>
                 {l.unsupported.length > 0 && (
                   <p className="mt-2 text-xs text-amber-300">Not supported by this app yet: {l.unsupported.join(', ')}</p>
@@ -84,5 +99,44 @@ export function LeagueListScreen({ account, onChangeUser }: { account: SavedAcco
         </div>
       </div>
     </Screen>
+  );
+}
+
+/** Standings, Points for and League high rows for one league card. */
+function StandingRows({ standing, loading }: { standing: OwnerStanding | null | undefined; loading: boolean }) {
+  if (standing === undefined) {
+    return (
+      <>
+        <dt className="text-slate-500">Standings</dt>
+        <dd className="text-slate-500">{loading ? 'Loading…' : '—'}</dd>
+      </>
+    );
+  }
+  if (standing === null || standing.kind !== 'ok') {
+    const text = standing === null ? "Couldn't load standings" : standing.kind === 'ambiguous' ? "You're on more than one roster" : "Your team wasn't found";
+    return (
+      <>
+        <dt className="text-slate-500">Standings</dt>
+        <dd className="text-amber-300">{text}</dd>
+      </>
+    );
+  }
+  const s = standing;
+  return (
+    <>
+      <dt className="text-slate-500">Standings</dt>
+      <dd className="text-slate-200">
+        {s.record} · <strong className="text-slate-50">{s.place}/{s.teams}</strong>
+        {s.gamesPlayed === 0 && <span className="text-slate-500"> (no games yet)</span>}
+      </dd>
+      <dt className="text-slate-500">Points for</dt>
+      <dd className="text-slate-200">
+        <span className="tabular-nums">{pts(s.pointsFor)}</span> · <strong className="text-slate-50">{s.pointsForRank}/{s.teams}</strong>
+      </dd>
+      <dt className="text-slate-500">League high</dt>
+      <dd className="text-slate-200">
+        <span className="tabular-nums">{pts(s.leagueHighPointsFor)}</span> PF{s.ownerHasHigh && <span className="text-emerald-300"> (you)</span>}
+      </dd>
+    </>
   );
 }

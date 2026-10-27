@@ -197,3 +197,19 @@ describe('positional market value screens', () => {
     expect(screen.getAllByRole('listitem', { name: /^Team / })).toHaveLength(10);
   });
 });
+
+describe('Leagues tab: standings on each league card', () => {
+  it('shows your record and place, points for and its rank, and the league high (real redacted data)', async () => {
+    renderApp('#/');
+    const card = await screen.findByRole('link', { name: /Analyzer Fixture A/ });
+    await waitFor(() => expect(card).toHaveTextContent('Standings4-2 · 4/12'));
+    expect(card).toHaveTextContent('Points for949.4 · 4/12');
+    expect(card).toHaveTextContent('League high988.0 PF');
+    expect(card).not.toHaveTextContent('Format');
+    expect(card).not.toHaveTextContent('Roster');
+    const d = screen.getByRole('link', { name: /Analyzer Fixture D/ });
+    await waitFor(() => expect(d).toHaveTextContent('Standings4-2 · 3/10'));
+    expect(d).toHaveTextContent('Points for1,078.0 · 2/10');
+    expect(d).toHaveTextContent('League high1,158.0 PF');
+  });
+});
