@@ -11,6 +11,8 @@ export interface Player {
   injuryStatus: string | null;
   /** From Sleeper's player list (whole years); null when Sleeper has none. */
   age: number | null;
+  /** NFL depth-chart place (1 = first); null when Sleeper has none. */
+  depthChartOrder: number | null;
 }
 
 export type PlayerIndex = Record<string, Player>;
@@ -36,6 +38,7 @@ export function toPlayerIndex(raw: SleeperPlayerMap): PlayerIndex {
       status: p.status ?? null,
       injuryStatus: p.injury_status ?? null,
       age: typeof p.age === 'number' && Number.isFinite(p.age) ? p.age : null,
+      depthChartOrder: typeof p.depth_chart_order === 'number' && Number.isFinite(p.depth_chart_order) ? p.depth_chart_order : null,
     };
   }
   return out;

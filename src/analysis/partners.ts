@@ -5,6 +5,7 @@
 // trade, judges fairness or predicts acceptance. It reads tiers, the owner's stance and Stage 4
 // positional results and never changes them. Deterministic and UI-free.
 import type { SleeperLeague } from '../api/types';
+import type { PlayerIndex } from '../domain/players';
 import type { OwnerRosterResult } from '../domain/roster';
 import type { FcPickValue } from '../valuations/fantasycalc/parse';
 import { fcPickName } from './fcContext';
@@ -20,8 +21,17 @@ export const PARTNER_RULES = {
     buy: { seller: 1, deep_rebuild: 1, bubble: 2, contender: 3 },
     sell: { contender: 1, bubble: 2, seller: 3, deep_rebuild: 3 },
   } as Record<'buy' | 'sell', Record<Tier, 1 | 2 | 3>>,
-  /** Targets / offers shown per matching position. */
+  /** Targets / offers shown per position, and picks shown per list. */
   assetsPerPosition: 3,
+  picksPerList: 3,
+  /** Every suggested player or pick is worth at least this on the 0–100 scale. */
+  minScaled: 10,
+  /** "Young" = this age or under; "veteran" = this age or over; buying targets must be this age or over. */
+  youngMaxAge: 24,
+  veteranMinAge: 27,
+  buyTargetMinAge: 26,
+  /** Sleeper injury statuses treated as unavailable (listed after available players). */
+  unavailableStatuses: ['IR', 'Out', 'PUP', 'Sus', 'DNR'] as readonly string[],
   /** Below this share of rostered players with a FantasyCalc value, a partner's label is Low. */
   minCoverage: 0.75,
 } as const;
@@ -54,9 +64,20 @@ export interface PickLine {
   value: number | null;
 }
 
+/** Why an asset is suggested (shown on screen). */
+export type AssetWhy = 'upgrade' | 'surplus' | 'young' | 'veteran';
+
+export interface Candidate {
+  player: PlayerRef;
+  why: AssetWhy;
+  age: number | null;
+  /** Listed after available players; values are never adjusted. */
+  unavailable: boolean;
+}
+
 export interface AssetGroup {
   position: Position;
-  players: PlayerRef[];
+  players: Candidate[];
 }
 
 export interface Partner {
@@ -74,6 +95,9 @@ export interface Partner {
   theyNeed: Position[];
   targets: AssetGroup[];
   offers: AssetGroup[];
+  /** Picks to consider: theirs when you're selling, yours when you're buying. */
+  targetPicks: PickLine[];
+  offerPicks: PickLine[];
   recentTrades: number;
   confidence: Confidence;
   confidenceNotes: string[];
@@ -122,6 +146,10 @@ export interface PartnerInput {
   fcPicks: FcPickValue[];
   /** Player IDs the owner protected in this league (device-local). */
   protectedIds: ReadonlySet<string>;
+  /** Sleeper player list (ages, NFL depth chart) for choosing the type of player suggested. */
+  players: PlayerIndex;
+  /** Highest player value in the FantasyCalc snapshot (the 0–100 scale's 100), for the pick value floor. */
+  topValue: number | null;
   /** Display name per roster, used only for the stable display order of tied partners. */
   nameOf: (rosterId: number) => string;
   currentWeek: number;
@@ -158,6 +186,71 @@ function pickLines(owned: { season: string; round: number; originalRosterId: num
 /** Unprotected surplus players at a position (offers). */
 function offerPlayers(t: TeamPositional, pos: Position, protectedIds: ReadonlySet<string>): PlayerRef[] {
   return t.positions[pos].surplus.filter((p) => !protectedIds.has(p.id));
+}
+
+const lineupPlayers = (t: TeamPositional) => t.marketLineup.flatMap((e) => (e.player ? [e.player] : []));
+
+/**
+ * Chooses the players and picks to show for one partner (approved 2026-10-27, DECISIONS.md).
+ * Buying: targets = their 26+ NFL-starting upgrades at your needs; offers = your surplus at their
+ * needs + your young non-lineup players + your picks. Selling: targets = their young non-lineup
+ * players + their picks; offers = your surplus at their needs + your veterans.
+ */
+function chooseAssets(
+  stance: 'buy' | 'sell',
+  me: TeamPositional,
+  them: TeamPositional,
+  theyNeed: Position[],
+  myPicks: PickLine[] | null,
+  theirPicks: PickLine[] | null,
+  input: PartnerInput,
+) {
+  const R = PARTNER_RULES;
+  const ageOf = (p: PlayerRef) => input.players[p.id]?.age ?? null;
+  const unavailable = (p: PlayerRef) => !!p.injury && R.unavailableStatuses.includes(p.injury);
+  const valued = (p: PlayerRef) => p.value !== null && p.scaled !== null && p.scaled >= R.minScaled && p.position !== null;
+  const cand = (p: PlayerRef, why: AssetWhy): Candidate => ({ player: p, why, age: ageOf(p), unavailable: unavailable(p) });
+  const groups = (list: Candidate[]): AssetGroup[] => {
+    const seen = new Set<string>();
+    const unique = list.filter((c) => !seen.has(c.player.id) && !!seen.add(c.player.id));
+    return ANALYZED_POSITIONS.map((position) => ({
+      position,
+      players: unique
+        .filter((c) => c.player.position === position)
+        .sort((a, b) => Number(a.unavailable) - Number(b.unavailable) || b.player.value! - a.player.value!)
+        .slice(0, R.assetsPerPosition),
+    })).filter((g) => g.players.length > 0);
+  };
+  const picks = (lines: PickLine[] | null) =>
+    (lines ?? [])
+      .filter((l) => l.value !== null && input.topValue !== null && (l.value / input.topValue) * 100 >= R.minScaled)
+      .sort((a, b) => b.value! - a.value! || a.season.localeCompare(b.season) || a.round - b.round)
+      .slice(0, R.picksPerList);
+
+  const notProtected = (p: PlayerRef) => !input.protectedIds.has(p.id);
+  const surplusOffers = theyNeed.flatMap((pos) => offerPlayers(me, pos, input.protectedIds).filter(valued).map((p) => cand(p, 'surplus')));
+  const myNonLineup = [...me.bench, ...me.stashed.taxi, ...me.stashed.ir];
+
+  if (stance === 'buy') {
+    const weakest = (pos: Position) => {
+      const vals = lineupPlayers(me).flatMap((p) => (p.position === pos && p.value !== null ? [p.value] : []));
+      return vals.length ? Math.min(...vals) : 0;
+    };
+    const targets = [...lineupPlayers(them), ...them.bench, ...them.stashed.ir]
+      .filter((p) => valued(p) && me.needs.includes(p.position!) && p.value! > weakest(p.position!))
+      .filter((p) => (ageOf(p) ?? -1) >= R.buyTargetMinAge)
+      .filter((p) => unavailable(p) || input.players[p.id]?.depthChartOrder === 1)
+      .map((p) => cand(p, 'upgrade'));
+    const young = myNonLineup.filter((p) => valued(p) && notProtected(p) && (ageOf(p) ?? Infinity) <= R.youngMaxAge).map((p) => cand(p, 'young'));
+    return { targets: groups(targets), offers: groups([...surplusOffers, ...young]), targetPicks: [] as PickLine[], offerPicks: picks(myPicks) };
+  }
+  const youngTheirs = [...them.bench, ...them.stashed.taxi, ...them.stashed.ir]
+    .filter((p) => valued(p) && (ageOf(p) ?? Infinity) <= R.youngMaxAge)
+    .map((p) => cand(p, 'young'));
+  const veterans = [...lineupPlayers(me), ...me.bench, ...me.stashed.ir]
+    .filter((p) => valued(p) && notProtected(p) && (ageOf(p) ?? -1) >= R.veteranMinAge)
+    .map((p) => cand(p, 'veteran'));
+  return { targets: groups(youngTheirs), offers: groups([...surplusOffers, ...veterans]), targetPicks: picks(theirPicks), offerPicks: [] as PickLine[] };
 }
 
 export function matchPartners(input: PartnerInput): PartnerResult {
@@ -241,9 +334,9 @@ export function matchPartners(input: PartnerInput): PartnerResult {
       }
     }
 
-    const byValue = (a: PlayerRef, b: PlayerRef) => b.value! - a.value!;
-    const targets = theyHave.map((position) => ({ position, players: [...theirPos.positions[position].surplus].sort(byValue).slice(0, PARTNER_RULES.assetsPerPosition) }));
-    const offers = theyNeed.map((position) => ({ position, players: offerPlayers(myPos, position, input.protectedIds).sort(byValue).slice(0, PARTNER_RULES.assetsPerPosition) }));
+    const myPickLines = pickLines(analysis.teams.find((t) => t.rosterId === myPos.rosterId)?.futurePicks ?? null, input.fcPicks);
+    const theirPickLines = pickLines(team.futurePicks, input.fcPicks);
+    const assets = chooseAssets(myStance, myPos, theirPos, theyNeed, myPickLines, theirPickLines, input);
 
     const reasons = [
       `${GRADE_TEXT[grade]} (you: ${myStance === 'buy' ? 'buying' : 'selling'}; them: ${INFERRED_STANCE[team.tier].toLowerCase()}, inferred from their tier).`,
@@ -261,8 +354,10 @@ export function matchPartners(input: PartnerInput): PartnerResult {
       fit,
       theyHave,
       theyNeed,
-      targets,
-      offers,
+      targets: assets.targets,
+      offers: assets.offers,
+      targetPicks: assets.targetPicks,
+      offerPicks: assets.offerPicks,
       recentTrades: team.recentTrades,
       confidence,
       confidenceNotes: notes,
@@ -276,10 +371,7 @@ export function matchPartners(input: PartnerInput): PartnerResult {
           theirs: { valued: theirPos.positions[position].activeCount - theirPos.positions[position].unvaluedCount, rostered: theirPos.positions[position].activeCount },
         })),
       },
-      picks: {
-        mine: pickLines(analysis.teams.find((t) => t.rosterId === myPos.rosterId)?.futurePicks ?? null, input.fcPicks),
-        theirs: pickLines(team.futurePicks, input.fcPicks),
-      },
+      picks: { mine: myPickLines, theirs: theirPickLines },
     });
   }
 
@@ -304,6 +396,6 @@ export function matchPartners(input: PartnerInput): PartnerResult {
     return { ...p, rank: ahead + 1, tied };
   });
 
-  const protectedCount = ANALYZED_POSITIONS.reduce((n, p) => n + myPos.positions[p].surplus.filter((x) => input.protectedIds.has(x.id)).length, 0);
+  const protectedCount = [...lineupPlayers(myPos), ...myPos.bench, ...myPos.stashed.ir, ...myPos.stashed.taxi].filter((x) => input.protectedIds.has(x.id)).length;
   return { kind: 'list', myStance, caveat, partners, notListed, excluded, deadline, protectedCount };
 }

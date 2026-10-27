@@ -3,7 +3,7 @@
 //   node scripts/capture-analyzer-fixtures.mjs <username> <leagueId> [<leagueId> ...]
 //
 // Writes tests/fixtures/analyzer/league-<A|B|C…>/{league,rosters,users,traded_picks,transactions}.json,
-// plus players.json (only rostered players: id, name, position, team, age) and nfl_state.json.
+// plus players.json (only rostered players: id, name, position, team, age, NFL depth-chart order) and nfl_state.json.
 // Every user ID, league ID, league name, team name and manager name is replaced. Roster IDs,
 // player IDs and records are kept. Raw responses are never written to disk.
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -105,7 +105,7 @@ for (const [i, realId] of leagueIds.entries()) {
 const players = {};
 for (const id of [...playerIds].sort()) {
   const p = allPlayers[id];
-  if (p) players[id] = { player_id: id, full_name: p.full_name, first_name: p.first_name, last_name: p.last_name, position: p.position, team: p.team, age: p.age };
+  if (p) players[id] = { player_id: id, full_name: p.full_name, first_name: p.first_name, last_name: p.last_name, position: p.position, team: p.team, age: p.age, depth_chart_order: p.depth_chart_order ?? null };
 }
 write(`${OUT}/players.json`, players);
 console.log(`players: ${Object.keys(players).length}; week ${state.week}`);

@@ -45,7 +45,7 @@ it('matches trade partners in every league (live)', async () => {
     const stance = recommendStance(analysis, mine);
     const positional = analyzePositions({ league, rosters, players, values });
     const nameOf = (rid: number) => teamName(users, rosters.find((r) => r.roster_id === rid)?.owner_id ?? null) ?? `Team ${rid}`;
-    const r = matchPartners({ league, analysis, stance, mine, positional, fcPicks: picks, protectedIds: new Set(), nameOf, currentWeek: state.week });
+    const r = matchPartners({ league, analysis, stance, mine, positional, fcPicks: picks, players, topValue: values ? Math.max(...[...values.values()].map((v) => v.raw)) : null, protectedIds: new Set(), nameOf, currentWeek: state.week });
 
     const outcome = r.kind === 'list' ? (r.caveat ? 'list (low-confidence caveat)' : 'list') : `explanation: ${r.code}`;
     tally[outcome] = (tally[outcome] ?? 0) + 1;
@@ -55,7 +55,7 @@ it('matches trade partners in every league (live)', async () => {
       lines.push(`${head} | ${outcome} | ${r.partners.length} partners, ${r.notListed.length} not listed`);
       for (const p of r.partners.slice(0, 3)) {
         lines.push(
-          `    #${p.rank}${p.tied ? ' (tied)' : ''} ${nameOf(p.rosterId)} [${p.tier}/${p.tierConfidence}] grade ${p.grade}, ${p.fit}, trades ${p.recentTrades}, label ${p.confidence} | they have ${p.theyHave.join('/') || '-'}: ${p.targets.flatMap((g) => g.players.map((x) => x.name)).join(', ') || '-'} | they need ${p.theyNeed.join('/') || '-'}: ${p.offers.flatMap((g) => g.players.map((x) => x.name)).join(', ') || '-'}`,
+          `    #${p.rank}${p.tied ? ' (tied)' : ''} ${nameOf(p.rosterId)} [${p.tier}/${p.tierConfidence}] grade ${p.grade}, ${p.fit}, trades ${p.recentTrades}, label ${p.confidence} | targets: ${[...p.targets.flatMap((g) => g.players.map((x) => `${x.player.name} ${x.player.scaled}${x.unavailable ? ' (' + x.player.injury + ')' : ''}`)), ...p.targetPicks.map((l) => `${l.season} R${l.round} pick`)].join(', ') || '-'} | offers: ${[...p.offers.flatMap((g) => g.players.map((x) => `${x.player.name} ${x.player.scaled} [${x.why}]`)), ...p.offerPicks.map((l) => `${l.season} R${l.round} pick`)].join(', ') || '-'}`,
         );
       }
     } else lines.push(`${head} | ${outcome}`);

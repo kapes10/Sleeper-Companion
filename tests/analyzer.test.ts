@@ -222,7 +222,7 @@ describe('building blocks', () => {
 
   it('treats roster age as unavailable when too few players have an age', () => {
     const roster = { roster_id: 1, league_id: 'x', owner_id: 'u', starters: [], players: ['a', 'b', 'c', 'd', 'e'] };
-    const ages = (n: number) => Object.fromEntries(['a', 'b', 'c', 'd', 'e'].map((id, i) => [id, { id, name: id, position: 'WR', team: null, fantasyPositions: [], status: null, injuryStatus: null, age: i < n ? 20 + i : null }]));
+    const ages = (n: number) => Object.fromEntries(['a', 'b', 'c', 'd', 'e'].map((id, i) => [id, { id, name: id, position: 'WR', team: null, fantasyPositions: [], status: null, injuryStatus: null, age: i < n ? 20 + i : null, depthChartOrder: null }]));
     expect(rosterAge(roster, ages(5)).median).toBe(22);
     expect(rosterAge(roster, ages(4)).median).toBe(21.5);
     expect(rosterAge(roster, ages(3)).median).toBeNull();

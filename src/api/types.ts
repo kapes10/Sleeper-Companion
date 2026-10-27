@@ -86,6 +86,8 @@ export interface SleeperPlayer {
   injury_status?: string | null;
   /** Shown in Sleeper's docs example; how it's calculated isn't documented. */
   age?: number | null;
+  /** Place on the NFL team's depth chart (1 = first); in Sleeper's documented player example. */
+  depth_chart_order?: number | null;
 }
 
 /** GET /league/<id>/traded_picks. All IDs are roster IDs. */

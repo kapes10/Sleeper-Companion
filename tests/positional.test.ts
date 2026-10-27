@@ -288,7 +288,7 @@ describe('roster groups and edge cases (derived from real league A)', () => {
     const values = azValues('A');
     // 1. Adding an unvalued bench WR changes no totals, but is counted.
     const input = azInput('A', (d) => ownerRoster(d).players!.push('99999901'));
-    const players = { ...azPlayers, '99999901': { id: '99999901', name: 'Unvalued Rookie', position: 'WR', team: 'NYJ', fantasyPositions: ['WR'], status: null, injuryStatus: null, age: 21 } };
+    const players = { ...azPlayers, '99999901': { id: '99999901', name: 'Unvalued Rookie', position: 'WR', team: 'NYJ', fantasyPositions: ['WR'], status: null, injuryStatus: null, age: 21, depthChartOrder: null } };
     const r1 = ok(analyzePositions({ league: input.league, rosters: input.rosters, players, values }));
     const me1 = r1.teams.find((t) => t.rosterId === ownerRosterId('A'))!;
     expect(me1.positions.WR.value).toBe(base.positions.WR.value);
@@ -309,7 +309,7 @@ describe('roster groups and edge cases (derived from real league A)', () => {
     const extra = ['99999911', '99999912', '99999913'];
     const input3 = azInput('A', (d) => ownerRoster(d).players!.push(...extra));
     const players3: PlayerIndex = { ...azPlayers };
-    for (const id of extra) players3[id] = { id, name: `Unvalued TE ${id}`, position: 'TE', team: null, fantasyPositions: ['TE'], status: null, injuryStatus: null, age: 23 };
+    for (const id of extra) players3[id] = { id, name: `Unvalued TE ${id}`, position: 'TE', team: null, fantasyPositions: ['TE'], status: null, injuryStatus: null, age: 23, depthChartOrder: null };
     const r3 = ok(analyzePositions({ league: input3.league, rosters: input3.rosters, players: players3, values }));
     const te = r3.teams.find((t) => t.rosterId === ownerRosterId('A'))!.positions.TE;
     expect(te.unvaluedCount).toBe(base.positions.TE.unvaluedCount + 3);

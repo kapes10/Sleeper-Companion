@@ -79,3 +79,16 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 
 ## 2026-10-26: Stage 5 approved
 - The owner reviewed and approved Stage 5 (within-league trade partner matching); deployed the same day.
+
+## 2026-10-27: Trade candidate rules revised (owner approved)
+The owner found the suggested players were the wrong type: too many injured players and low-value backups (targets had a median of 12 on the 0–100 scale; 13 of 37 were IR/Out; 26 of 37 were not NFL starters). These rules **replace** the Stage 5 "Targets and offers", "Picks" and injury bullets for the Trade partners lists only. Ranking of partner teams is unchanged (stance grade, then Stage 4 positional fit, then recent trades). Tiers, stance and Stage 4 are unchanged.
+- **Value floor:** every suggested player or pick is worth at least 10 on the approved 0–100 scale.
+- **Unavailable players** (Sleeper injury status IR, Out, PUP, Sus, DNR) are **listed after** available ones, with the note. "Questionable" counts as available. Values are never adjusted.
+- **When the owner is buying:**
+  - **Targets:** the partner's players (lineup, bench or IR; not taxi) at the owner's **need positions** who are worth **more than the owner's weakest market-value-lineup player at that position**, are **26 or older**, and are **currently first on their NFL depth chart** (Sleeper `depth_chart_order` = 1). Unavailable players qualify without the depth-chart check but are listed last. Players with no known age don't qualify.
+  - **Offers:** the owner's Stage 4 surplus players at the partner's need positions, plus the owner's **young** (24 or under) players not in the market-value lineup (bench, taxi or IR), plus the owner's **draft picks**.
+- **When the owner is selling:**
+  - **Targets:** the partner's **young** (24 or under) players not in their market-value lineup (bench, taxi or IR), plus the partner's **draft picks**.
+  - **Offers:** the owner's Stage 4 surplus players at the partner's need positions, plus the owner's **veterans** (27 or older).
+- **Draft picks are now suggestible assets** (previously context only). They are still valued only by FantasyCalc's plain per-round value for the exact season and round; early/mid/late is never guessed, and picks with no exact value aren't suggested.
+- **Lists:** up to 3 players per position and up to 3 picks, available players first, then highest market value. Protected players are never offered.

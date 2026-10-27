@@ -5,8 +5,8 @@ import type { SleeperApi } from '../api/sleeper';
 import { toPlayerIndex, type PlayerIndex } from '../domain/players';
 import type { KeyValueStore } from '../storage/idb';
 
-/** v2 adds player ages; a v1 cache is ignored, causing one fresh download. */
-export const PLAYER_CACHE_KEY = 'players:nfl:v2';
+/** v3 adds NFL depth-chart order (v2 added ages); an older cache is ignored, causing one fresh download. */
+export const PLAYER_CACHE_KEY = 'players:nfl:v3';
 export const PLAYER_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 interface CachedPlayers {

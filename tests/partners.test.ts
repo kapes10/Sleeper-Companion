@@ -101,11 +101,12 @@ describe('real fixture leagues (redacted Sleeper + real FantasyCalc)', () => {
     expect(r.partners[0]).toMatchObject({ rank: 1, tied: false, recentTrades: 1 });
   });
 
-  it('league D: offers are the owner’s real QB surplus (Rodgers, McKee), highest value first, as assets to consider', () => {
+  it('league D (buying): offers include the owner’s real QB surplus (Rodgers, McKee), tagged as surplus', () => {
     const r = list(matchPartners(azPartnerInput('D')));
     for (const p of r.partners) {
       expect(p.theyNeed).toEqual(['QB']);
-      expect(p.offers[0]!.players.map((x) => x.name)).toEqual(['Aaron Rodgers', 'Tanner McKee']);
+      const surplus = p.offers.flatMap((g) => g.players.filter((c) => c.why === 'surplus').map((c) => c.player.name));
+      expect(surplus).toEqual(['Aaron Rodgers', 'Tanner McKee']);
       expect(p.reasons.join(' ')).toMatch(/They have a need at QB, where you have surplus market value/);
     }
   });
@@ -212,65 +213,178 @@ describe('ranking', () => {
 });
 
 // ---------------------------------------------------------------------------------------------
-describe('targets, offers and protected players', () => {
-  it('targets: their surplus at your need; up to 3, highest value first; injuries are notes only', () => {
-    const { i, ids } = cleanD();
-    const [a] = ids as [number];
-    setTier(i, a, 'seller');
-    const rbs = [player('r1', 'RB', 1100), player('r2', 'RB', 3000, 'Out'), player('r3', 'RB', 2000), player('r4', 'RB', 1500)];
-    setPositions(posTeam(i, a), [], { RB: rbs });
+describe('which players and picks are suggested (approved 2026-10-27)', () => {
+  /** Adds players to the Sleeper player list used for ages and NFL depth chart. */
+  function withPlayers(i: PartnerInput, info: Record<string, { age: number | null; depth: number | null }>) {
+    const players = { ...i.players };
+    for (const [id, x] of Object.entries(info)) {
+      players[id] = { id, name: `Player ${id}`, position: null, team: null, fantasyPositions: [], status: null, injuryStatus: null, age: x.age, depthChartOrder: x.depth };
+    }
+    return { ...i, players };
+  }
+  /** Clears a team's roster groups and sets them explicitly. */
+  function setRoster(t: TeamPositional, groups: { lineup?: PlayerRef[]; bench?: PlayerRef[]; ir?: PlayerRef[]; taxi?: PlayerRef[] }) {
+    t.marketLineup = (groups.lineup ?? []).map((p) => ({ slot: p.position!, player: p }));
+    t.bench = groups.bench ?? [];
+    t.stashed = { ir: groups.ir ?? [], taxi: groups.taxi ?? [] };
+  }
+  const ids = (groups: { players: { player: PlayerRef }[] }[]) => groups.flatMap((g) => g.players.map((c) => c.player.id));
+
+  /** Buying scenario: the owner needs RB (weakest lineup RB worth 2,000) and has QB surplus; one seller partner needs QB. */
+  function buyScenario() {
+    const { i, me, ids: others } = cleanD();
+    const partner = others[0]!;
+    setTier(i, partner, 'seller');
+    setPositions(posTeam(i, partner), ['QB'], {});
+    setRoster(posTeam(i, me), {
+      lineup: [player('myrb', 'RB', 2000), player('myqb', 'QB', 6000)],
+      bench: [player('young1', 'RB', 1500), player('old1', 'WR', 1800), player('tiny', 'WR', 300)],
+      taxi: [player('young2', 'WR', 1200)],
+    });
+    setRoster(posTeam(i, partner), {
+      lineup: [player('t_ok', 'RB', 4000), player('t_young', 'RB', 5000), player('t_backup', 'RB', 3500), player('t_wr', 'WR', 6000)],
+      bench: [player('t_low', 'RB', 1500), player('t_ir', 'RB', 7000, 'IR'), player('t_q', 'RB', 3000, 'Questionable')],
+    });
+    const info = {
+      t_ok: { age: 28, depth: 1 },
+      t_young: { age: 23, depth: 1 }, // too young for a buyer's target
+      t_backup: { age: 29, depth: 2 }, // not first on the NFL depth chart
+      t_wr: { age: 30, depth: 1 }, // not a position you need
+      t_low: { age: 30, depth: 1 }, // not an upgrade on your weakest RB (2,000)
+      t_ir: { age: 27, depth: 3 }, // unavailable: qualifies without the depth chart, listed last
+      t_q: { age: 26, depth: 1 }, // Questionable counts as available
+      young1: { age: 22, depth: 2 },
+      young2: { age: 21, depth: null },
+      old1: { age: 30, depth: 1 },
+      tiny: { age: 22, depth: null }, // below the value floor
+    };
+    return { i: withPlayers(i, info), partner, me };
+  }
+
+  it('Buying → targets are 26+ NFL-starting upgrades at your needs; unavailable players listed last', () => {
+    const { i } = buyScenario();
     const p = list(matchPartners(i)).partners[0]!;
-    expect(p.targets).toEqual([{ position: 'RB', players: [rbs[1], rbs[2], rbs[3]] }]);
-    expect(p.targets[0]!.players[0]).toMatchObject({ value: 3000, injury: 'Out' }); // value unchanged by injury
-    expect(p.offers).toEqual([]);
+    expect(p.targets).toHaveLength(1);
+    expect(p.targets[0]!.position).toBe('RB');
+    expect(p.targets[0]!.players.map((c) => [c.player.id, c.why, c.unavailable])).toEqual([
+      ['t_ok', 'upgrade', false],
+      ['t_q', 'upgrade', false],
+      ['t_ir', 'upgrade', true], // highest value, but unavailable → last
+    ]);
+    expect(p.targets[0]!.players[2]!.player.value).toBe(7000); // value never adjusted
+    expect(p.targetPicks).toEqual([]);
+  });
+
+  it('Buying → offers are your surplus at their needs, your young non-lineup players, and your picks', () => {
+    const { i } = buyScenario();
+    const p = list(matchPartners(i)).partners[0]!;
+    const offers = p.offers.flatMap((g) => g.players.map((c) => [c.player.id, c.why]));
+    expect(offers).toEqual(expect.arrayContaining([['q1', 'surplus'], ['q2', 'surplus'], ['young1', 'young'], ['young2', 'young']]));
+    expect(ids(p.offers)).not.toContain('old1'); // not young, not surplus
+    expect(ids(p.offers)).not.toContain('tiny'); // below the value floor
+    expect(p.offerPicks.length).toBeGreaterThan(0);
+    expect(p.offerPicks.length).toBeLessThanOrEqual(3);
+    for (const l of p.offerPicks) expect((l.value! / i.topValue!) * 100).toBeGreaterThanOrEqual(10);
+    expect(p.offerPicks.map((l) => l.value)).toEqual([...p.offerPicks.map((l) => l.value)].sort((a, b) => b! - a!));
+  });
+
+  it('Selling → targets are their young non-lineup players and picks; offers are your surplus and veterans', () => {
+    const { i: base, partner, me } = buyScenario();
+    const i = withStance(base, 'sell');
+    setTier(i, partner, 'contender');
+    setRoster(posTeam(i, partner), {
+      lineup: [player('c_star', 'WR', 8000)],
+      bench: [player('c_young', 'WR', 2500), player('c_vet', 'WR', 2600)],
+      taxi: [player('c_taxi', 'RB', 1400)],
+    });
+    setRoster(posTeam(i, me), { lineup: [player('my_vet', 'WR', 3000), player('my_kid', 'RB', 4000)], bench: [player('my_vet2', 'TE', 1500)] });
+    const j = withPlayers(i, {
+      c_star: { age: 23, depth: 1 }, // young but in their lineup → not a target
+      c_young: { age: 22, depth: 2 },
+      c_vet: { age: 29, depth: 1 },
+      c_taxi: { age: 21, depth: null },
+      my_vet: { age: 29, depth: 1 },
+      my_kid: { age: 22, depth: 1 },
+      my_vet2: { age: 31, depth: 1 },
+    });
+    const p = list(matchPartners(j)).partners.find((x) => x.rosterId === partner)!;
+    expect(ids(p.targets).sort()).toEqual(['c_taxi', 'c_young']);
+    expect(p.targets.flatMap((g) => g.players.map((c) => c.why))).toEqual(['young', 'young']);
+    expect(p.offers.flatMap((g) => g.players.map((c) => [c.player.id, c.why]))).toEqual(expect.arrayContaining([['q1', 'surplus'], ['my_vet', 'veteran'], ['my_vet2', 'veteran']]));
+    expect(ids(p.offers)).not.toContain('my_kid');
+    expect(p.offerPicks).toEqual([]);
+    for (const l of p.targetPicks) expect((l.value! / j.topValue!) * 100).toBeGreaterThanOrEqual(10);
+  });
+
+  it('up to 3 players per position, available players first, then highest value', () => {
+    const { i, partner } = buyScenario();
+    const t = posTeam(i, partner);
+    const extra = ['e1', 'e2', 'e3', 'e4'].map((id, k) => player(id, 'RB', 3000 + k * 100));
+    t.bench = [...t.bench, ...extra];
+    const j = withPlayers(i, Object.fromEntries(extra.map((x) => [x.id, { age: 27, depth: 1 }])));
+    const p = list(matchPartners(j)).partners[0]!;
+    expect(p.targets[0]!.players).toHaveLength(3);
+    expect(p.targets[0]!.players.map((c) => c.player.value)).toEqual([4000, 3300, 3200]);
   });
 
   it('protected players are never offered; protecting every surplus player at a position removes that fit', () => {
-    const { i, ids } = cleanD();
-    const [a, b] = ids as [number, number];
+    const { i, ids: others } = cleanD();
+    const [a, b] = others as [number, number];
     setTier(i, a, 'seller');
     setPositions(posTeam(i, a), ['QB'], {});
     setTier(i, b, 'seller');
     setPositions(posTeam(i, b), ['QB'], { RB: [player('r1', 'RB', 1500)] });
 
     const one = list(matchPartners({ ...i, protectedIds: new Set(['q1']) }));
-    expect(one.protectedCount).toBe(1);
-    for (const p of one.partners) expect(p.offers.flatMap((g) => g.players.map((x) => x.id))).toEqual(['q2']);
+    for (const p of one.partners) {
+      expect(ids(p.offers)).not.toContain('q1');
+      expect(ids(p.offers)).toContain('q2');
+    }
 
     const all = list(matchPartners({ ...i, protectedIds: new Set(['q1', 'q2']) }));
-    expect(all.partners.map((p) => [p.rosterId, p.fit, p.theyNeed])).toEqual([[b, 'one-way', []]]); // b only on "they have"
+    expect(all.partners.map((p) => [p.rosterId, p.fit, p.theyNeed])).toEqual([[b, 'one-way', []]]);
     expect(all.notListed.map((n) => n.rosterId)).toContain(a);
     expect(JSON.stringify(all.partners)).not.toMatch(/"q1"|"q2"/);
+
+    // Protection applies to every kind of offer, including young players.
+    const { i: bi } = buyScenario();
+    const young = list(matchPartners({ ...bi, protectedIds: new Set(['young1']) })).partners[0]!;
+    expect(ids(young.offers)).not.toContain('young1');
   });
 
-  it('every listed asset has a matched value (unvalued players are never offered or targeted)', () => {
+  it('every suggested player has a matched value of at least 10 on the 0–100 scale (real leagues)', () => {
     for (const l of ['B', 'C', 'D'] as Letter[]) {
       const r = matchPartners(azPartnerInput(l));
       if (r.kind !== 'list') continue;
-      for (const p of r.partners) for (const g of [...p.targets, ...p.offers]) for (const x of g.players) expect(x.value).not.toBeNull();
+      for (const p of r.partners) for (const g of [...p.targets, ...p.offers]) for (const c of g.players) {
+        expect(c.player.value).not.toBeNull();
+        expect(c.player.scaled!).toBeGreaterThanOrEqual(10);
+      }
     }
   });
 });
 
-describe('draft picks (context only)', () => {
-  it('maps by exact season and round to the plain FantasyCalc value; never early/mid/late; otherwise no value', () => {
+describe('draft picks', () => {
+  it('are valued only by the plain FantasyCalc value for the exact season and round (never early/mid/late)', () => {
     const i = azPartnerInput('D');
     const p = list(matchPartners(i)).partners[0]!;
     const plain = (name: string) => i.fcPicks.find((x) => x.name === name)?.value ?? null;
-    for (const line of [...p.picks.mine!, ...p.picks.theirs!]) {
+    for (const line of [...p.picks.mine!, ...p.picks.theirs!, ...p.offerPicks, ...p.targetPicks]) {
       const ord = line.round === 1 ? '1st' : line.round === 2 ? '2nd' : line.round === 3 ? '3rd' : `${line.round}th`;
       expect(line.value).toBe(plain(`${line.season} ${ord}`));
     }
     expect(i.fcPicks.some((x) => x.name === '2027 1st (Early)')).toBe(true); // exists, but never used
-    // A season FantasyCalc doesn't list → no value.
+  });
+
+  it('are suggested only with an exact value; otherwise shown as "no value" context and never suggested', () => {
+    const i = azPartnerInput('D');
     const noMap = list(matchPartners({ ...i, fcPicks: [] })).partners[0]!;
     expect(noMap.picks.mine!.every((l) => l.value === null)).toBe(true);
-    // Picks never appear as targets or offers.
-    for (const g of [...p.targets, ...p.offers]) expect(g.position).not.toBe('PICK');
+    expect(noMap.offerPicks).toEqual([]);
+    expect(noMap.targetPicks).toEqual([]);
   });
 });
 
-// ---------------------------------------------------------------------------------------------
 describe('explanations instead of a list', () => {
   const code = (i: PartnerInput) => matchPartners(i) as Extract<PartnerResult, { kind: 'explanation' }>;
 

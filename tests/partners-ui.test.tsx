@@ -89,7 +89,10 @@ describe('Trade partners view', () => {
     for (const c of cards) {
       expect(c).toHaveTextContent('(inferred from their tier, an estimate)');
       expect(c).toHaveTextContent('They have a need at QB, where you have surplus market value.');
-      expect(within(c).getByText('Your assets they might value (assets to consider)')).toBeInTheDocument();
+      expect(within(c).getByText('Win-now upgrades on their roster (assets to consider)')).toBeInTheDocument();
+      expect(within(c).getByText('Your assets they might value: surplus, young players, picks')).toBeInTheDocument();
+      expect(c).toHaveTextContent('Your surplus at their need');
+      expect(c).toHaveTextContent('Only players and picks worth at least 10 on the 0–100 scale are suggested.');
       expect(c).toHaveTextContent('Aaron Rodgers');
     }
     expect(cards[0]).toHaveTextContent('1 completed trade in the last 3 weeks (context only');

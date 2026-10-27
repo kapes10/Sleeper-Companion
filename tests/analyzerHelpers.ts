@@ -89,6 +89,8 @@ export function azPartnerInput(letter: Letter, change?: Parameters<typeof azInpu
     mine,
     positional: _analyzePositions({ league: input.league, rosters: input.rosters, players: azPlayers, values: azValues(letter) }),
     fcPicks: azFcPicks(letter),
+    players: azPlayers,
+    topValue: Math.max(...[...azValues(letter).values()].map((v) => v.raw)),
     protectedIds: new Set(),
     nameOf: (rosterId) => _teamName(d.users, input.rosters.find((r) => r.roster_id === rosterId)?.owner_id ?? null) ?? `Team ${rosterId}`,
     currentWeek: input.currentWeek,

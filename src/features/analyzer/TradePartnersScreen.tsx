@@ -3,7 +3,7 @@
 // Read-only: nothing is sent to anyone and nothing is written to Sleeper.
 import { useCallback, useState } from 'react';
 import { LeagueNav } from '../../components/LeagueNav';
-import { deadlineLabel, GRADE_TEXT, INFERRED_STANCE, matchPartners, type AssetGroup, type Partner, type PickLine } from '../../analysis/partners';
+import { deadlineLabel, GRADE_TEXT, INFERRED_STANCE, matchPartners, PARTNER_RULES, type AssetGroup, type Candidate, type Partner, type PickLine } from '../../analysis/partners';
 import type { PlayerRef, TeamPositional } from '../../analysis/positional/positional';
 import { recommendStance } from '../../analysis/stance';
 import type { Confidence } from '../../analysis/tiers';
@@ -84,6 +84,8 @@ function PartnersBody({ loaded, account, protectedIds, onToggleProtected }: { lo
     mine,
     positional,
     fcPicks: values?.kind === 'available' ? values.snap.picks : [],
+    players: data.players,
+    topValue: values?.kind === 'available' ? Math.max(...[...values.values.values()].map((v) => v.raw)) : null,
     protectedIds,
     nameOf,
     currentWeek: data.week,
@@ -132,7 +134,7 @@ function PartnersBody({ loaded, account, protectedIds, onToggleProtected }: { lo
           </p>
           <ol className="space-y-3" aria-label="Suggested trade partners">
             {result.partners.map((p) => (
-              <PartnerCard key={p.rosterId} p={p} nameOf={nameOf} />
+              <PartnerCard key={p.rosterId} p={p} nameOf={nameOf} stance={result.myStance} />
             ))}
           </ol>
           {result.notListed.length > 0 && (
@@ -188,24 +190,48 @@ function ConfBadge({ c, prefix = '' }: { c: Confidence; prefix?: string }) {
   );
 }
 
-function Assets({ title, groups, empty }: { title: string; groups: AssetGroup[]; empty: string }) {
+/** Short "why this player" tag. */
+function whyText(c: Candidate): string {
+  const age = c.age === null ? '' : `, age ${c.age}`;
+  if (c.why === 'upgrade') return `Upgrade at your need${age}${c.unavailable ? '' : ', starts on their NFL depth chart'}`;
+  if (c.why === 'surplus') return `Your surplus at their need${age}`;
+  if (c.why === 'young') return `Young (${PARTNER_RULES.youngMaxAge} or under)${age}`;
+  return `Veteran (${PARTNER_RULES.veteranMinAge}+)${age}`;
+}
+
+function Assets({ title, groups, picks, nameOf, empty }: { title: string; groups: AssetGroup[]; picks: PickLine[]; nameOf: (id: number) => string; empty: string }) {
   return (
     <div>
       <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">{title}</h4>
-      {groups.length === 0 ? (
+      {groups.length === 0 && picks.length === 0 ? (
         <p className="text-xs text-slate-500">{empty}</p>
       ) : (
-        <ul className="mt-1 space-y-0.5 text-xs text-slate-200">
+        <ul className="mt-1 space-y-1 text-xs text-slate-200">
           {groups.flatMap((g) =>
-            g.players.map((pl) => (
-              <li key={`${g.position}-${pl.id}`}>
-                <span className="font-semibold text-slate-400">{g.position}</span> {pl.name}
-                <span className="text-slate-500">{pl.team ? ` · ${pl.team}` : ''}</span> <span className="tabular-nums">{fmt(pl.value!)}</span>
-                <span className="text-slate-500"> ({pl.scaled} on 0–100)</span>
-                {pl.injury && <span className="ml-1 text-amber-300">({pl.injury}: note only, value not adjusted)</span>}
+            g.players.map((c) => (
+              <li key={`${g.position}-${c.player.id}`} className={c.unavailable ? 'opacity-80' : ''}>
+                <span className="font-semibold text-slate-400">{g.position}</span> {c.player.name}
+                <span className="text-slate-500">{c.player.team ? ` · ${c.player.team}` : ''}</span> <span className="tabular-nums">{fmt(c.player.value!)}</span>
+                <span className="text-slate-500"> ({c.player.scaled} on 0–100)</span>
+                <span className="block pl-6 text-slate-500">
+                  {whyText(c)}
+                  {c.player.injury && (
+                    <span className="text-amber-300">
+                      {' '}
+                      · {c.player.injury}
+                      {c.unavailable ? ': listed after available players' : ''} (value not adjusted)
+                    </span>
+                  )}
+                </span>
               </li>
             )),
           )}
+          {picks.map((l) => (
+            <li key={`pick-${l.season}-${l.round}-${l.originalRosterId}`}>
+              <span className="font-semibold text-slate-400">PICK</span> {l.season} {ORD[l.round] ?? `${l.round}th`} ({nameOf(l.originalRosterId)}) <span className="tabular-nums">{fmt(l.value!)}</span>
+              <span className="block pl-6 text-slate-500">FantasyCalc's plain value for this exact season and round</span>
+            </li>
+          ))}
         </ul>
       )}
     </div>
@@ -231,7 +257,7 @@ function Picks({ label, lines, nameOf }: { label: string; lines: PickLine[] | nu
   );
 }
 
-function PartnerCard({ p, nameOf }: { p: Partner; nameOf: (id: number) => string }) {
+function PartnerCard({ p, nameOf, stance }: { p: Partner; nameOf: (id: number) => string; stance: 'buy' | 'sell' }) {
   const name = nameOf(p.rosterId);
   return (
     <li className="space-y-2 rounded-xl bg-slate-900 p-3" aria-label={`Partner ${name}`}>
@@ -253,8 +279,32 @@ function PartnerCard({ p, nameOf }: { p: Partner; nameOf: (id: number) => string
         ))}
         {p.recentTrades === 0 && <li>No completed trades in the last 3 weeks (context only).</li>}
       </ul>
-      <Assets title="Possible targets on their roster (assets to consider)" groups={p.targets} empty="None at your need positions." />
-      <Assets title="Your assets they might value (assets to consider)" groups={p.offers} empty="None at their need positions (protected players are never listed)." />
+      {stance === 'buy' ? (
+        <>
+          <Assets
+            title="Win-now upgrades on their roster (assets to consider)"
+            groups={p.targets}
+            picks={p.targetPicks}
+            nameOf={nameOf}
+            empty={`None: no ${PARTNER_RULES.buyTargetMinAge}+ NFL starters at your need positions worth more than your weakest starter there.`}
+          />
+          <Assets
+            title="Your assets they might value: surplus, young players, picks"
+            groups={p.offers}
+            picks={p.offerPicks}
+            nameOf={nameOf}
+            empty="None (protected players are never listed)."
+          />
+        </>
+      ) : (
+        <>
+          <Assets title="Young players and picks on their roster (assets to consider)" groups={p.targets} picks={p.targetPicks} nameOf={nameOf} empty="None that meet the value floor." />
+          <Assets title="Your assets they might value: surplus and veterans" groups={p.offers} picks={p.offerPicks} nameOf={nameOf} empty="None (protected players are never listed)." />
+        </>
+      )}
+      <p className="text-xs text-slate-500">
+        Only players and picks worth at least {PARTNER_RULES.minScaled} on the 0–100 scale are suggested. Unavailable players (IR, Out, PUP, suspended) are listed last.
+      </p>
       <details className="text-xs text-slate-400">
         <summary className="cursor-pointer py-1 text-slate-300">Confidence, data coverage and draft picks</summary>
         <div className="space-y-1">
