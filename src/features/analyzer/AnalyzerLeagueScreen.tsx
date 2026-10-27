@@ -1,6 +1,7 @@
 // Team Analyzer results for ONE league, calculated when the screen opens. The calculations live in
 // src/analysis (no UI code there); this file only loads data and displays the results.
 import { useCallback, type ReactNode } from 'react';
+import { LeagueNav } from '../../components/LeagueNav';
 import { TIER_ORDER, type Confidence, type LeagueAnalysis, type TeamAnalysis, type Tier } from '../../analysis/tiers';
 import { recommendStance, type StanceResult } from '../../analysis/stance';
 import { formatRecord, type TeamRecord } from '../../analysis/standings';
@@ -64,6 +65,7 @@ export function AnalyzerLeagueScreen({ account, leagueId }: { account: SavedAcco
       <a href="#/analyzer" className="mb-4 inline-flex min-h-11 items-center text-sm text-emerald-400 hover:text-emerald-300">
         ← Team Analyzer
       </a>
+      <LeagueNav leagueId={leagueId} active="analyzer" />
       <div className="space-y-4">
         {state.status === 'loading' && <Loading label={data ? 'Refreshing…' : 'Analyzing this league…'} />}
         {state.status === 'error' && <ErrorMessage error={state.error} title="Couldn't analyze this league" onRetry={reload} />}

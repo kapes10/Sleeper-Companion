@@ -213,3 +213,19 @@ describe('Leagues tab: standings on each league card', () => {
     expect(d).toHaveTextContent('League high1,158.0 PF');
   });
 });
+
+describe('in-league navigation', () => {
+  it.each([
+    ['roster', (id: string) => `#/league/${id}`, 'Roster'],
+    ['analyzer', (id: string) => `#/analyzer/${id}`, 'Team Analyzer'],
+    ['partners', (id: string) => `#/analyzer/${id}/partners`, 'Trade partners'],
+  ])('the %s screen links to all three screens for the same league', async (_, hash, current) => {
+    const id = leagueId('A');
+    renderApp(hash(id));
+    const nav = await screen.findByRole('navigation', { name: 'This league' });
+    expect(within(nav).getByRole('link', { name: 'Roster' })).toHaveAttribute('href', `#/league/${id}`);
+    expect(within(nav).getByRole('link', { name: 'Team Analyzer' })).toHaveAttribute('href', `#/analyzer/${id}`);
+    expect(within(nav).getByRole('link', { name: 'Trade partners' })).toHaveAttribute('href', `#/analyzer/${id}/partners`);
+    expect(within(nav).getByRole('link', { name: current })).toHaveAttribute('aria-current', 'page');
+  });
+});

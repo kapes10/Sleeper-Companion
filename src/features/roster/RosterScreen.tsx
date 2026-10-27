@@ -1,4 +1,5 @@
 import { useCallback, type ReactNode } from 'react';
+import { LeagueNav } from '../../components/LeagueNav';
 import { Button, ErrorMessage, Loading, Notice, Screen, formatTime } from '../../components/ui';
 import { useAsync } from '../../components/useAsync';
 import { describeError } from '../../api/client';
@@ -50,6 +51,7 @@ export function RosterScreen({ account, leagueId }: { account: SavedAccount; lea
       <a href="#/" className="mb-4 inline-flex min-h-11 items-center text-sm text-emerald-400 hover:text-emerald-300">
         ← All leagues
       </a>
+      <LeagueNav leagueId={leagueId} active="roster" />
       <div className="space-y-4">
         {state.status === 'loading' && <Loading label={data ? 'Refreshing…' : 'Loading roster and player names…'} />}
         {state.status === 'error' && <ErrorMessage error={state.error} title="Couldn't load this league" onRetry={reload} />}

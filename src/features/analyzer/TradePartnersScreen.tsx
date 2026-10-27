@@ -2,6 +2,7 @@
 // league, calculated when opened. All matching logic lives in src/analysis/partners.ts.
 // Read-only: nothing is sent to anyone and nothing is written to Sleeper.
 import { useCallback, useState } from 'react';
+import { LeagueNav } from '../../components/LeagueNav';
 import { deadlineLabel, GRADE_TEXT, INFERRED_STANCE, matchPartners, type AssetGroup, type Partner, type PickLine } from '../../analysis/partners';
 import type { PlayerRef, TeamPositional } from '../../analysis/positional/positional';
 import { recommendStance } from '../../analysis/stance';
@@ -57,9 +58,10 @@ export function TradePartnersScreen({ account, leagueId }: { account: SavedAccou
         </Button>
       }
     >
-      <a href={`#/analyzer/${leagueId}`} className="mb-4 inline-flex min-h-11 items-center text-sm text-emerald-400 hover:text-emerald-300">
-        ← Team Analyzer for this league
+      <a href="#/analyzer" className="mb-4 inline-flex min-h-11 items-center text-sm text-emerald-400 hover:text-emerald-300">
+        ← Team Analyzer
       </a>
+      <LeagueNav leagueId={leagueId} active="partners" />
       <div className="space-y-4">
         {state.status === 'loading' && <Loading label={loaded ? 'Refreshing…' : 'Finding trade partners…'} />}
         {state.status === 'error' && <ErrorMessage error={state.error} title="Couldn't load this league" onRetry={reload} />}
