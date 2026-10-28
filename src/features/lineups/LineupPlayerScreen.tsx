@@ -69,9 +69,7 @@ export function LineupPlayerScreen({ account, playerId }: { account: SavedAccoun
     return { league: l, read: r, row: r && r !== 'loading' && r.ok ? rowFor(l, r) : null };
   });
   const failed = rows.filter((x) => x.read && x.read !== 'loading' && !x.read.ok);
-  // Leagues with a choice to make come first (Sleeper's league order kept within each group).
-  const actionable = (x: (typeof rows)[number]) => (x.row!.finding.kind === 'available' || x.row!.finding.kind === 'none' ? 0 : 1);
-  const shown = rows.filter((x) => x.row).sort((a, b) => actionable(a) - actionable(b));
+  const shown = rows.filter((x) => x.row);
   const notRostered = rows.filter((x) => x.read && x.read !== 'loading' && x.read.ok && !x.row).length;
   const savedItem = (leagueId: string) => items.find((i) => i.key === itemKey(leagueId, playerId, ctx.state));
   const selectable = (row: LeagueRow) => row.finding.kind === 'available' && !savedItem(row.leagueId);
