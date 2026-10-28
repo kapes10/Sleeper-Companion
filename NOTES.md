@@ -26,7 +26,21 @@
 
 - **Trade candidate rules revised (2026-10-27, owner approved; see DECISIONS.md):** stance-typed targets and offers (buy: 26+ NFL-starting upgrades at need positions; offer youth 24 or under and picks; sell: target youth and picks, offer veterans 27+), a value floor of 10, unavailable players listed last, picks now suggestible. **Approved and deployed 2026-10-27.** Adds the NFL depth-chart field to the saved player list, so each device downloads Sleeper's player list once more. Live check (2026-10-27, after week 7): buying targets are now real upgrades (e.g. CeeDee Lamb, Zay Flowers, James Cook, Ja'Marr Chase, George Kittle) instead of injured backups. Unavailable players are listed last. Many partners still show no targets, because partner ranking is unchanged (Stage 4 positional fit) and many of the owner's teams have no need positions. Young offers can include valuable bench players (e.g. Jeremiyah Love in Game On); the Protect control is the way to keep them off the list.
 
-- **Stage 6: assisted, read-only lineup manager**: scope approved 2026-10-28 (see DECISIONS.md). Now in the live Sleeper API audit and rules proposal; no code yet. The owner approved using the undocumented roster `taxi`/`co_owners` lists, the order of roster `starters` and the contents of `roster_positions`, labeled as undocumented.
+- **Stage 6: assisted, read-only lineup manager**: scope approved 2026-10-28 (see DECISIONS.md). Live audit done and rules approved 2026-10-28 (see DECISIONS.md); building next. The owner approved using the undocumented roster `taxi`/`co_owners` lists, the order of roster `starters` and the contents of `roster_positions`, labeled as undocumented.
+
+### Stage 6 audit (live, 2026-10-28, NFL week 8)
+- Read-only and assisted: the app never changes a lineup. Replacement candidates are **unranked by design**. League type is an owner-maintained setting on this device; best-ball and Unknown leagues are informational only.
+- The app cannot know lock, bye or game status; every proposal carries a confirm-in-Sleeper caveat. Roster data is the only lineup source.
+- 23 leagues, 26 requests for the audit (state, league list, player list, 23 rosters). Every roster's starter count matches its lineup slots; no starter missing from the roster or player list; nobody both starting and on reserve/taxi; owner on exactly one roster everywhere. Empty slots ("0") appear only on other teams in best-ball leagues.
+- Slot types: QB, RB, WR, TE, FLEX, SUPER_FLEX only (none unsupported; that case is tested with modified data only).
+- NFL state today: season 2026, week 8, regular. Preseason, offseason and NFL postseason behavior not observed live. Fantasy playoffs start week 15 in all leagues; the app can't tell whether a team is eliminated.
+- No documented field gives lock, bye or game state. League settings such as `bench_lock` describe rules, not live state (undocumented, unused).
+- Sleeper's `best_ball` setting (undocumented, hint only): 1 in 16 leagues, 0 in 7.
+- **Freshness:** Sleeper serves rosters through a shared cache (headers: `s-maxage=300, stale-while-revalidate=300`), so even a forced read can return a copy a few minutes old (up to about 10). Not yet measured with a real lineup change (owner lag test pending).
+- **Undocumented fields used (owner approved):** roster `taxi` and `co_owners`, the order of roster `starters` (documented only for matchups), the contents of `roster_positions`.
+- **Open in Sleeper:** tested `https://sleeper.com/leagues/<league id>` in headless Edge on desktop, signed out: it goes to Sleeper's sign-in page with the league path kept for afterwards. Signed-in desktop and phone behavior **not yet confirmed**.
+- Request counts: full scan 25 (state, league list, 23 rosters); review and "Check again" 2 + one per selected/pending league (at most 9 today). Sleeper's guidance is under 1,000 per minute.
+- Duplicate names on the owner's rosters: Kyle Williams (3 players in Sleeper's list), Antonio Williams (2).
 
 ### Stage 5 audit (live, 2026-10-26, NFL week 7)
 - Re-checked today: 23 dynasty leagues; owner roster exactly once in each; no abandoned rosters; 2 rosters with co-owners (neither is the owner's); deadlines 12 (1 league), 13 (3), 14 (15), 99 (4), none passed; 10 leagues with completed trades in weeks 5–7; future picks in Sleeper's traded-pick records cover 2027–2029, rounds 1–4.
@@ -111,10 +125,10 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - CSV scoring compatibility fixed: imports now record teams, PPR and TE premium tier, and a CSV set is only used when all five format settings match the league. A set saved before this fix has no scoring recorded and is never used; the roster says so and asks for a re-import.
 
 ## Open questions for the owner
-1. **Stage 6:** rules proposal (eligibility, wording, verification, staleness, links) awaiting owner approval.
+1. **Stage 6 lag test (owner):** in The Dynasty Collective, swap Braelon Allen (FLEX) with J.K. Dobbins (bench), note the time, then swap back, so the time until Sleeper's roster data shows the change can be measured.
 
 ## Possible future updates (not planned)
 - **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Owner checks Stage 5 on their phone. Stage 6: audit, then rules proposal for owner approval.
+Owner checks Stage 5 on their phone. Stage 6: build, then owner review.
