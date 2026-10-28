@@ -1,6 +1,8 @@
 /** Top-level tabs. Plain links, so the phone's back button keeps working. */
-export function MainTabs({ active }: { active: 'leagues' | 'analyzer' }) {
-  const tab = (id: 'leagues' | 'analyzer', href: string, label: string) => (
+type Tab = 'leagues' | 'analyzer' | 'lineups';
+
+export function MainTabs({ active }: { active: Tab }) {
+  const tab = (id: Tab, href: string, label: string) => (
     <a
       href={href}
       aria-current={active === id ? 'page' : undefined}
@@ -15,6 +17,7 @@ export function MainTabs({ active }: { active: 'leagues' | 'analyzer' }) {
     <nav aria-label="Main" className="mb-4 flex gap-1 rounded-xl bg-slate-900 p-1">
       {tab('leagues', '#/', 'Leagues')}
       {tab('analyzer', '#/analyzer', 'Team Analyzer')}
+      {tab('lineups', '#/lineups', 'Lineups')}
     </nav>
   );
 }

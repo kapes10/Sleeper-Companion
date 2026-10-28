@@ -1,5 +1,5 @@
 // The documented Sleeper endpoints this app uses. All are public and read-only.
-import type { SleeperClient } from './client';
+import type { RequestOptions, SleeperClient } from './client';
 import type {
   SleeperLeague,
   SleeperLeagueUser,
@@ -35,12 +35,13 @@ export function createSleeperApi(client: SleeperClient) {
     },
 
     /** GET /state/nfl — current season and week. */
-    getNflState: () => client.getJson<SleeperNflState>('/state/nfl'),
+    getNflState: (opts?: RequestOptions) => client.getJson<SleeperNflState>('/state/nfl', opts),
 
     /** GET /user/<user_id>/leagues/nfl/<season> */
-    async getUserLeagues(userId: string, season: string): Promise<SleeperLeague[]> {
+    async getUserLeagues(userId: string, season: string, opts?: RequestOptions): Promise<SleeperLeague[]> {
       const leagues = await client.getJson<SleeperLeague[] | null>(
         `/user/${encodeURIComponent(userId)}/leagues/nfl/${encodeURIComponent(season)}`,
+        opts,
       );
       return leagues ?? [];
     },
@@ -49,8 +50,8 @@ export function createSleeperApi(client: SleeperClient) {
     getLeague: (leagueId: string) => client.getJson<SleeperLeague | null>(`/league/${encodeURIComponent(leagueId)}`),
 
     /** GET /league/<league_id>/rosters */
-    async getRosters(leagueId: string): Promise<SleeperRoster[]> {
-      return (await client.getJson<SleeperRoster[] | null>(`/league/${encodeURIComponent(leagueId)}/rosters`)) ?? [];
+    async getRosters(leagueId: string, opts?: RequestOptions): Promise<SleeperRoster[]> {
+      return (await client.getJson<SleeperRoster[] | null>(`/league/${encodeURIComponent(leagueId)}/rosters`, opts)) ?? [];
     },
 
     /** GET /league/<league_id>/users */

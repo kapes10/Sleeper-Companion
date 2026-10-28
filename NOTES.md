@@ -26,7 +26,17 @@
 
 - **Trade candidate rules revised (2026-10-27, owner approved; see DECISIONS.md):** stance-typed targets and offers (buy: 26+ NFL-starting upgrades at need positions; offer youth 24 or under and picks; sell: target youth and picks, offer veterans 27+), a value floor of 10, unavailable players listed last, picks now suggestible. **Approved and deployed 2026-10-27.** Adds the NFL depth-chart field to the saved player list, so each device downloads Sleeper's player list once more. Live check (2026-10-27, after week 7): buying targets are now real upgrades (e.g. CeeDee Lamb, Zay Flowers, James Cook, Ja'Marr Chase, George Kittle) instead of injured backups. Unavailable players are listed last. Many partners still show no targets, because partner ranking is unchanged (Stage 4 positional fit) and many of the owner's teams have no need positions. Young offers can include valuable bench players (e.g. Jeremiyah Love in Game On); the Protect control is the way to keep them off the list.
 
-- **Stage 6: assisted, read-only lineup manager**: scope approved 2026-10-28 (see DECISIONS.md). Live audit done and rules approved 2026-10-28 (see DECISIONS.md); building next. The owner approved using the undocumented roster `taxi`/`co_owners` lists, the order of roster `starters` and the contents of `roster_positions`, labeled as undocumented.
+- **Stage 6: assisted, read-only lineup manager**: scope approved 2026-10-28 (see DECISIONS.md). Live audit done and rules approved 2026-10-28 (see DECISIONS.md). **Built and committed locally; awaiting owner review (not pushed).** The owner approved using the undocumented roster `taxi`/`co_owners` lists, the order of roster `starters` and the contents of `roster_positions`, labeled as undocumented.
+
+### Stage 6: verified 2026-10-28 (week 8)
+- `npm test`: 323 tests pass (64 new: search, placement, eligibility for each supported slot, findings, every workflow transition, failed checks, forced reads and received-at time, saved-plan matching and expiry, league types, local state, screens). Tier, stance, Stage 4 and Stage 5 outputs match their baselines (Stage 5 baseline captured before any Stage 6 change to analysis code; none was made).
+- `npm run test:live` (Kirk Cousins, all 23 leagues): The Dynasty Collective and Philly Special show bench options (Caleb Williams; Jayden Daniels, Cam Ward, Jameis Winston), FACE OFF shows "No bench option", Game On and Dynasty 2026 show him on the bench, and best-ball leagues are information only. 25 requests (state, league list, 23 rosters), as audited.
+- Production build in headless Edge at 390 and 320 px with live data: league types (bulk and per league, hint shown), search, the cross-league view, review (3 requests: state, league list, one roster, all fresh), save, checklist and "Check again" (unchanged read stays Pending). No horizontal scroll.
+- **Not tested live:** a real lineup change being verified (needs the owner's lag test), preseason/offseason/playoff weeks, unsupported slots, ambiguous ownership and inconsistent data (covered with modified copies of real data only).
+- **Phone:** not yet tested. "Open in Sleeper" on a phone is **not yet confirmed**; signed-in desktop also not yet confirmed.
+- Shared cache change: every screen's "updated" time is now when Sleeper's answer arrived (previously when the request started). Forced reads ask the browser not to reuse its copy.
+- Each Managed league where you can act is listed first in the cross-league view; Sleeper's league order is kept within each group. Candidates are never ranked.
+- Not built (by design): one-click or batch changes, writes to Sleeper, matchups, schedules, lock/bye status, rearranging other starters, ranking, values, advice, polling, automatic cleanup.
 
 ### Stage 6 audit (live, 2026-10-28, NFL week 8)
 - Read-only and assisted: the app never changes a lineup. Replacement candidates are **unranked by design**. League type is an owner-maintained setting on this device; best-ball and Unknown leagues are informational only.
@@ -131,4 +141,4 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Owner checks Stage 5 on their phone. Stage 6: build, then owner review.
+Owner reviews Stage 6 (and checks Stages 5 and 6 on their phone), runs the lag test, then decides whether to push.

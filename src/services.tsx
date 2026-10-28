@@ -13,7 +13,7 @@ export const SESSION_CACHE_TTL_MS = 5 * 60 * 1000;
 
 export interface Services {
   api: SleeperApi;
-  /** Memoised per key; pass `force` to re-download. Returns data plus when it was fetched. */
+  /** Memoised per key; pass `force` to re-download. `fetchedAt` = when the response was received (not when the request started). */
   cached<T>(key: string, load: () => Promise<T>, force?: boolean): Promise<{ data: T; fetchedAt: number }>;
   /** The 24-hour cached player list (one download shared by all screens). */
   players(): Promise<PlayersResult>;
@@ -46,14 +46,19 @@ export function createServices(
       if (!force && hit && now() - hit.fetchedAt < SESSION_CACHE_TTL_MS) {
         return hit.promise.then((data) => ({ data: data as T, fetchedAt: hit.fetchedAt }));
       }
-      const fetchedAt = now();
-      const promise = load();
-      session.set(key, { promise, fetchedAt });
+      // Until the answer arrives this holds the start time (only used for the 5-minute reuse window).
+      const entry: { promise: Promise<unknown>; fetchedAt: number } = { promise: Promise.resolve(), fetchedAt: now() };
+      const promise = load().then((data) => {
+        entry.fetchedAt = now();
+        return data;
+      });
+      entry.promise = promise;
+      session.set(key, entry);
       // Don't keep failures around; the next attempt should try again.
       promise.catch(() => {
         if (session.get(key)?.promise === promise) session.delete(key);
       });
-      return promise.then((data) => ({ data, fetchedAt }));
+      return promise.then((data) => ({ data, fetchedAt: entry.fetchedAt }));
     },
     players() {
       if (!playersPromise) {

@@ -51,8 +51,13 @@ export interface ClientOptions {
   maxConcurrent?: number;
 }
 
+export interface RequestOptions {
+  /** Ask the browser not to reuse its own saved copy (it revalidates with Sleeper). Sleeper's shared cache may still answer. */
+  fresh?: boolean;
+}
+
 export interface SleeperClient {
-  getJson<T>(path: string): Promise<T>;
+  getJson<T>(path: string, opts?: RequestOptions): Promise<T>;
 }
 
 export function createClient(options: ClientOptions = {}): SleeperClient {
@@ -81,12 +86,12 @@ export function createClient(options: ClientOptions = {}): SleeperClient {
     queue.shift()?.();
   }
 
-  async function attempt<T>(url: string): Promise<T> {
+  async function attempt<T>(url: string, fresh: boolean): Promise<T> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     let res: Response;
     try {
-      res = await fetchImpl(url, { signal: controller.signal });
+      res = await fetchImpl(url, fresh ? { signal: controller.signal, cache: 'no-cache' } : { signal: controller.signal });
     } catch (e) {
       if (controller.signal.aborted) throw new SleeperApiError('timeout', 'Request timed out');
       throw new SleeperApiError('network', e instanceof Error ? e.message : 'Network error');
@@ -107,13 +112,13 @@ export function createClient(options: ClientOptions = {}): SleeperClient {
     e instanceof SleeperApiError && (e.kind === 'network' || e.kind === 'timeout' || e.kind === 'rate_limited' || e.kind === 'server');
 
   return {
-    async getJson<T>(path: string): Promise<T> {
+    async getJson<T>(path: string, opts: RequestOptions = {}): Promise<T> {
       const url = `${SLEEPER_BASE_URL}${path}`;
       await acquire();
       try {
         for (let i = 0; ; i++) {
           try {
-            return await attempt<T>(url);
+            return await attempt<T>(url, !!opts.fresh);
           } catch (e) {
             if (i >= retries || !retryable(e)) throw e;
             await new Promise((r) => setTimeout(r, backoffMs * 2 ** i));

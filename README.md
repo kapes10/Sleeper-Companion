@@ -100,6 +100,11 @@ GitHub sometimes delays or skips scheduled runs. It also pauses schedules after 
 | 10 | Rotate the phone sideways: nothing is cut off by the notch | ☐ | ☐ |
 | 11 | Airplane mode, then open the app: it opens, and shows a readable "Couldn't reach Sleeper" message | ☐ | ☐ |
 | 12 | After a push (wait ~10 minutes), switch away from and back to the app: the new version loads without clearing anything | ☐ | ☐ |
+| 13 | Lineups tab: League types screen lists all 23 leagues; set them (this phone keeps its own copy) | ☐ | ☐ |
+| 14 | Lineups: search a player, open him, and see every league where you roster him | ☐ | ☐ |
+| 15 | Pick a replacement, Review, Save: the checklist shows "Pending, not confirmed" | ☐ | ☐ |
+| 16 | "Open in Sleeper" opens the league in the Sleeper app or website (write down which) | ☐ | ☐ |
+| 17 | "Check again" works, and in airplane mode shows "Check failed" with the status unchanged | ☐ | ☐ |
 
 ## Local vs hosted setup
 | | Local (`npm run dev` / `npm run preview`) | Hosted (GitHub Pages) |
@@ -115,7 +120,7 @@ GitHub sometimes delays or skips scheduled runs. It also pauses schedules after 
 | Command | What it does |
 | --- | --- |
 | `npm test` | Runs all automated tests (uses saved, anonymised sample data, no internet needed). |
-| `npm run test:live` | Runs the Team Analyzer, the positional market-value analysis and trade partner matching on all your real leagues and prints each result (needs internet; downloads Sleeper's player list once; reads published FantasyCalc values, never calls FantasyCalc). |
+| `npm run test:live` | Runs the Team Analyzer, the positional market-value analysis, trade partner matching and the lineup manager scan (Kirk Cousins by default; set `LINEUP_PLAYER` for another) on all your real leagues and prints each result (needs internet; downloads Sleeper's player list once; reads published FantasyCalc values, never calls FantasyCalc). |
 | `npm run typecheck` | Checks the code for type mistakes. |
 | `npm run build` | Builds the installable app into the `dist/` folder. |
 | `npm run preview` | Serves the built app locally so you can test the installable version. |
@@ -129,6 +134,7 @@ GitHub sometimes delays or skips scheduled runs. It also pauses schedules after 
 - **FantasyCalc values** live on the hosted site (`/data/fantasycalc/`), so every device sees the same ones. The latest and previous snapshot are kept for each format, untouched, including draft-pick values (not used yet).
 - **Manual CSV imports** are saved in this browser's IndexedDB only. They don't sync to your other devices.
 - **Protected players** (Trade partners screen) are saved per league in this browser's localStorage only. They don't sync to your other devices and are never sent anywhere.
+- **Lineup Manager league types and checklist** are saved in this browser's localStorage only. Set league types once per device. Nothing is ever sent to Sleeper.
 
 ## Updating the test fixtures
 
@@ -148,6 +154,7 @@ The script replaces every user ID, league ID, league name, team name and manager
 - `src/analysis/`: Team Analyzer logic (standings, season state, age/pick/trade signals, tiers, stance); no screen code
 - `src/analysis/partners.ts`: trade partner matching (stance grade, positional fit, targets/offers, confidence labels, explanations); display-only, never changes tiers, stance or positional results
 - `src/analysis/positional/`: positional market-value analysis (slot rules, optimal lineup assignment, position value, rank, labels, "what to look for"); display-only, never used by tiers or stance
+- `src/analysis/lineup/`: lineup manager logic (placement, eligibility under the supported slot rules, findings, saved plans and verification, search); read-only, no screen code
 - `src/valuations/`: FantasyCalc parameter mapping, the scheduled job's core, Sleeper-ID matching, 0–100 scale, stale checks, CSV import
 - `scripts/fetch-values.ts`: the scheduled FantasyCalc job (run by GitHub Actions)
 - `.github/workflows/deploy.yml`: the hourly schedule, tests, build and deploy

@@ -1,0 +1,2858 @@
+{
+ "A": {
+  "kind": "explanation",
+  "code": "no_fit",
+  "reason": "No reasonable fit: no team's surpluses match your needs, and no team needs what you have in surplus (protected players excluded).",
+  "deadline": {
+   "kind": "week",
+   "week": 13,
+   "passed": false
+  },
+  "excluded": []
+ },
+ "B": {
+  "kind": "list",
+  "myStance": "sell",
+  "caveat": "Your stance is only a low-confidence leaning toward selling, so every suggestion below is Low confidence. Treat this list with extra caution.",
+  "partners": [
+   {
+    "rosterId": 8,
+    "grade": 1,
+    "tier": "contender",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "WR"
+    ],
+    "targets": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "12522",
+         "name": "Cam Ward",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "TEN",
+         "value": 2322,
+         "scaled": 21,
+         "injury": null
+        },
+        "why": "young",
+        "age": 24,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13305",
+         "name": "Mike Washington Jr.",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "LV",
+         "value": 1567,
+         "scaled": 14,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "11637",
+         "name": "Keon Coleman",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "BUF",
+         "value": 1393,
+         "scaled": 13,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "13296",
+         "name": "Caleb Douglas",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "MIA",
+         "value": 1324,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "13317",
+         "name": "Ted Hurst III",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "TB",
+         "value": 1254,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "young",
+        "age": 22,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "6904",
+         "name": "Jalen Hurts",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PHI",
+         "value": 3441,
+         "scaled": 32,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 28,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "11435",
+         "name": "Emanuel Wilson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "SEA",
+         "value": 1058,
+         "scaled": 10,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 27,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "12492",
+         "name": "Pat Bryant",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "DEN",
+         "value": 1191,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [
+     {
+      "season": "2028",
+      "round": 1,
+      "originalRosterId": 8,
+      "value": 2313
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 10,
+      "value": 1635
+     },
+     {
+      "season": "2028",
+      "round": 2,
+      "originalRosterId": 3,
+      "value": 1412
+     }
+    ],
+    "offerPicks": [],
+    "recentTrades": 0,
+    "confidence": "low",
+    "confidenceNotes": [
+     "Your stance is only a low-confidence leaning."
+    ],
+    "reasons": [
+     "Natural partner for your stance (you: selling; them: likely buying, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at WR, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 27,
+      "rostered": 28
+     },
+     "theirs": {
+      "valued": 29,
+      "rostered": 29
+     },
+     "positions": [
+      {
+       "position": "WR",
+       "mine": {
+        "valued": 11,
+        "rostered": 11
+       },
+       "theirs": {
+        "valued": 16,
+        "rostered": 16
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 2,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 10,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 877
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 2313
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1412
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1025
+      },
+      {
+       "season": "2028",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 833
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 10,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 8,
+       "value": 877
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 2313
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 3,
+       "value": 1412
+      },
+      {
+       "season": "2028",
+       "round": 4,
+       "originalRosterId": 8,
+       "value": 833
+      }
+     ]
+    },
+    "rank": 1,
+    "tied": true
+   },
+   {
+    "rosterId": 6,
+    "grade": 1,
+    "tier": "contender",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [
+     "RB"
+    ],
+    "theyNeed": [],
+    "targets": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "13425",
+         "name": "Jalon Daniels",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "TB",
+         "value": 1116,
+         "scaled": 10,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "6904",
+         "name": "Jalen Hurts",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PHI",
+         "value": 3441,
+         "scaled": 32,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 28,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "11435",
+         "name": "Emanuel Wilson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "SEA",
+         "value": 1058,
+         "scaled": 10,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 27,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [
+     {
+      "season": "2027",
+      "round": 3,
+      "originalRosterId": 4,
+      "value": 1131
+     }
+    ],
+    "offerPicks": [],
+    "recentTrades": 0,
+    "confidence": "low",
+    "confidenceNotes": [
+     "Your stance is only a low-confidence leaning."
+    ],
+    "reasons": [
+     "Natural partner for your stance (you: selling; them: likely buying, inferred from their tier).",
+     "One-way positional fit:",
+     "They have surplus market value at RB, where you have a need."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 27,
+      "rostered": 28
+     },
+     "theirs": {
+      "valued": 29,
+      "rostered": 29
+     },
+     "positions": [
+      {
+       "position": "RB",
+       "mine": {
+        "valued": 8,
+        "rostered": 9
+       },
+       "theirs": {
+        "valued": 9,
+        "rostered": 9
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 2,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 10,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 877
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 2313
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1412
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1025
+      },
+      {
+       "season": "2028",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 833
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1131
+      }
+     ]
+    },
+    "rank": 1,
+    "tied": true
+   },
+   {
+    "rosterId": 9,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "WR"
+    ],
+    "targets": [
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "13413",
+         "name": "Cyrus Allen",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "KC",
+         "value": 1115,
+         "scaled": 10,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "12509",
+         "name": "Tre' Harris",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "LAC",
+         "value": 1101,
+         "scaled": 10,
+         "injury": null
+        },
+        "why": "young",
+        "age": 24,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "TE",
+      "players": [
+       {
+        "player": {
+         "id": "13421",
+         "name": "Eli Raridon",
+         "position": "TE",
+         "sleeperPosition": "TE",
+         "team": "NE",
+         "value": 1790,
+         "scaled": 16,
+         "injury": null
+        },
+        "why": "young",
+        "age": 22,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "6904",
+         "name": "Jalen Hurts",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PHI",
+         "value": 3441,
+         "scaled": 32,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 28,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "11435",
+         "name": "Emanuel Wilson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "SEA",
+         "value": 1058,
+         "scaled": 10,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 27,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "12492",
+         "name": "Pat Bryant",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "DEN",
+         "value": 1191,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [
+     {
+      "season": "2027",
+      "round": 3,
+      "originalRosterId": 9,
+      "value": 1131
+     }
+    ],
+    "offerPicks": [],
+    "recentTrades": 0,
+    "confidence": "low",
+    "confidenceNotes": [
+     "Your stance is only a low-confidence leaning."
+    ],
+    "reasons": [
+     "Possible partner for your stance (you: selling; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at WR, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 27,
+      "rostered": 28
+     },
+     "theirs": {
+      "valued": 29,
+      "rostered": 29
+     },
+     "positions": [
+      {
+       "position": "WR",
+       "mine": {
+        "valued": 11,
+        "rostered": 11
+       },
+       "theirs": {
+        "valued": 12,
+        "rostered": 12
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 2,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 10,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 877
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 2313
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1412
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1025
+      },
+      {
+       "season": "2028",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 833
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 9,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 9,
+       "value": 877
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 9,
+       "value": 1025
+      },
+      {
+       "season": "2028",
+       "round": 4,
+       "originalRosterId": 9,
+       "value": 833
+      }
+     ]
+    },
+    "rank": 3,
+    "tied": true
+   },
+   {
+    "rosterId": 2,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "WR"
+    ],
+    "targets": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "13272",
+         "name": "Carson Beck",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "ARI",
+         "value": 1428,
+         "scaled": 13,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "13285",
+         "name": "Malachi Fields",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "NYG",
+         "value": 1271,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "6904",
+         "name": "Jalen Hurts",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PHI",
+         "value": 3441,
+         "scaled": 32,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 28,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "11435",
+         "name": "Emanuel Wilson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "SEA",
+         "value": 1058,
+         "scaled": 10,
+         "injury": null
+        },
+        "why": "veteran",
+        "age": 27,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "12492",
+         "name": "Pat Bryant",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "DEN",
+         "value": 1191,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [
+     {
+      "season": "2028",
+      "round": 1,
+      "originalRosterId": 2,
+      "value": 2313
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 2,
+      "value": 1635
+     },
+     {
+      "season": "2028",
+      "round": 2,
+      "originalRosterId": 2,
+      "value": 1412
+     }
+    ],
+    "offerPicks": [],
+    "recentTrades": 0,
+    "confidence": "low",
+    "confidenceNotes": [
+     "Your stance is only a low-confidence leaning."
+    ],
+    "reasons": [
+     "Possible partner for your stance (you: selling; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at WR, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 27,
+      "rostered": 28
+     },
+     "theirs": {
+      "valued": 28,
+      "rostered": 28
+     },
+     "positions": [
+      {
+       "position": "WR",
+       "mine": {
+        "valued": 11,
+        "rostered": 11
+       },
+       "theirs": {
+        "valued": 9,
+        "rostered": 9
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 2,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 10,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 877
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 2313
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1412
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1025
+      },
+      {
+       "season": "2028",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 833
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 2,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 2,
+       "value": 877
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 2,
+       "value": 2313
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 2,
+       "value": 1412
+      }
+     ]
+    },
+    "rank": 3,
+    "tied": true
+   }
+  ],
+  "notListed": [
+   {
+    "rosterId": 3,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 1,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 7,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 10,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 5,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 11,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 12,
+    "reason": "Stances don't line up and the fit is only one-way."
+   }
+  ],
+  "excluded": [],
+  "deadline": {
+   "kind": "week",
+   "week": 14,
+   "passed": false
+  },
+  "protectedCount": 0
+ },
+ "C": {
+  "kind": "list",
+  "myStance": "buy",
+  "caveat": null,
+  "partners": [
+   {
+    "rosterId": 5,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "WR"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13337",
+         "name": "Emmett Johnson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "KC",
+         "value": 1485,
+         "scaled": 14,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "11625",
+         "name": "Adonai Mitchell",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "NYJ",
+         "value": 1218,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "young",
+        "age": 24,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "8134",
+         "name": "Khalil Shakir",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "BUF",
+         "value": 1216,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 26,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "5045",
+         "name": "Courtland Sutton",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "DEN",
+         "value": 1190,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 31,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 6,
+      "value": 3036
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 6,
+      "value": 1635
+     },
+     {
+      "season": "2027",
+      "round": 3,
+      "originalRosterId": 6,
+      "value": 1131
+     }
+    ],
+    "recentTrades": 1,
+    "confidence": "high",
+    "confidenceNotes": [],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at WR, where you have surplus market value.",
+     "1 completed trade in the last 3 weeks (context only, not a sign they'd trade with you)."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 30,
+      "rostered": 30
+     },
+     "theirs": {
+      "valued": 24,
+      "rostered": 28
+     },
+     "positions": [
+      {
+       "position": "WR",
+       "mine": {
+        "valued": 9,
+        "rostered": 9
+       },
+       "theirs": {
+        "valued": 11,
+        "rostered": 14
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 6,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 6,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 6,
+       "value": 1131
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 2,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 5,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 11,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 1,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 2,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 5,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 11,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 2,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 5,
+       "value": 1131
+      }
+     ]
+    },
+    "rank": 1,
+    "tied": false
+   },
+   {
+    "rosterId": 9,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "low",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "WR"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13337",
+         "name": "Emmett Johnson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "KC",
+         "value": 1485,
+         "scaled": 14,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "11625",
+         "name": "Adonai Mitchell",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "NYJ",
+         "value": 1218,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "young",
+        "age": 24,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "8134",
+         "name": "Khalil Shakir",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "BUF",
+         "value": 1216,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 26,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "5045",
+         "name": "Courtland Sutton",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "DEN",
+         "value": 1190,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 31,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 6,
+      "value": 3036
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 6,
+      "value": 1635
+     },
+     {
+      "season": "2027",
+      "round": 3,
+      "originalRosterId": 6,
+      "value": 1131
+     }
+    ],
+    "recentTrades": 0,
+    "confidence": "low",
+    "confidenceNotes": [
+     "Their tier is low confidence."
+    ],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at WR, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 30,
+      "rostered": 30
+     },
+     "theirs": {
+      "valued": 30,
+      "rostered": 30
+     },
+     "positions": [
+      {
+       "position": "WR",
+       "mine": {
+        "valued": 9,
+        "rostered": 9
+       },
+       "theirs": {
+        "valued": 12,
+        "rostered": 12
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 6,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 6,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 6,
+       "value": 1131
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 9,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 9,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 9,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 9,
+       "value": 877
+      }
+     ]
+    },
+    "rank": 2,
+    "tied": true
+   },
+   {
+    "rosterId": 12,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "QB"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "1166",
+         "name": "Kirk Cousins",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "LV",
+         "value": 1658,
+         "scaled": 15,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 38,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13337",
+         "name": "Emmett Johnson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "KC",
+         "value": 1485,
+         "scaled": 14,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "11625",
+         "name": "Adonai Mitchell",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "NYJ",
+         "value": 1218,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "young",
+        "age": 24,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 6,
+      "value": 3036
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 6,
+      "value": 1635
+     },
+     {
+      "season": "2027",
+      "round": 3,
+      "originalRosterId": 6,
+      "value": 1131
+     }
+    ],
+    "recentTrades": 0,
+    "confidence": "high",
+    "confidenceNotes": [],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at QB, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 30,
+      "rostered": 30
+     },
+     "theirs": {
+      "valued": 27,
+      "rostered": 30
+     },
+     "positions": [
+      {
+       "position": "QB",
+       "mine": {
+        "valued": 4,
+        "rostered": 4
+       },
+       "theirs": {
+        "valued": 4,
+        "rostered": 5
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 6,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 6,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 6,
+       "value": 1131
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 12,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 12,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 12,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 12,
+       "value": 877
+      }
+     ]
+    },
+    "rank": 2,
+    "tied": true
+   },
+   {
+    "rosterId": 4,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "WR"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13337",
+         "name": "Emmett Johnson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "KC",
+         "value": 1485,
+         "scaled": 14,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "11625",
+         "name": "Adonai Mitchell",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "NYJ",
+         "value": 1218,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "young",
+        "age": 24,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "8134",
+         "name": "Khalil Shakir",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "BUF",
+         "value": 1216,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 26,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "5045",
+         "name": "Courtland Sutton",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "DEN",
+         "value": 1190,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 31,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 6,
+      "value": 3036
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 6,
+      "value": 1635
+     },
+     {
+      "season": "2027",
+      "round": 3,
+      "originalRosterId": 6,
+      "value": 1131
+     }
+    ],
+    "recentTrades": 0,
+    "confidence": "high",
+    "confidenceNotes": [],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at WR, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 30,
+      "rostered": 30
+     },
+     "theirs": {
+      "valued": 29,
+      "rostered": 30
+     },
+     "positions": [
+      {
+       "position": "WR",
+       "mine": {
+        "valued": 9,
+        "rostered": 9
+       },
+       "theirs": {
+        "valued": 11,
+        "rostered": 11
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 6,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 6,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 6,
+       "value": 1131
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 4,
+       "value": 877
+      }
+     ]
+    },
+    "rank": 2,
+    "tied": true
+   },
+   {
+    "rosterId": 8,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "low",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "QB"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "1166",
+         "name": "Kirk Cousins",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "LV",
+         "value": 1658,
+         "scaled": 15,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 38,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13337",
+         "name": "Emmett Johnson",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "KC",
+         "value": 1485,
+         "scaled": 14,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "WR",
+      "players": [
+       {
+        "player": {
+         "id": "11625",
+         "name": "Adonai Mitchell",
+         "position": "WR",
+         "sleeperPosition": "WR",
+         "team": "NYJ",
+         "value": 1218,
+         "scaled": 11,
+         "injury": null
+        },
+        "why": "young",
+        "age": 24,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 6,
+      "value": 3036
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 6,
+      "value": 1635
+     },
+     {
+      "season": "2027",
+      "round": 3,
+      "originalRosterId": 6,
+      "value": 1131
+     }
+    ],
+    "recentTrades": 0,
+    "confidence": "low",
+    "confidenceNotes": [
+     "Their tier is low confidence."
+    ],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at QB, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 30,
+      "rostered": 30
+     },
+     "theirs": {
+      "valued": 29,
+      "rostered": 30
+     },
+     "positions": [
+      {
+       "position": "QB",
+       "mine": {
+        "valued": 4,
+        "rostered": 4
+       },
+       "theirs": {
+        "valued": 5,
+        "rostered": 5
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 6,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 6,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 6,
+       "value": 1131
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 1,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 3,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3036
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 8,
+       "value": 1635
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 8,
+       "value": 1131
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 6,
+       "value": 877
+      },
+      {
+       "season": "2027",
+       "round": 4,
+       "originalRosterId": 8,
+       "value": 877
+      }
+     ]
+    },
+    "rank": 2,
+    "tied": true
+   }
+  ],
+  "notListed": [
+   {
+    "rosterId": 3,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 11,
+    "reason": "Stances don't line up and the fit is only one-way."
+   },
+   {
+    "rosterId": 2,
+    "reason": "Stances don't line up and the fit is only one-way."
+   },
+   {
+    "rosterId": 7,
+    "reason": "Stances don't line up and the fit is only one-way."
+   },
+   {
+    "rosterId": 1,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 10,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   }
+  ],
+  "excluded": [],
+  "deadline": {
+   "kind": "none_observed"
+  },
+  "protectedCount": 0
+ },
+ "D": {
+  "kind": "list",
+  "myStance": "buy",
+  "caveat": null,
+  "partners": [
+   {
+    "rosterId": 3,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "QB"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "96",
+         "name": "Aaron Rodgers",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PIT",
+         "value": 1572,
+         "scaled": 15,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 42,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "9230",
+         "name": "Tanner McKee",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PHI",
+         "value": 1262,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 26,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13287",
+         "name": "Jeremiyah Love",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "ARI",
+         "value": 5358,
+         "scaled": 50,
+         "injury": null
+        },
+        "why": "young",
+        "age": 21,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "11583",
+         "name": "Jonathon Brooks",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "CAR",
+         "value": 1306,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "TE",
+      "players": [
+       {
+        "player": {
+         "id": "12487",
+         "name": "Terrance Ferguson",
+         "position": "TE",
+         "sleeperPosition": "TE",
+         "team": "LAR",
+         "value": 2002,
+         "scaled": 19,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 8,
+      "value": 3045
+     },
+     {
+      "season": "2028",
+      "round": 1,
+      "originalRosterId": 8,
+      "value": 2320
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 8,
+      "value": 1639
+     }
+    ],
+    "recentTrades": 1,
+    "confidence": "high",
+    "confidenceNotes": [],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at QB, where you have surplus market value.",
+     "1 completed trade in the last 3 weeks (context only, not a sign they'd trade with you)."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 29,
+      "rostered": 29
+     },
+     "theirs": {
+      "valued": 25,
+      "rostered": 25
+     },
+     "positions": [
+      {
+       "position": "QB",
+       "mine": {
+        "valued": 6,
+        "rostered": 6
+       },
+       "theirs": {
+        "valued": 5,
+        "rostered": 5
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3045
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 8,
+       "value": 1639
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 8,
+       "value": 1134
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 2320
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 8,
+       "value": 1416
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 8,
+       "value": 1028
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 1,
+       "value": 3045
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 1,
+       "value": 1639
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 3,
+       "value": 1639
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 3,
+       "value": 1134
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 1,
+       "value": 2320
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 3,
+       "value": 2320
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 1,
+       "value": 1416
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 3,
+       "value": 1416
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 3,
+       "value": 1028
+      }
+     ]
+    },
+    "rank": 1,
+    "tied": false
+   },
+   {
+    "rosterId": 9,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "QB"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "96",
+         "name": "Aaron Rodgers",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PIT",
+         "value": 1572,
+         "scaled": 15,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 42,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "9230",
+         "name": "Tanner McKee",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PHI",
+         "value": 1262,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 26,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13287",
+         "name": "Jeremiyah Love",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "ARI",
+         "value": 5358,
+         "scaled": 50,
+         "injury": null
+        },
+        "why": "young",
+        "age": 21,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "11583",
+         "name": "Jonathon Brooks",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "CAR",
+         "value": 1306,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "TE",
+      "players": [
+       {
+        "player": {
+         "id": "12487",
+         "name": "Terrance Ferguson",
+         "position": "TE",
+         "sleeperPosition": "TE",
+         "team": "LAR",
+         "value": 2002,
+         "scaled": 19,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 8,
+      "value": 3045
+     },
+     {
+      "season": "2028",
+      "round": 1,
+      "originalRosterId": 8,
+      "value": 2320
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 8,
+      "value": 1639
+     }
+    ],
+    "recentTrades": 0,
+    "confidence": "high",
+    "confidenceNotes": [],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at QB, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 29,
+      "rostered": 29
+     },
+     "theirs": {
+      "valued": 30,
+      "rostered": 30
+     },
+     "positions": [
+      {
+       "position": "QB",
+       "mine": {
+        "valued": 6,
+        "rostered": 6
+       },
+       "theirs": {
+        "valued": 2,
+        "rostered": 2
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3045
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 8,
+       "value": 1639
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 8,
+       "value": 1134
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 2320
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 8,
+       "value": 1416
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 8,
+       "value": 1028
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 9,
+       "value": 3045
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 9,
+       "value": 1639
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 9,
+       "value": 1134
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 9,
+       "value": 2320
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 9,
+       "value": 1416
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 9,
+       "value": 1028
+      }
+     ]
+    },
+    "rank": 2,
+    "tied": true
+   },
+   {
+    "rosterId": 4,
+    "grade": 2,
+    "tier": "bubble",
+    "tierConfidence": "high",
+    "fit": "one-way",
+    "theyHave": [],
+    "theyNeed": [
+     "QB"
+    ],
+    "targets": [],
+    "offers": [
+     {
+      "position": "QB",
+      "players": [
+       {
+        "player": {
+         "id": "96",
+         "name": "Aaron Rodgers",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PIT",
+         "value": 1572,
+         "scaled": 15,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 42,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "9230",
+         "name": "Tanner McKee",
+         "position": "QB",
+         "sleeperPosition": "QB",
+         "team": "PHI",
+         "value": 1262,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "surplus",
+        "age": 26,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "RB",
+      "players": [
+       {
+        "player": {
+         "id": "13287",
+         "name": "Jeremiyah Love",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "ARI",
+         "value": 5358,
+         "scaled": 50,
+         "injury": null
+        },
+        "why": "young",
+        "age": 21,
+        "unavailable": false
+       },
+       {
+        "player": {
+         "id": "11583",
+         "name": "Jonathon Brooks",
+         "position": "RB",
+         "sleeperPosition": "RB",
+         "team": "CAR",
+         "value": 1306,
+         "scaled": 12,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     },
+     {
+      "position": "TE",
+      "players": [
+       {
+        "player": {
+         "id": "12487",
+         "name": "Terrance Ferguson",
+         "position": "TE",
+         "sleeperPosition": "TE",
+         "team": "LAR",
+         "value": 2002,
+         "scaled": 19,
+         "injury": null
+        },
+        "why": "young",
+        "age": 23,
+        "unavailable": false
+       }
+      ]
+     }
+    ],
+    "targetPicks": [],
+    "offerPicks": [
+     {
+      "season": "2027",
+      "round": 1,
+      "originalRosterId": 8,
+      "value": 3045
+     },
+     {
+      "season": "2028",
+      "round": 1,
+      "originalRosterId": 8,
+      "value": 2320
+     },
+     {
+      "season": "2027",
+      "round": 2,
+      "originalRosterId": 8,
+      "value": 1639
+     }
+    ],
+    "recentTrades": 0,
+    "confidence": "high",
+    "confidenceNotes": [],
+    "reasons": [
+     "Possible partner for your stance (you: buying; them: likely holding, inferred from their tier).",
+     "One-way positional fit:",
+     "They have a need at QB, where you have surplus market value."
+    ],
+    "coverage": {
+     "mine": {
+      "valued": 29,
+      "rostered": 29
+     },
+     "theirs": {
+      "valued": 27,
+      "rostered": 27
+     },
+     "positions": [
+      {
+       "position": "QB",
+       "mine": {
+        "valued": 6,
+        "rostered": 6
+       },
+       "theirs": {
+        "valued": 2,
+        "rostered": 2
+       }
+      }
+     ]
+    },
+    "picks": {
+     "mine": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 3045
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 8,
+       "value": 1639
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 8,
+       "value": 1134
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 8,
+       "value": 2320
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 8,
+       "value": 1416
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 8,
+       "value": 1028
+      }
+     ],
+     "theirs": [
+      {
+       "season": "2027",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 3045
+      },
+      {
+       "season": "2027",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1639
+      },
+      {
+       "season": "2027",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1134
+      },
+      {
+       "season": "2028",
+       "round": 1,
+       "originalRosterId": 4,
+       "value": 2320
+      },
+      {
+       "season": "2028",
+       "round": 2,
+       "originalRosterId": 4,
+       "value": 1416
+      },
+      {
+       "season": "2028",
+       "round": 3,
+       "originalRosterId": 4,
+       "value": 1028
+      }
+     ]
+    },
+    "rank": 2,
+    "tied": true
+   }
+  ],
+  "notListed": [
+   {
+    "rosterId": 2,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 10,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 6,
+    "reason": "Stances don't line up and the fit is only one-way."
+   },
+   {
+    "rosterId": 1,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 7,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   },
+   {
+    "rosterId": 5,
+    "reason": "No positional fit: none of their surpluses match your needs, and they need nothing you have in surplus."
+   }
+  ],
+  "excluded": [],
+  "deadline": {
+   "kind": "week",
+   "week": 12,
+   "passed": false
+  },
+  "protectedCount": 0
+ }
+}
