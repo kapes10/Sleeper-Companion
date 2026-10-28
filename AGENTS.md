@@ -55,6 +55,8 @@ Personal fantasy football team analyzer for Sleeper leagues. Mobile-first PWA th
 - Record known limitations in NOTES.md.
 
 ## Out of scope for now
-Chrome extension, automatic lineup or trade submission, user accounts, any backend beyond the valuation fetch job, AI features, IDP leagues, multi-team trades, trade evaluator, trade builder (complete trade proposals), fairness verdicts, acceptance predictions or probabilities, lineup manager.
+Chrome extension, automatic or batch lineup submission, automatic trade submission, any write to Sleeper, user accounts, any backend beyond the valuation fetch job, AI features, IDP leagues, multi-team trades, trade evaluator, trade builder (complete trade proposals), fairness verdicts, acceptance predictions or probabilities.
 
 In scope (approved 2026-10-26): market-value trade partner matching within one league. It suggests which teams to approach and which assets to consider; it never builds trades, judges fairness or predicts acceptance.
+
+In scope (approved 2026-10-28): an assisted, read-only lineup manager. It shows where a player sits across my leagues and, in leagues I've marked as Managed, lists bench players who are eligible under the app's supported slot rules. It links me to Sleeper so I can make the change myself, and checks afterward only when I ask. It never changes a lineup, never ranks bench players, gives no start/sit advice, and never claims a lineup is legal or unlocked.

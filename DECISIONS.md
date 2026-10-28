@@ -20,7 +20,7 @@ PWA (Vite + React + TypeScript + Tailwind), Sleeper public read-only API called 
 ## 2026-10-25: Stage plan revised
 - The FantasyCalc valuation import (previously "Stage 2") is complete and approved.
 - **Stage 2 (revised) is the Team Analyzer**: a tab that sorts every team in one league into Contender / Bubble / Seller / Deep Rebuild and suggests a stance for the owner's team. It's added alongside the existing features, not a rebuild. Tier, confidence and stance rules need owner approval before they're implemented.
-- Still out of scope: partner matching, trade evaluator/finder, lineup manager, multi-source valuations. *(Positional-needs analysis moved in scope on 2026-10-26: see Stage 4 below.)* *(Market-value partner matching moved in scope on 2026-10-26: see Stage 5 below. Trade evaluator, trade builder, fairness verdicts and acceptance predictions stay out of scope.)* FantasyCalc values may be shown as context in the analyzer but not used in its tier logic.
+- Still out of scope: partner matching, trade evaluator/finder, lineup manager, multi-source valuations. *(Positional-needs analysis moved in scope on 2026-10-26: see Stage 4 below.)* *(Market-value partner matching moved in scope on 2026-10-26: see Stage 5 below. Trade evaluator, trade builder, fairness verdicts and acceptance predictions stay out of scope.)* *(An assisted, read-only lineup manager moved in scope on 2026-10-28: see Stage 6 below. Automatic or batch lineup submission and any write to Sleeper stay out of scope.)* FantasyCalc values may be shown as context in the analyzer but not used in its tier logic.
 
 ## 2026-10-25: Team Analyzer rules approved
 - **Tier, confidence and stance rules approved** as written in TRADE_LOGIC.md ("Team Analyzer").
@@ -92,3 +92,12 @@ The owner found the suggested players were the wrong type: too many injured play
   - **Offers:** the owner's Stage 4 surplus players at the partner's need positions, plus the owner's **veterans** (27 or older).
 - **Draft picks are now suggestible assets** (previously context only). They are still valued only by FantasyCalc's plain per-round value for the exact season and round; early/mid/late is never guessed, and picks with no exact value aren't suggested.
 - **Lists:** up to 3 players per position and up to 3 picks, available players first, then highest market value. Protected players are never offered.
+
+## 2026-10-28: Stage 6 (assisted, read-only lineup manager) scope approved
+- **Scope:** the owner searches for a player and sees every league where they roster him and where he sits: starting slot, bench, reserve (IR) or taxi. In leagues the owner has marked Managed where he starts, the app lists bench players eligible under the app's supported slot rules (QB, RB, WR, TE, FLEX, SUPER_FLEX). The owner makes any change in Sleeper and asks the app to check afterward.
+- **Never:** writes to Sleeper; automatic, batch or one-click submission; automating the Sleeper website or app; handling credentials; undocumented endpoints; matchup data, an NFL schedule source or extra slot types without approval; projections, start/sit advice, ranking bench players, or FantasyCalc values in this feature; background polling; inferring league type from a league's name.
+- **League type** (Managed / Best ball / Unknown) is set by the owner and saved per league on this device only. Best ball and Unknown leagues are informational only.
+- **Status model:** workflow state, latest check and finding are tracked and shown separately. A failed check never changes the workflow state.
+- Lineup facts come from the rosters endpoint only. "Check again" and the review screen always fetch fresh data.
+- **Undocumented fields (owner approved):** the roster `taxi` and `co_owners` lists, the order of roster `starters` (documented only for matchups) and the contents of league `roster_positions` may be used, labeled "observed in live data, not documented". If any is missing or inconsistent, the league gets an Uncertain finding; the app never guesses.
+- Detailed rules (eligibility, wording, verification, staleness, links) will be recorded here once the owner approves them.

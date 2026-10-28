@@ -1,6 +1,6 @@
 # Notes
 
-## Status (2026-10-26)
+## Status (2026-10-28)
 
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
 - **FantasyCalc valuation import** (previously called Stage 2): complete and approved 2026-10-25; **live at https://kapes10.github.io/Sleeper-Companion/**.
@@ -25,6 +25,8 @@
 - **Look-and-feel updates (2026-10-27, owner requested):** Leagues tab cards now show Standings (record and place, e.g. 4-2 · 4/12), Points for (total and rank) and the league-high points for, instead of the Format and Roster lines. Places use the same order as the Team Analyzer (win %, then points for; Sleeper tiebreakers aren't published). Costs one roster request per league, shared with the other screens' cache.
 
 - **Trade candidate rules revised (2026-10-27, owner approved; see DECISIONS.md):** stance-typed targets and offers (buy: 26+ NFL-starting upgrades at need positions; offer youth 24 or under and picks; sell: target youth and picks, offer veterans 27+), a value floor of 10, unavailable players listed last, picks now suggestible. **Approved and deployed 2026-10-27.** Adds the NFL depth-chart field to the saved player list, so each device downloads Sleeper's player list once more. Live check (2026-10-27, after week 7): buying targets are now real upgrades (e.g. CeeDee Lamb, Zay Flowers, James Cook, Ja'Marr Chase, George Kittle) instead of injured backups. Unavailable players are listed last. Many partners still show no targets, because partner ranking is unchanged (Stage 4 positional fit) and many of the owner's teams have no need positions. Young offers can include valuable bench players (e.g. Jeremiyah Love in Game On); the Protect control is the way to keep them off the list.
+
+- **Stage 6: assisted, read-only lineup manager**: scope approved 2026-10-28 (see DECISIONS.md). Now in the live Sleeper API audit and rules proposal; no code yet. The owner approved using the undocumented roster `taxi`/`co_owners` lists, the order of roster `starters` and the contents of `roster_positions`, labeled as undocumented.
 
 ### Stage 5 audit (live, 2026-10-26, NFL week 7)
 - Re-checked today: 23 dynasty leagues; owner roster exactly once in each; no abandoned rosters; 2 rosters with co-owners (neither is the owner's); deadlines 12 (1 league), 13 (3), 14 (15), 99 (4), none passed; 10 leagues with completed trades in weeks 5–7; future picks in Sleeper's traded-pick records cover 2027–2029, rounds 1–4.
@@ -109,10 +111,10 @@ Production build in headless Edge at phone width, with real Sleeper data and two
 - CSV scoring compatibility fixed: imports now record teams, PPR and TE premium tier, and a CSV set is only used when all five format settings match the league. A set saved before this fix has no scoring recorded and is never used; the roster says so and asks for a re-import.
 
 ## Open questions for the owner
-1. **Next stage:** owner to describe it.
+1. **Stage 6:** rules proposal (eligibility, wording, verification, staleness, links) awaiting owner approval.
 
 ## Possible future updates (not planned)
 - **More reliable value refreshes:** GitHub's hourly schedule ran only 5 times in its first ~21 hours, so values can be stale for a few hours (the app shows the stale warning). The owner decided on 2026-10-26 that this is acceptable for now. If it ever matters, add the cron-job.org timer (Option B in the Stage 3 hosting plan).
 
 ## Next step
-Owner checks Stage 5 on their phone; then describes the next stage.
+Owner checks Stage 5 on their phone. Stage 6: audit, then rules proposal for owner approval.
