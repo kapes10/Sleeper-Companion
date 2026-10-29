@@ -116,3 +116,9 @@ The owner found the suggested players were the wrong type: too many injured play
 - **Open in Sleeper:** league-level link `https://sleeper.com/leagues/<league id>` (not documented by Sleeper). Phone behavior shown as "not yet confirmed" until the owner tests it.
 - **No LineupActionProvider interface:** there is one way to act (the owner, by hand).
 - **Requests:** full scan = NFL state + league list + one roster request per league (25 for 23 leagues); review and "Check again" = 2 + one per selected or pending league.
+
+## 2026-10-29: Roster display changes (owner approved)
+- **Open trade offers on the Leagues tab: not built (owner passed for now).** Sleeper's documented API has no pending or proposed trade offers; the transactions endpoint showed only completed trades, waivers, free-agent and commissioner moves in all 23 leagues (weeks 7–8). Getting offers would need the owner's login or an undocumented endpoint, which CLAUDE.md forbids.
+- **Sleeper projections: not used** (undocumented; owner decision stands).
+- **Best-ball empty slots (option b):** in leagues the owner marked **Best ball** (Lineups → League types; never from Sleeper's undocumented setting), each empty lineup slot is shown filled, in Sleeper's slot order, with the eligible bench player (supported slot rules; never reserve or taxi) who has the highest value in the value source the roster shows (FantasyCalc, or a matching manual CSV if selected), not already used for another slot. Players without a value are never used; unsupported slot types are never filled. Labeled "market value, not projected points"; Sleeper still has the slot empty and nothing is changed in Sleeper. A filled player isn't repeated on the bench.
+- **Roster order:** starters stay in Sleeper's slot order. Bench, IR and taxi are grouped by Sleeper position (QB, RB, WR, TE, then others) and sorted by value, highest first; players without a value last, alphabetically.

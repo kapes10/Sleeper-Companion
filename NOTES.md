@@ -1,6 +1,6 @@
 # Notes
 
-## Status (2026-10-28)
+## Status (2026-10-29)
 
 - **Stage 1** (Sleeper connection + roster view): approved, committed.
 - **FantasyCalc valuation import** (previously called Stage 2): complete and approved 2026-10-25; **live at https://kapes10.github.io/Sleeper-Companion/**.
@@ -26,7 +26,12 @@
 
 - **Trade candidate rules revised (2026-10-27, owner approved; see DECISIONS.md):** stance-typed targets and offers (buy: 26+ NFL-starting upgrades at need positions; offer youth 24 or under and picks; sell: target youth and picks, offer veterans 27+), a value floor of 10, unavailable players listed last, picks now suggestible. **Approved and deployed 2026-10-27.** Adds the NFL depth-chart field to the saved player list, so each device downloads Sleeper's player list once more. Live check (2026-10-27, after week 7): buying targets are now real upgrades (e.g. CeeDee Lamb, Zay Flowers, James Cook, Ja'Marr Chase, George Kittle) instead of injured backups. Unavailable players are listed last. Many partners still show no targets, because partner ranking is unchanged (Stage 4 positional fit) and many of the owner's teams have no need positions. Young offers can include valuable bench players (e.g. Jeremiyah Love in Game On); the Protect control is the way to keep them off the list.
 
-- **Stage 6: assisted, read-only lineup manager**: scope approved 2026-10-28 (see DECISIONS.md). Live audit done and rules approved 2026-10-28 (see DECISIONS.md). **Owner approved the push 2026-10-28; deployed.** Phone check and lag test still pending. The owner approved using the undocumented roster `taxi`/`co_owners` lists, the order of roster `starters` and the contents of `roster_positions`, labeled as undocumented.
+- **Stage 6: assisted, read-only lineup manager**: scope approved 2026-10-28 (see DECISIONS.md). Live audit done and rules approved 2026-10-28 (see DECISIONS.md). **Owner approved the push 2026-10-28; deployed.** **The owner set league types on their phone and confirmed on 2026-10-29 that it all works.** Lag test still pending. The owner approved using the undocumented roster `taxi`/`co_owners` lists, the order of roster `starters` and the contents of `roster_positions`, labeled as undocumented.
+
+- **Roster display changes (2026-10-29, owner approved; see DECISIONS.md):** best-ball empty slots are shown filled with the highest-value eligible bench player (in leagues the owner marked Best ball); bench, IR and taxi grouped by position, highest value first. Live check: Hype Train BB Dyno 28 (RB → Emanuel Wilson, FLEX → Drake London) and Minnies Haberdashery (RB → Chase Brown, FLEX → George Kittle). These are the only two of the owner's leagues with empty slots today.
+  - **Correction:** the Stage 6 proposal said none of the owner's rosters had empty lineup slots. That was wrong: the audit flagged them, but they were misread as other teams'.
+  - Market value is a dynasty trade price, not a weekly scoring prediction, so the filled player isn't necessarily the best scorer this week.
+  - Open trade offers on the Leagues tab: not available from Sleeper's documented API (owner passed for now).
 
 ### Stage 6: verified 2026-10-28 (week 8)
 - `npm test`: 323 tests pass (64 new: search, placement, eligibility for each supported slot, findings, every workflow transition, failed checks, forced reads and received-at time, saved-plan matching and expiry, league types, local state, screens). Tier, stance, Stage 4 and Stage 5 outputs match their baselines (Stage 5 baseline captured before any Stage 6 change to analysis code; none was made).
